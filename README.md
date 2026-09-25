@@ -20,22 +20,27 @@
 
 ---
 
-## 🚀 Quick Start (1 Line Embed)
+## 🚀 Quick Start (1-Line Universal Embed)
 
-Add this directly into the `<head>` of your website (HTML, WordPress, Webflow, Shopify, Next.js, etc.):
+Drop this single script tag into the `<head>` of **any website** (HTML, WordPress, Webflow, Shopify, Next.js, Squarespace, Wix, etc.):
 
 ```html
-<!-- CookieAccess Stylesheet -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/your-repo/dist/cookie-access.min.css">
-
-<!-- CookieAccess Script with Auto GA4 & Consent Mode v2 -->
+<!-- CookieAccess All-in-One Bundle (CSS auto-injected) -->
 <script 
-  src="https://cdn.jsdelivr.net/gh/your-repo/dist/cookie-access.min.js"
+  src="https://cdn.jsdelivr.net/gh/your-repo/dist/cookie-access.bundle.js"
   data-ga="G-XXXXXXXXXX"
   data-position="bottom-right"
-  data-theme="dark"
+  data-theme="light"
   data-a11y="true">
 </script>
+```
+
+> **Zero CSS `<link>` needed!** `cookie-access.bundle.js` automatically self-injects all required responsive styling and icons.
+
+Alternatively, you can load the stylesheet separately if desired:
+```html
+<link rel="stylesheet" href="cookie-access.min.css">
+<script src="cookie-access.min.js" data-ga="G-XXXXXXXXXX"></script>
 ```
 
 Replace `G-XXXXXXXXXX` with your Google Analytics 4 Measurement ID. That's it!
