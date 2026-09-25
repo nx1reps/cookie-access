@@ -4,7 +4,7 @@
   "description": "The ultimate open-source Cookie Consent (with auto GA4 & Consent Mode v2) and Accessibility Widget suite.",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/build.js && vite build",
+    "build": "vite build && node scripts/build.js",
     "bundle": "node scripts/build.js",
     "preview": "vite preview"
   },
