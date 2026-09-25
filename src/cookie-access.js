@@ -1,7 +1,7 @@
 /**
- * CookieAccess v1.2.0
- * The Enterprise-Grade Cookie Consent (Silktide & CookieYes clone)
- * with Auto GA4 & Google Consent Mode v2, and Complete Accessibility Suite (accessiBe / UserWay clone).
+ * CookieAccess v1.3.0
+ * Unified Split Circle (Half Cookie / Half Accessibility)
+ * Clean, Rounded, Smooth Animated First Popup & Enterprise Accessibility Suite.
  * 
  * MIT License - 100% Free & Open Source
  */
@@ -26,8 +26,8 @@
     companyName: 'Our Website',
     privacyPolicyUrl: '#privacy',
     cookiePolicyUrl: '#cookies',
-    theme: 'light', // 'light' or 'dark'
-    position: 'bottom-right', // 'bottom-left' | 'bottom-right' | 'none'
+    theme: 'light',
+    position: 'bottom-right',
     
     enableConsentBanner: true,
     enableAccessibility: true,
@@ -69,26 +69,26 @@
 
   const cookieInventory = {
     necessary: [
-      { name: 'ca_consent_preferences', provider: 'CookieAccess', duration: '1 year', type: 'HTTP Cookie', purpose: 'Stores the visitor\'s cookie consent choices.' },
-      { name: 'ca_a11y_preferences', provider: 'CookieAccess', duration: '1 year', type: 'Local Storage', purpose: 'Remembers user accessibility tools and font preferences across sessions.' },
-      { name: 'session_id', provider: 'First-party', duration: 'Session', type: 'HTTP Cookie', purpose: 'Preserves user session state, CSRF tokens, and security authentications.' }
+      { name: 'ca_consent_preferences', provider: 'CookieAccess', duration: '1 year', type: 'HTTP Cookie', purpose: 'Stores visitor cookie consent choices.' },
+      { name: 'ca_a11y_preferences', provider: 'CookieAccess', duration: '1 year', type: 'Local Storage', purpose: 'Remembers accessibility preferences across visits.' },
+      { name: 'session_id', provider: 'First-party', duration: 'Session', type: 'HTTP Cookie', purpose: 'Maintains user session security and authentication.' }
     ],
     functional: [
-      { name: 'ca_lang', provider: 'First-party', duration: '1 year', type: 'Local Storage', purpose: 'Remembers the user\'s chosen UI language.' },
-      { name: 'ca_theme', provider: 'First-party', duration: '1 year', type: 'Local Storage', purpose: 'Preserves preferred light or dark theme visual mode.' }
+      { name: 'ca_lang', provider: 'First-party', duration: '1 year', type: 'Local Storage', purpose: 'Remembers selected interface language.' },
+      { name: 'ca_theme', provider: 'First-party', duration: '1 year', type: 'Local Storage', purpose: 'Preserves preferred visual theme.' }
     ],
     analytics: [
-      { name: '_ga', provider: 'Google Analytics', duration: '2 years', type: 'HTTP Cookie', purpose: 'Used by Google Analytics to distinguish unique visitors by assigning an anonymous client identifier.' },
-      { name: '_ga_*', provider: 'Google Analytics', duration: '2 years', type: 'HTTP Cookie', purpose: 'Used by GA4 to persist session state and telemetry events.' },
-      { name: '_gid', provider: 'Google Analytics', duration: '24 hours', type: 'HTTP Cookie', purpose: 'Registers a unique ID used to generate statistical data on how visitors use the website.' }
+      { name: '_ga', provider: 'Google Analytics', duration: '2 years', type: 'HTTP Cookie', purpose: 'Distinguishes unique visitors for anonymous telemetry.' },
+      { name: '_ga_*', provider: 'Google Analytics', duration: '2 years', type: 'HTTP Cookie', purpose: 'Used by GA4 to persist session state.' },
+      { name: '_gid', provider: 'Google Analytics', duration: '24 hours', type: 'HTTP Cookie', purpose: 'Counts anonymous pageviews.' }
     ],
     performance: [
-      { name: '__cf_bm', provider: 'Cloudflare', duration: '30 minutes', type: 'HTTP Cookie', purpose: 'Applied by Cloudflare Bot Management to identify and mitigate automated bot traffic.' },
-      { name: 'speed_rum', provider: 'First-party', duration: 'Session', type: 'Local Storage', purpose: 'Collects anonymous Real User Monitoring metrics (LCP, FID, CLS).' }
+      { name: '__cf_bm', provider: 'Cloudflare', duration: '30 minutes', type: 'HTTP Cookie', purpose: 'Cloudflare bot mitigation identifier.' },
+      { name: 'speed_rum', provider: 'First-party', duration: 'Session', type: 'Local Storage', purpose: 'Collects anonymous Real User Monitoring metrics (LCP, FID).' }
     ],
     advertisement: [
-      { name: '_fbp', provider: 'Meta Pixel', duration: '3 months', type: 'HTTP Cookie', purpose: 'Used by Facebook to deliver behavioral advertisements and track conversions.' },
-      { name: '_gcl_au', provider: 'Google Ads', duration: '3 months', type: 'HTTP Cookie', purpose: 'Used by Google AdSense and Google Ads for experimenting with advertisement efficiency.' }
+      { name: '_fbp', provider: 'Meta Pixel', duration: '3 months', type: 'HTTP Cookie', purpose: 'Tracks advertising conversions on Facebook.' },
+      { name: '_gcl_au', provider: 'Google Ads', duration: '3 months', type: 'HTTP Cookie', purpose: 'Conversion tracking and ad efficiency attribution.' }
     ]
   };
 
@@ -172,7 +172,7 @@
       send_page_view: true
     });
 
-    console.log(`[CookieAccess] Successfully auto-injected Google Analytics 4 (${measurementId})`);
+    console.log(`[CookieAccess] Injected Google Analytics 4 (${measurementId})`);
   }
 
   function injectGoogleTagManager(gtmId) {
@@ -185,7 +185,7 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer',gtmId);
 
-    console.log(`[CookieAccess] Successfully injected Google Tag Manager (${gtmId})`);
+    console.log(`[CookieAccess] Injected Google Tag Manager (${gtmId})`);
   }
 
   function unblockScripts(categories) {
@@ -208,7 +208,7 @@
   }
 
   // =========================================================================
-  // STATE MANAGEMENT & AUDIT LOGS
+  // STORAGE & AUDIT LOGS
   // =========================================================================
 
   function getSavedConsent() {
@@ -224,7 +224,7 @@
     const consentRecord = {
       consentId: 'ca_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36),
       timestamp: new Date().toISOString(),
-      version: '1.2.0',
+      version: '1.3.0',
       categories: {
         necessary: true,
         functional: Boolean(categories.functional),
@@ -260,7 +260,7 @@
   }
 
   // =========================================================================
-  // DOM CREATION (COMPACT CIRCLE BUTTONS & FULL BLURRED MODAL)
+  // DOM CREATION (UNIFIED SPLIT CIRCLE + CLEAN ROUNDED MODAL)
   // =========================================================================
 
   function getSVG(name) {
@@ -269,13 +269,14 @@
       a11y: `<svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg>`,
       chevron: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>`,
       close: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>`,
+      shield: `<svg width="22" height="22" viewBox="0 0 24 24" fill="#1868db"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>`,
       search: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`
     };
     return svgs[name] || '';
   }
 
   function injectDOM() {
-    // 1. Accessibility Overlays (Reading Guide & Reading Mask)
+    // 1. Accessibility Overlays
     if (!document.getElementById('ca-reading-guide-line')) {
       const guideLine = document.createElement('div');
       guideLine.id = 'ca-reading-guide-line';
@@ -305,33 +306,27 @@
       });
     }
 
-    // 2. Compact Circular Floating Badges (accessiBe + CookieYes Style)
+    // 2. The Unified Split Circle (Half Cookie / Half Accessibility)
     if (config.position !== 'none' && !document.getElementById('ca-launcher')) {
       const launcher = document.createElement('div');
       launcher.id = 'ca-launcher';
       launcher.className = config.position === 'bottom-left' ? 'ca-pos-bottom-left' : 'ca-pos-bottom-right';
 
-      let html = '';
-      if (config.enableAccessibility) {
-        html += `
-          <button class="ca-circle-btn" id="ca-launcher-a11y" data-tooltip="Accessibility Assistant" aria-label="Accessibility Assistant">
-            ${getSVG('a11y')}
-            <span class="ca-circle-badge" id="ca-launcher-a11y-badge" style="display:none;">0</span>
-          </button>
-        `;
-      }
-      if (config.enableConsentBanner) {
-        html += `
-          <button class="ca-circle-btn ca-btn-cookie" id="ca-launcher-consent" data-tooltip="Cookie Preferences" aria-label="Cookie Preferences">
+      launcher.innerHTML = `
+        <div class="ca-split-circle" id="ca-split-circle" title="Cookie Preferences & Accessibility Assistant">
+          <button class="ca-half-btn ca-half-cookie" id="ca-launcher-cookie" data-tooltip="Privacy & Cookies" aria-label="Privacy & Cookie Preferences">
             ${getSVG('cookie')}
           </button>
-        `;
-      }
-      launcher.innerHTML = html;
+          <button class="ca-half-btn ca-half-a11y" id="ca-launcher-a11y" data-tooltip="Accessibility Assistant" aria-label="Accessibility Assistant">
+            ${getSVG('a11y')}
+          </button>
+          <span class="ca-split-badge" id="ca-split-badge" style="display:none;">0</span>
+        </div>
+      `;
       document.body.appendChild(launcher);
     }
 
-    // 3. Full Popup Modal with Background Blur (Silktide / Cookiebot / CookieYes)
+    // 3. Clean, Rounded Animated Consent Modal (Starts Simple, Expands Smoothly)
     if (config.enableConsentBanner && !document.getElementById('ca-modal-dialog')) {
       const modalBackdrop = document.createElement('div');
       modalBackdrop.id = 'ca-modal-dialog';
@@ -340,76 +335,52 @@
       modalBackdrop.setAttribute('aria-modal', 'true');
 
       modalBackdrop.innerHTML = `
-        <div class="ca-dialog-window">
-          <div class="ca-dialog-header">
-            <div class="ca-dialog-top-row">
-              <h2 class="ca-dialog-title">
-                ${getSVG('cookie')}
-                <span>Privacy & Cookie Preferences</span>
-              </h2>
-              <button class="ca-dialog-close" id="ca-modal-close-btn" aria-label="Close modal">${getSVG('close')}</button>
+        <div class="ca-dialog-window" id="ca-dialog-window">
+          <!-- Clean Header -->
+          <div class="ca-clean-header">
+            <div class="ca-clean-header-title">
+              <div class="ca-shield-icon-badge">${getSVG('shield')}</div>
+              <div>
+                <h2>We value your privacy</h2>
+                <span class="ca-clean-header-sub">GDPR, CCPA & ePrivacy Compliant</span>
+              </div>
             </div>
-            <div class="ca-nav-tabs">
-              <button class="ca-tab-btn ca-active" data-tab="consent">Consent Preferences</button>
-              <button class="ca-tab-btn" data-tab="details">Cookie Details (${getTotalCookieCount()})</button>
-              <button class="ca-tab-btn" data-tab="about">About Cookies</button>
-            </div>
+            <button class="ca-close-icon-btn" id="ca-modal-close-btn" aria-label="Close modal">${getSVG('close')}</button>
           </div>
 
-          <div class="ca-dialog-body">
-            <!-- TAB 1: Consent Accordion -->
-            <div class="ca-tab-pane ca-active" id="ca-pane-consent">
-              <p style="font-size:13.5px;color:var(--ca-text-secondary);margin-bottom:16px;line-height:1.5;">
-                We use cookies and automated Google Analytics to ensure secure operation, analyze traffic patterns, and provide personalized services. You can adjust your consent settings for each category below.
-              </p>
+          <!-- Clean Body -->
+          <div class="ca-clean-body">
+            <p>
+              We use cookies to improve your browsing experience, provide secure logins, analyze site performance, and serve relevant content. By clicking <strong>"Accept All"</strong>, you consent to our use of cookies as detailed in our <a href="${config.privacyPolicyUrl}" target="_blank" rel="noopener">Privacy Notice</a> and <a href="${config.cookiePolicyUrl}" target="_blank" rel="noopener">Cookie Policy</a>.
+            </p>
 
-              <!-- Strictly Necessary -->
+            <!-- Quick Active Categories Overview -->
+            <div class="ca-quick-badges">
+              <span class="ca-pill-badge ca-pill-active">✓ Strictly Necessary</span>
+              <span class="ca-pill-badge" id="ca-badge-analytics">Analytics (GA4)</span>
+              <span class="ca-pill-badge" id="ca-badge-functional">Functional</span>
+              <span class="ca-pill-badge" id="ca-badge-marketing">Advertisement</span>
+            </div>
+
+            <!-- Detailed Accordions (Hidden until 'Customize Settings' is clicked) -->
+            <div class="ca-details-section" id="ca-details-section">
+              <!-- Necessary -->
               <div class="ca-pref-group ca-open">
                 <div class="ca-pref-header">
                   <div class="ca-pref-left">
                     <span class="ca-pref-icon">${getSVG('chevron')}</span>
                     <div>
-                      <span class="ca-pref-name">Strictly Necessary</span>
+                      <span class="ca-pref-name">Strictly Necessary Cookies</span>
                       <span class="ca-pref-badge ca-locked">Always Active</span>
                     </div>
                   </div>
                   <div class="ca-pref-right">
-                    <label class="ca-switch">
-                      <input type="checkbox" id="ca-toggle-necessary" checked disabled>
-                      <span class="ca-slider"></span>
-                    </label>
+                    <label class="ca-switch"><input type="checkbox" id="ca-toggle-necessary" checked disabled><span class="ca-slider"></span></label>
                   </div>
                 </div>
                 <div class="ca-pref-body">
-                  <p class="ca-pref-desc-text">
-                    Necessary cookies are essential for website security, user authentication, and saving your privacy preferences. They do not store personally identifiable data.
-                  </p>
+                  <p class="ca-pref-desc-text">Essential for secure authentication, CSRF validation, and storing your consent choices.</p>
                   ${renderCookieTable(cookieInventory.necessary)}
-                </div>
-              </div>
-
-              <!-- Functional -->
-              <div class="ca-pref-group">
-                <div class="ca-pref-header">
-                  <div class="ca-pref-left">
-                    <span class="ca-pref-icon">${getSVG('chevron')}</span>
-                    <div>
-                      <span class="ca-pref-name">Functional</span>
-                      <span class="ca-pref-badge ca-opt-in">Optional</span>
-                    </div>
-                  </div>
-                  <div class="ca-pref-right">
-                    <label class="ca-switch">
-                      <input type="checkbox" id="ca-toggle-functional">
-                      <span class="ca-slider"></span>
-                    </label>
-                  </div>
-                </div>
-                <div class="ca-pref-body">
-                  <p class="ca-pref-desc-text">
-                    Functional cookies enable enhanced website features, language preferences, and user interface customizations.
-                  </p>
-                  ${renderCookieTable(cookieInventory.functional)}
                 </div>
               </div>
 
@@ -424,42 +395,32 @@
                     </div>
                   </div>
                   <div class="ca-pref-right">
-                    <label class="ca-switch">
-                      <input type="checkbox" id="ca-toggle-analytics">
-                      <span class="ca-slider"></span>
-                    </label>
+                    <label class="ca-switch"><input type="checkbox" id="ca-toggle-analytics"><span class="ca-slider"></span></label>
                   </div>
                 </div>
                 <div class="ca-pref-body">
-                  <p class="ca-pref-desc-text">
-                    Enables Google Analytics 4 telemetry with Google Consent Mode v2 to calculate visitor counts, traffic sources, and page performance anonymously.
-                  </p>
+                  <p class="ca-pref-desc-text">Enables Google Analytics 4 telemetry with Google Consent Mode v2 to analyze visitor traffic anonymously.</p>
                   ${renderCookieTable(cookieInventory.analytics)}
                 </div>
               </div>
 
-              <!-- Performance -->
+              <!-- Functional -->
               <div class="ca-pref-group">
                 <div class="ca-pref-header">
                   <div class="ca-pref-left">
                     <span class="ca-pref-icon">${getSVG('chevron')}</span>
                     <div>
-                      <span class="ca-pref-name">Performance</span>
+                      <span class="ca-pref-name">Functional Preferences</span>
                       <span class="ca-pref-badge ca-opt-in">Optional</span>
                     </div>
                   </div>
                   <div class="ca-pref-right">
-                    <label class="ca-switch">
-                      <input type="checkbox" id="ca-toggle-performance">
-                      <span class="ca-slider"></span>
-                    </label>
+                    <label class="ca-switch"><input type="checkbox" id="ca-toggle-functional"><span class="ca-slider"></span></label>
                   </div>
                 </div>
                 <div class="ca-pref-body">
-                  <p class="ca-pref-desc-text">
-                    Performance cookies analyze website speed, bot mitigation, and user experience metrics.
-                  </p>
-                  ${renderCookieTable(cookieInventory.performance)}
+                  <p class="ca-pref-desc-text">Remembers language and appearance preferences across visits.</p>
+                  ${renderCookieTable(cookieInventory.functional)}
                 </div>
               </div>
 
@@ -469,51 +430,29 @@
                   <div class="ca-pref-left">
                     <span class="ca-pref-icon">${getSVG('chevron')}</span>
                     <div>
-                      <span class="ca-pref-name">Advertisement</span>
+                      <span class="ca-pref-name">Marketing & Advertising</span>
                       <span class="ca-pref-badge ca-opt-in">Optional</span>
                     </div>
                   </div>
                   <div class="ca-pref-right">
-                    <label class="ca-switch">
-                      <input type="checkbox" id="ca-toggle-advertisement">
-                      <span class="ca-slider"></span>
-                    </label>
+                    <label class="ca-switch"><input type="checkbox" id="ca-toggle-advertisement"><span class="ca-slider"></span></label>
                   </div>
                 </div>
                 <div class="ca-pref-body">
-                  <p class="ca-pref-desc-text">
-                    Used to deliver customized advertisements relevant to your interests across third-party platforms.
-                  </p>
+                  <p class="ca-pref-desc-text">Used to deliver personalized advertising campaigns and measure conversion efficacy.</p>
                   ${renderCookieTable(cookieInventory.advertisement)}
                 </div>
               </div>
             </div>
-
-            <!-- TAB 2: Full Cookie Audit Table -->
-            <div class="ca-tab-pane" id="ca-pane-details">
-              <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Full Cookie Declaration Audit</h3>
-              ${renderAllCookiesDeclaration()}
-            </div>
-
-            <!-- TAB 3: About Cookies -->
-            <div class="ca-tab-pane" id="ca-pane-about">
-              <h3 style="font-size:14px;font-weight:700;margin-bottom:8px;">About Cookies & Legal Compliance</h3>
-              <p style="font-size:13px;line-height:1.6;color:var(--ca-text-secondary);margin-bottom:12px;">
-                Under the EU General Data Protection Regulation (GDPR), the ePrivacy Directive, and the California Consumer Privacy Act (CCPA/CPRA), websites are legally obligated to obtain explicit, affirmative opt-in consent from visitors before deploying non-essential tracking cookies.
-              </p>
-              <p style="font-size:13px;line-height:1.6;color:var(--ca-text-secondary);">
-                You can change or withdraw your consent at any time by clicking the circular Cookie badge in the bottom corner of this page.
-              </p>
-            </div>
           </div>
 
-          <div class="ca-dialog-footer">
-            <div class="ca-footer-brand">
-              Powered by <strong>CookieAccess</strong> (Open Source)
+          <!-- Clean Footer Actions -->
+          <div class="ca-clean-footer">
+            <div class="ca-footer-actions-left">
+              <button class="ca-btn-link" id="ca-btn-toggle-customize">Customize Settings ⚙️</button>
             </div>
-            <div class="ca-footer-buttons">
-              <button class="ca-btn ca-btn-outline" id="ca-modal-reject">Reject All</button>
-              <button class="ca-btn ca-btn-outline" id="ca-modal-save">Save My Preferences</button>
+            <div class="ca-footer-actions-right">
+              <button class="ca-btn ca-btn-outline" id="ca-modal-reject">Reject Non-Essential</button>
               <button class="ca-btn ca-btn-primary" id="ca-modal-accept">Accept All</button>
             </div>
           </div>
@@ -537,7 +476,7 @@
           </div>
           <div class="ca-a11y-top-actions">
             <button class="ca-btn ca-btn-subtle ca-btn-sm" id="ca-a11y-reset-btn" title="Reset all adjustments">Reset</button>
-            <button class="ca-dialog-close" id="ca-a11y-close-btn" aria-label="Close accessibility panel">${getSVG('close')}</button>
+            <button class="ca-close-icon-btn" id="ca-a11y-close-btn" aria-label="Close accessibility panel">${getSVG('close')}</button>
           </div>
         </div>
 
@@ -545,7 +484,7 @@
           <!-- Search Bar -->
           <div class="ca-a11y-search-wrap">
             <span class="ca-a11y-search-icon">${getSVG('search')}</span>
-            <input type="text" class="ca-a11y-search-input" id="ca-a11y-search" placeholder="Search accessibility features (e.g. font, contrast)...">
+            <input type="text" class="ca-a11y-search-input" id="ca-a11y-search" placeholder="Search features (e.g. font, contrast)...">
           </div>
 
           <!-- Audio Screen Reader -->
@@ -560,7 +499,7 @@
             </div>
           </div>
 
-          <!-- Pre-set Profiles -->
+          <!-- Profiles -->
           <div class="ca-section-heading">
             <span>ACCESSIBILITY PROFILES</span>
             <span style="font-weight:400;font-size:11px;color:var(--ca-text-muted);">Quick Pre-sets</span>
@@ -569,7 +508,7 @@
             <div class="ca-profile-row" data-profile="seizure">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">🛡️ Seizure Safe Profile</span>
-                <span class="ca-profile-desc">Clears flashes & pauses animations to prevent seizure risks.</span>
+                <span class="ca-profile-desc">Clears flashes & pauses animations to eliminate risks.</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="seizure"><span class="ca-slider"></span></label>
             </div>
@@ -577,7 +516,7 @@
             <div class="ca-profile-row" data-profile="vision">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">👁️ Vision Impaired Profile</span>
-                <span class="ca-profile-desc">Enhances text scaling, high-contrast dark, and link highlights.</span>
+                <span class="ca-profile-desc">Enhances text scale, dark contrast, and link highlights.</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="vision"><span class="ca-slider"></span></label>
             </div>
@@ -585,7 +524,7 @@
             <div class="ca-profile-row" data-profile="adhd">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">⚡ ADHD Friendly Profile</span>
-                <span class="ca-profile-desc">Focus reading mask with slit to minimize screen distractions.</span>
+                <span class="ca-profile-desc">Reading mask with focused slit to prevent distractions.</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="adhd"><span class="ca-slider"></span></label>
             </div>
@@ -593,15 +532,15 @@
             <div class="ca-profile-row" data-profile="dyslexia">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">📖 Dyslexia Friendly Profile</span>
-                <span class="ca-profile-desc">Legible dyslexic font with increased letter and line spacing.</span>
+                <span class="ca-profile-desc">Legible dyslexic font with increased letter spacing.</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="dyslexia"><span class="ca-slider"></span></label>
             </div>
 
             <div class="ca-profile-row" data-profile="cognitive">
               <div class="ca-profile-text">
-                <span class="ca-profile-title">🧠 Cognitive & Learning Profile</span>
-                <span class="ca-profile-desc">Reading guide line and outlined titles for reading focus.</span>
+                <span class="ca-profile-title">🧠 Cognitive Focus Profile</span>
+                <span class="ca-profile-desc">Reading guide line and outlined headings for focus.</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="cognitive"><span class="ca-slider"></span></label>
             </div>
@@ -695,7 +634,7 @@
             </div>
           </div>
 
-          <!-- Visual Aids -->
+          <!-- Orientation -->
           <div class="ca-section-heading">ORIENTATION & VISUAL AIDS</div>
           <div class="ca-tools-grid">
             <div class="ca-tool-card" id="ca-tool-stop-animations">
@@ -772,46 +711,25 @@
     `;
   }
 
-  function renderAllCookiesDeclaration() {
-    let html = '';
-    const categories = [
-      { key: 'necessary', label: 'Strictly Necessary Cookies' },
-      { key: 'functional', label: 'Functional Cookies' },
-      { key: 'analytics', label: 'Analytics Cookies (GA4)' },
-      { key: 'performance', label: 'Performance Cookies' },
-      { key: 'advertisement', label: 'Advertisement Cookies' }
-    ];
-
-    categories.forEach(cat => {
-      html += `
-        <div style="margin-bottom:16px;">
-          <h4 style="font-size:13px;font-weight:700;color:var(--ca-text);margin-bottom:6px;">${cat.label}</h4>
-          ${renderCookieTable(cookieInventory[cat.key])}
-        </div>
-      `;
-    });
-    return html;
-  }
-
-  function getTotalCookieCount() {
-    return Object.values(cookieInventory).reduce((acc, list) => acc + list.length, 0);
-  }
-
   function cacheDOM() {
     elements = {
-      launcherConsent: document.getElementById('ca-launcher-consent'),
+      launcherCookie: document.getElementById('ca-launcher-cookie'),
       launcherA11y: document.getElementById('ca-launcher-a11y'),
-      a11yBadge: document.getElementById('ca-launcher-a11y-badge'),
+      splitBadge: document.getElementById('ca-split-badge'),
       modalDialog: document.getElementById('ca-modal-dialog'),
+      dialogWindow: document.getElementById('ca-dialog-window'),
+      detailsSection: document.getElementById('ca-details-section'),
+      btnToggleCustomize: document.getElementById('ca-btn-toggle-customize'),
       modalCloseBtn: document.getElementById('ca-modal-close-btn'),
       modalAccept: document.getElementById('ca-modal-accept'),
       modalReject: document.getElementById('ca-modal-reject'),
-      modalSave: document.getElementById('ca-modal-save'),
       toggleNecessary: document.getElementById('ca-toggle-necessary'),
       toggleFunctional: document.getElementById('ca-toggle-functional'),
       toggleAnalytics: document.getElementById('ca-toggle-analytics'),
-      togglePerformance: document.getElementById('ca-toggle-performance'),
       toggleAdvertisement: document.getElementById('ca-toggle-advertisement'),
+      badgeAnalytics: document.getElementById('ca-badge-analytics'),
+      badgeFunctional: document.getElementById('ca-badge-functional'),
+      badgeMarketing: document.getElementById('ca-badge-marketing'),
       a11yDrawer: document.getElementById('ca-a11y-drawer'),
       a11yCloseBtn: document.getElementById('ca-a11y-close-btn'),
       a11yDoneBtn: document.getElementById('ca-a11y-done-btn'),
@@ -827,13 +745,15 @@
   }
 
   function bindEvents() {
-    if (elements.launcherConsent) {
-      elements.launcherConsent.addEventListener('click', () => openPreferencesModal());
+    // Split Circle Click Handlers
+    if (elements.launcherCookie) {
+      elements.launcherCookie.addEventListener('click', () => openPreferencesModal());
     }
     if (elements.launcherA11y) {
       elements.launcherA11y.addEventListener('click', () => openA11yDrawer());
     }
 
+    // Modal Actions
     if (elements.modalCloseBtn) {
       elements.modalCloseBtn.addEventListener('click', () => closePreferencesModal());
     }
@@ -842,6 +762,18 @@
         if (e.target === elements.modalDialog) closePreferencesModal();
       });
     }
+
+    // "Customize Settings" toggle
+    let isExpanded = false;
+    if (elements.btnToggleCustomize) {
+      elements.btnToggleCustomize.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        if (elements.detailsSection) elements.detailsSection.classList.toggle('ca-show', isExpanded);
+        if (elements.dialogWindow) elements.dialogWindow.classList.toggle('ca-expanded', isExpanded);
+        elements.btnToggleCustomize.textContent = isExpanded ? 'Hide Settings ▲' : 'Customize Settings ⚙️';
+      });
+    }
+
     if (elements.modalAccept) {
       elements.modalAccept.addEventListener('click', () => {
         const choice = { necessary: true, functional: true, analytics: true, performance: true, advertisement: true };
@@ -850,6 +782,7 @@
         closePreferencesModal();
       });
     }
+
     if (elements.modalReject) {
       elements.modalReject.addEventListener('click', () => {
         const choice = { necessary: true, functional: false, analytics: false, performance: false, advertisement: false };
@@ -858,33 +791,8 @@
         closePreferencesModal();
       });
     }
-    if (elements.modalSave) {
-      elements.modalSave.addEventListener('click', () => {
-        const choice = {
-          necessary: true,
-          functional: elements.toggleFunctional ? elements.toggleFunctional.checked : false,
-          analytics: elements.toggleAnalytics ? elements.toggleAnalytics.checked : false,
-          performance: elements.togglePerformance ? elements.togglePerformance.checked : false,
-          advertisement: elements.toggleAdvertisement ? elements.toggleAdvertisement.checked : false
-        };
-        saveConsent(choice);
-        closePreferencesModal();
-      });
-    }
 
-    const tabButtons = document.querySelectorAll('.ca-tab-btn');
-    tabButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        tabButtons.forEach(b => b.classList.remove('ca-active'));
-        btn.classList.add('ca-active');
-        const targetTab = btn.getAttribute('data-tab');
-
-        document.querySelectorAll('.ca-tab-pane').forEach(p => p.classList.remove('ca-active'));
-        const activePane = document.getElementById(`ca-pane-${targetTab}`);
-        if (activePane) activePane.classList.add('ca-active');
-      });
-    });
-
+    // Accordions
     document.querySelectorAll('.ca-pref-header').forEach(header => {
       header.addEventListener('click', (e) => {
         if (e.target.closest('.ca-switch')) return;
@@ -893,6 +801,7 @@
       });
     });
 
+    // Drawer Buttons
     if (elements.a11yCloseBtn) elements.a11yCloseBtn.addEventListener('click', () => closeA11yDrawer());
     if (elements.a11yDoneBtn) elements.a11yDoneBtn.addEventListener('click', () => closeA11yDrawer());
     if (elements.a11yResetBtn) elements.a11yResetBtn.addEventListener('click', () => resetA11ySettings());
@@ -1148,9 +1057,9 @@
     if (a11yState.readingMask) count++;
     if (a11yState.bigCursor !== 'none') count++;
 
-    if (elements.a11yBadge) {
-      elements.a11yBadge.style.display = count > 0 ? 'flex' : 'none';
-      elements.a11yBadge.textContent = count;
+    if (elements.splitBadge) {
+      elements.splitBadge.style.display = count > 0 ? 'flex' : 'none';
+      elements.splitBadge.textContent = count;
     }
 
     try {
@@ -1341,8 +1250,20 @@
   function syncToggles(categories) {
     if (elements.toggleFunctional) elements.toggleFunctional.checked = Boolean(categories.functional);
     if (elements.toggleAnalytics) elements.toggleAnalytics.checked = Boolean(categories.analytics);
-    if (elements.togglePerformance) elements.togglePerformance.checked = Boolean(categories.performance);
     if (elements.toggleAdvertisement) elements.toggleAdvertisement.checked = Boolean(categories.advertisement);
+
+    if (elements.badgeAnalytics) {
+      elements.badgeAnalytics.classList.toggle('ca-pill-active', Boolean(categories.analytics));
+      elements.badgeAnalytics.textContent = (categories.analytics ? '✓ ' : '') + 'Analytics (GA4)';
+    }
+    if (elements.badgeFunctional) {
+      elements.badgeFunctional.classList.toggle('ca-pill-active', Boolean(categories.functional));
+      elements.badgeFunctional.textContent = (categories.functional ? '✓ ' : '') + 'Functional';
+    }
+    if (elements.badgeMarketing) {
+      elements.badgeMarketing.classList.toggle('ca-pill-active', Boolean(categories.advertisement));
+      elements.badgeMarketing.textContent = (categories.advertisement ? '✓ ' : '') + 'Advertisement';
+    }
   }
 
   // =========================================================================
@@ -1372,7 +1293,7 @@
   function checkInitialState() {
     const saved = getSavedConsent();
     if (!saved && config.enableConsentBanner) {
-      // First visit: Show the Full Popup Modal with blurred background!
+      // First visit: Show the clean rounded popup with blurred backdrop
       setTimeout(() => {
         openPreferencesModal();
       }, 350);

@@ -1,18 +1,16 @@
 /* ==========================================================================
    CookieAccess - Enterprise Cookie Consent & Accessibility Suite
-   Pixel-perfect Silktide + CookieYes + accessiBe / UserWay Architecture
-   Clean, authentic, enterprise-grade design
+   Clean, Rounded, Smooth Animated UI (Silktide + CookieYes + accessiBe)
    ========================================================================== */
 
 :root {
   --ca-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --ca-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --ca-mono: "SFMono-Regular", Consolas, Menlo, monospace;
   
   --ca-bg-modal: #ffffff;
   --ca-bg-header: #f8fafc;
   --ca-bg-subtle: #f1f5f9;
   --ca-bg-hover: #e2e8f0;
-  --ca-bg-active: #e0f2fe;
   
   --ca-border: #e2e8f0;
   --ca-border-subtle: #cbd5e1;
@@ -21,62 +19,52 @@
   --ca-text: #0f172a;
   --ca-text-secondary: #475569;
   --ca-text-muted: #64748b;
-  --ca-text-inverted: #ffffff;
   
-  --ca-primary: #1868db;        /* Classic CookieYes enterprise blue */
+  --ca-primary: #1868db;
   --ca-primary-hover: #1352b0;
   --ca-primary-light: #eff6ff;
   
-  --ca-accent: #059669;
-  --ca-warning: #d97706;
-  --ca-danger: #dc2626;
+  --ca-cookie-amber: #d97706;
+  --ca-cookie-bg: #fffbeb;
   
-  --ca-radius: 12px;
+  --ca-radius-xl: 20px;
+  --ca-radius-lg: 14px;
+  --ca-radius-md: 10px;
   --ca-radius-sm: 6px;
-  --ca-radius-circle: 50%;
   
-  --ca-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
-  --ca-shadow-pop: 0 25px 50px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.08);
-  --ca-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --ca-shadow-modal: 0 25px 60px -15px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --ca-shadow-pop: 0 10px 30px -5px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.08);
   
   --ca-z: 2147483640;
 }
 
-/* Enterprise Dark Mode */
+/* Dark Mode Support */
 .ca-theme-dark {
   --ca-bg-modal: #111827;
   --ca-bg-header: #1a2234;
   --ca-bg-subtle: #1e293b;
   --ca-bg-hover: #334155;
-  --ca-bg-active: #1e3a8a;
-  
   --ca-border: #334155;
   --ca-border-subtle: #475569;
   --ca-border-focus: #3b82f6;
-  
   --ca-text: #f8fafc;
   --ca-text-secondary: #cbd5e1;
   --ca-text-muted: #94a3b8;
-  
   --ca-primary: #2563eb;
   --ca-primary-hover: #1d4ed8;
   --ca-primary-light: #1e293b;
-  
-  --ca-shadow-pop: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --ca-cookie-bg: #292524;
+  --ca-shadow-modal: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 /* ==========================================================================
-   1. FLOATING LAUNCHER (Compact Circular Badges like accessiBe & CookieYes)
+   1. HALF COOKIE / HALF ACCESSIBILITY SPLIT CIRCLE LAUNCHER
    ========================================================================== */
 
 #ca-launcher {
   position: fixed;
   bottom: 24px;
   z-index: var(--ca-z);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
   font-family: var(--ca-font);
 }
 
@@ -88,66 +76,92 @@
   right: 24px;
 }
 
-/* Compact Circle Button */
-.ca-circle-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--ca-radius-circle);
-  background: var(--ca-primary);
-  color: #ffffff;
+/* The Unified 54px Split Circle Badge */
+.ca-split-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--ca-bg-modal);
+  box-shadow: var(--ca-shadow-pop);
   border: 2px solid #ffffff;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(24, 104, 219, 0.4);
+  display: flex;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  user-select: none;
+}
+
+.ca-split-circle:hover {
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(24, 104, 219, 0.2);
+}
+
+/* Left Half: Cookie */
+.ca-half-btn {
+  width: 50%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  border: none;
   cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background-color 0.2s;
-  position: relative;
-  user-select: none;
   padding: 0;
+  transition: background-color 0.18s ease;
+  position: relative;
 }
 
-.ca-circle-btn:hover,
-.ca-circle-btn:focus-visible {
-  transform: scale(1.08);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 4px rgba(24, 104, 219, 0.2);
-  outline: none;
+.ca-half-cookie {
+  background: var(--ca-cookie-bg);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.ca-circle-btn svg {
-  width: 24px;
-  height: 24px;
-  fill: #ffffff;
+.ca-half-cookie:hover {
+  background: #fef3c7;
 }
 
-/* Cookie specific badge (clean white circle with cookie icon) */
-.ca-circle-btn.ca-btn-cookie {
-  background: var(--ca-bg-modal);
-  border: 1px solid var(--ca-border-subtle);
-  color: var(--ca-text);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+.ca-half-cookie svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--ca-cookie-amber);
+  transition: transform 0.2s ease;
 }
 
-.ca-circle-btn.ca-btn-cookie svg {
-  fill: #d97706;
+.ca-half-cookie:hover svg {
+  transform: scale(1.15) rotate(-10deg);
 }
 
-.ca-circle-btn.ca-btn-cookie:hover {
-  background: var(--ca-bg-hover);
-  border-color: var(--ca-primary);
+/* Right Half: Accessibility */
+.ca-half-a11y {
+  background: var(--ca-primary-light);
 }
 
-/* Floating Tooltip */
-.ca-circle-btn::after {
+.ca-half-a11y:hover {
+  background: #dbeafe;
+}
+
+.ca-half-a11y svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--ca-primary);
+  transition: transform 0.2s ease;
+}
+
+.ca-half-a11y:hover svg {
+  transform: scale(1.15);
+}
+
+/* Shared Tooltip */
+.ca-half-btn[data-tooltip]::before {
   content: attr(data-tooltip);
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: calc(100% + 10px);
   background: #0f172a;
   color: #ffffff;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
-  padding: 6px 12px;
+  padding: 5px 10px;
   border-radius: 6px;
   white-space: nowrap;
   pointer-events: none;
@@ -155,33 +169,34 @@
   visibility: hidden;
   transition: opacity 0.15s ease, transform 0.15s ease;
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  z-index: 10;
+  z-index: 20;
 }
 
-#ca-launcher.ca-pos-bottom-right .ca-circle-btn::after {
-  right: calc(100% + 12px);
+.ca-half-cookie[data-tooltip]::before {
+  right: -10px;
 }
 
-#ca-launcher.ca-pos-bottom-left .ca-circle-btn::after {
-  left: calc(100% + 12px);
+.ca-half-a11y[data-tooltip]::before {
+  left: -10px;
 }
 
-.ca-circle-btn:hover::after {
+.ca-half-btn:hover[data-tooltip]::before {
   opacity: 1;
   visibility: visible;
+  transform: translateY(-2px);
 }
 
-/* Badge counter on accessibility circle */
-.ca-circle-badge {
+/* Active A11y Counter Pill */
+.ca-split-badge {
   position: absolute;
   top: -2px;
   right: -2px;
   background: #059669;
   color: #ffffff;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 700;
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   border: 2px solid #ffffff;
   display: flex;
@@ -190,7 +205,7 @@
 }
 
 /* ==========================================================================
-   2. FULL POPUP MODAL WITH BACKGROUND BLUR (Silktide / CookieYes Full Screen)
+   2. CLEAN, ROUNDED, ANIMATED CONSENT MODAL
    ========================================================================== */
 
 .ca-modal-backdrop {
@@ -198,15 +213,15 @@
   inset: 0;
   z-index: calc(var(--ca-z) + 10);
   background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 20px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.25s ease, visibility 0.25s;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
 }
 
 .ca-modal-backdrop.ca-active {
@@ -214,20 +229,21 @@
   visibility: visible;
 }
 
+/* Main Modal Card */
 .ca-dialog-window {
   background: var(--ca-bg-modal);
   border: 1px solid var(--ca-border);
-  border-radius: var(--ca-radius);
-  box-shadow: var(--ca-shadow-pop);
+  border-radius: var(--ca-radius-xl);
+  box-shadow: var(--ca-shadow-modal);
   width: 100%;
-  max-width: 740px;
-  max-height: 88vh;
+  max-width: 620px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   color: var(--ca-text);
   font-family: var(--ca-font);
-  transform: scale(0.96) translateY(12px);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(0.94) translateY(16px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.3s ease;
   overflow: hidden;
 }
 
@@ -235,108 +251,140 @@
   transform: scale(1) translateY(0);
 }
 
-/* Header */
-.ca-dialog-header {
-  padding: 18px 24px 0;
-  background: var(--ca-bg-header);
-  border-bottom: 1px solid var(--ca-border);
-  flex-shrink: 0;
+.ca-dialog-window.ca-expanded {
+  max-width: 760px;
 }
 
-.ca-dialog-top-row {
+/* Simple / Clean Header */
+.ca-clean-header {
+  padding: 24px 28px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
 }
 
-.ca-dialog-title {
-  font-size: 17px;
-  font-weight: 700;
+.ca-clean-header-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 0;
-  color: var(--ca-text);
+  gap: 12px;
 }
 
-.ca-dialog-close {
+.ca-shield-icon-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--ca-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.ca-clean-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--ca-text);
+  letter-spacing: -0.01em;
+}
+
+.ca-clean-header-sub {
+  font-size: 12.5px;
+  color: var(--ca-text-muted);
+}
+
+.ca-close-icon-btn {
   background: transparent;
   border: none;
   color: var(--ca-text-muted);
   width: 32px;
   height: 32px;
-  border-radius: var(--ca-radius-sm);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background-color 0.15s, color 0.15s;
 }
 
-.ca-dialog-close:hover {
+.ca-close-icon-btn:hover {
   background: var(--ca-bg-hover);
   color: var(--ca-text);
 }
 
-/* Navigation Tabs */
-.ca-nav-tabs {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.ca-nav-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.ca-tab-btn {
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  padding: 10px 4px;
-  font-family: var(--ca-font);
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--ca-text-muted);
-  cursor: pointer;
-  transition: all 0.15s;
-  margin-bottom: -1px;
-  white-space: nowrap;
-}
-
-.ca-tab-btn:hover {
-  color: var(--ca-text);
-}
-
-.ca-tab-btn.ca-active {
-  color: var(--ca-primary);
-  border-bottom-color: var(--ca-primary);
-}
-
-/* Body Panels */
-.ca-dialog-body {
-  padding: 20px 24px;
+/* Clean Body */
+.ca-clean-body {
+  padding: 0 28px 20px;
   overflow-y: auto;
-  flex: 1;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ca-text-secondary);
 }
 
-.ca-tab-pane {
+.ca-clean-body p {
+  margin-bottom: 16px;
+}
+
+.ca-clean-body a {
+  color: var(--ca-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Quick Category Badges Row */
+.ca-quick-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.ca-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--ca-bg-subtle);
+  border: 1px solid var(--ca-border);
+  color: var(--ca-text-secondary);
+}
+
+.ca-pill-badge.ca-pill-active {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #059669;
+}
+
+/* Detailed Accordions Section (Hidden by default, smooth animated expand) */
+.ca-details-section {
   display: none;
+  animation: caFadeIn 0.25s ease-out forwards;
+  margin-top: 10px;
+  border-top: 1px solid var(--ca-border);
+  padding-top: 18px;
 }
 
-.ca-tab-pane.ca-active {
+.ca-details-section.ca-show {
   display: block;
 }
 
-/* Categories Accordion */
+@keyframes caFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Category Accordion Item */
 .ca-pref-group {
   border: 1px solid var(--ca-border);
-  border-radius: 8px;
+  border-radius: var(--ca-radius-md);
   margin-bottom: 10px;
   overflow: hidden;
   transition: border-color 0.2s;
+  background: var(--ca-bg-modal);
 }
 
 .ca-pref-group:hover {
@@ -345,7 +393,6 @@
 
 .ca-pref-header {
   padding: 12px 16px;
-  background: var(--ca-bg-modal);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -364,7 +411,6 @@
   color: var(--ca-text-muted);
   transition: transform 0.2s ease;
   display: flex;
-  align-items: center;
 }
 
 .ca-pref-group.ca-open .ca-pref-icon {
@@ -372,7 +418,7 @@
 }
 
 .ca-pref-name {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--ca-text);
 }
@@ -394,10 +440,18 @@
   color: var(--ca-primary);
 }
 
-.ca-pref-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.ca-pref-body {
+  padding: 0 16px 14px;
+  background: var(--ca-bg-header);
+  border-top: 1px solid var(--ca-border);
+  display: none;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ca-text-secondary);
+}
+
+.ca-pref-group.ca-open .ca-pref-body {
+  display: block;
 }
 
 /* Toggle Switch */
@@ -454,26 +508,7 @@ input:disabled + .ca-slider {
   cursor: not-allowed;
 }
 
-/* Details Panel */
-.ca-pref-body {
-  padding: 0 16px 14px;
-  background: var(--ca-bg-header);
-  border-top: 1px solid var(--ca-border);
-  display: none;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--ca-text-secondary);
-}
-
-.ca-pref-group.ca-open .ca-pref-body {
-  display: block;
-}
-
-.ca-pref-desc-text {
-  margin: 10px 0;
-}
-
-/* Cookie Audit Table */
+/* Cookie Table */
 .ca-cookie-table {
   width: 100%;
   border-collapse: collapse;
@@ -487,7 +522,7 @@ input:disabled + .ca-slider {
 
 .ca-cookie-table th,
 .ca-cookie-table td {
-  padding: 7px 10px;
+  padding: 6px 10px;
   text-align: left;
   border-bottom: 1px solid var(--ca-border);
 }
@@ -508,9 +543,9 @@ input:disabled + .ca-slider {
   color: var(--ca-primary);
 }
 
-/* Modal Action Footer */
-.ca-dialog-footer {
-  padding: 14px 24px;
+/* Clean Modal Footer (3 Action Buttons) */
+.ca-clean-footer {
+  padding: 16px 28px;
   background: var(--ca-bg-header);
   border-top: 1px solid var(--ca-border);
   display: flex;
@@ -518,26 +553,21 @@ input:disabled + .ca-slider {
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  flex-shrink: 0;
 }
 
-.ca-footer-brand {
-  font-size: 12px;
-  color: var(--ca-text-muted);
-}
-
-.ca-footer-brand strong {
-  color: var(--ca-text);
-}
-
-.ca-footer-buttons {
+.ca-footer-actions-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+}
+
+.ca-footer-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
-/* Buttons */
+/* Clean Action Buttons */
 .ca-btn {
   display: inline-flex;
   align-items: center;
@@ -546,10 +576,10 @@ input:disabled + .ca-slider {
   font-family: var(--ca-font);
   font-size: 13.5px;
   font-weight: 600;
-  padding: 9px 18px;
-  border-radius: var(--ca-radius-sm);
+  padding: 10px 20px;
+  border-radius: var(--ca-radius-md);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
   white-space: nowrap;
   border: 1px solid transparent;
 }
@@ -562,14 +592,17 @@ input:disabled + .ca-slider {
 .ca-btn-primary {
   background: var(--ca-primary);
   color: #ffffff;
+  box-shadow: 0 2px 6px rgba(24, 104, 219, 0.25);
 }
 
 .ca-btn-primary:hover {
   background: var(--ca-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 104, 219, 0.35);
 }
 
 .ca-btn-outline {
-  background: transparent;
+  background: var(--ca-bg-modal);
   border-color: var(--ca-border-subtle);
   color: var(--ca-text);
 }
@@ -579,20 +612,19 @@ input:disabled + .ca-slider {
   border-color: var(--ca-text-muted);
 }
 
-.ca-btn-subtle {
-  background: var(--ca-bg-subtle);
-  border-color: var(--ca-border);
+.ca-btn-link {
+  background: transparent;
   color: var(--ca-text-secondary);
+  border: none;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.ca-btn-subtle:hover {
-  background: var(--ca-bg-hover);
-  color: var(--ca-text);
-}
-
-.ca-btn-sm {
-  padding: 6px 12px;
-  font-size: 12px;
+.ca-btn-link:hover {
+  color: var(--ca-primary);
 }
 
 /* ==========================================================================
@@ -623,7 +655,7 @@ input:disabled + .ca-slider {
 }
 
 .ca-a11y-topbar {
-  padding: 16px 20px;
+  padding: 18px 20px;
   background: var(--ca-bg-header);
   border-bottom: 1px solid var(--ca-border);
   display: flex;
@@ -657,7 +689,7 @@ input:disabled + .ca-slider {
   padding: 20px;
 }
 
-/* Search Bar */
+/* Search */
 .ca-a11y-search-wrap {
   position: relative;
   margin-bottom: 18px;
@@ -668,7 +700,7 @@ input:disabled + .ca-slider {
   padding: 10px 14px 10px 36px;
   background: var(--ca-bg-subtle);
   border: 1px solid var(--ca-border);
-  border-radius: var(--ca-radius-sm);
+  border-radius: var(--ca-radius-md);
   font-size: 13.5px;
   font-family: inherit;
   color: var(--ca-text);
@@ -694,7 +726,7 @@ input:disabled + .ca-slider {
 .ca-audio-panel {
   background: var(--ca-primary-light);
   border: 1px solid rgba(24, 104, 219, 0.25);
-  border-radius: var(--ca-radius-sm);
+  border-radius: var(--ca-radius-md);
   padding: 12px 14px;
   margin-bottom: 20px;
   display: flex;
@@ -739,7 +771,7 @@ input:disabled + .ca-slider {
   padding: 11px 14px;
   background: var(--ca-bg-subtle);
   border: 1px solid var(--ca-border);
-  border-radius: var(--ca-radius-sm);
+  border-radius: var(--ca-radius-md);
   transition: all 0.2s;
 }
 
@@ -776,10 +808,10 @@ input:disabled + .ca-slider {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 11px 13px;
+  padding: 12px 14px;
   background: var(--ca-bg-subtle);
   border: 1px solid var(--ca-border);
-  border-radius: var(--ca-radius-sm);
+  border-radius: var(--ca-radius-md);
   cursor: pointer;
   transition: all 0.15s;
   text-align: left;
@@ -941,13 +973,12 @@ html.ca-big-cursor-black * {
 }
 
 /* ==========================================================================
-   5. RESPONSIVE DESIGN FOR MOBILE & TABLETS
+   5. RESPONSIVE DESIGN (MOBILE & TABLET)
    ========================================================================== */
 
 @media (max-width: 640px) {
   #ca-launcher {
     bottom: 16px;
-    gap: 8px;
   }
   #ca-launcher.ca-pos-bottom-right {
     right: 16px;
@@ -955,33 +986,29 @@ html.ca-big-cursor-black * {
   #ca-launcher.ca-pos-bottom-left {
     left: 16px;
   }
-  .ca-circle-btn {
-    width: 44px;
-    height: 44px;
-  }
-  .ca-circle-btn svg {
-    width: 20px;
-    height: 20px;
+  .ca-split-circle {
+    width: 48px;
+    height: 48px;
   }
   .ca-dialog-window {
-    max-height: 92vh;
-    border-radius: 8px;
+    border-radius: var(--ca-radius-lg);
+    max-height: 94vh;
   }
-  .ca-dialog-header {
-    padding: 14px 16px 0;
+  .ca-clean-header {
+    padding: 18px 20px 12px;
   }
-  .ca-dialog-body {
-    padding: 16px;
+  .ca-clean-body {
+    padding: 0 20px 16px;
   }
-  .ca-dialog-footer {
-    padding: 12px 16px;
+  .ca-clean-footer {
+    padding: 14px 20px;
     flex-direction: column-reverse;
   }
-  .ca-footer-buttons {
+  .ca-footer-actions-right {
     width: 100%;
     flex-direction: column;
   }
-  .ca-footer-buttons .ca-btn {
+  .ca-footer-actions-right .ca-btn {
     width: 100%;
   }
   .ca-tools-grid {
