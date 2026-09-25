@@ -1,0 +1,30 @@
+{
+  "name": "cookie-access",
+  "version": "1.0.0",
+  "description": "The ultimate open-source Cookie Consent (with auto GA4 & Consent Mode v2) and Accessibility Widget suite.",
+  "scripts": {
+    "dev": "vite",
+    "build": "node scripts/build.js && vite build",
+    "bundle": "node scripts/build.js",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.2"
+  },
+  "keywords": [
+    "cookie-consent",
+    "accessibility",
+    "google-analytics",
+    "ga4",
+    "consent-mode-v2",
+    "accessibe-alternative",
+    "cookiebot-alternative",
+    "cookieyes-alternative",
+    "gdpr",
+    "ccpa",
+    "wcag",
+    "ada-compliance"
+  ],
+  "author": "Open Source Community",
+  "license": "MIT"
+}
