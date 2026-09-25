@@ -61,3 +61,32 @@ console.log('  - dist/cookie-access.js');
 console.log('  - dist/cookie-access.min.js');
 console.log('  - dist/cookie-access.bundle.js (All-in-one script with auto-embedded styles)');
 console.log('  - cookie-access.bundle.js (Root copy for Netlify / root CDN)');
+
+// Auto-purge jsDelivr global cache for @main so embeds get instant updates
+const https = require('https');
+const purgeFiles = [
+  'dist/cookie-access.bundle.js',
+  'cookie-access.bundle.js',
+  'dist/cookie-access.min.js',
+  'dist/cookie-access.min.css'
+];
+
+let pending = purgeFiles.length;
+purgeFiles.forEach(file => {
+  const url = `https://purge.jsdelivr.net/gh/nx1reps/cookie-access@main/${file}`;
+  https.get(url, (res) => {
+    res.resume();
+    res.on('end', () => {
+      pending--;
+      if (pending <= 0) {
+        console.log('✓ Triggered jsDelivr CDN cache flush for all @main distribution files');
+        process.exit(0);
+      }
+    });
+  }).on('error', () => {
+    pending--;
+    if (pending <= 0) process.exit(0);
+  });
+});
+
+setTimeout(() => process.exit(0), 1500);

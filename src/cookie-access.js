@@ -599,9 +599,6 @@
               <button class="ca-banner-pill-btn ca-btn-accept" id="ca-modal-save">${escapeHTML(saveText)}</button>
               <button class="ca-banner-pill-btn ca-btn-reject" id="ca-modal-reject">Reject non-essential</button>
             </div>
-            <a href="https://github.com/nx1reps/cookie-access" target="_blank" rel="noopener" class="ca-pref-free-link">
-              Get this banner for free
-            </a>
           </div>
         </div>
       `;
