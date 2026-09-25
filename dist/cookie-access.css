@@ -1008,70 +1008,45 @@
 }
 
 /* ==========================================================================
-   4. 100% WORKING ACCESSIBILITY TRANSFORMATIONS (APPLIED ON ROOT)
-   Uses universal * selectors to override ANY host site styles.
-   Widget elements are excluded via :not() to keep the UI clean.
+   4. ACCESSIBILITY TRANSFORMATIONS (APPLIED ON ROOT <html>)
+   
+   Strategy: Apply to ALL elements with `html.ca-xxx *`, then RESET
+   widget elements with higher-specificity ID selectors afterward.
+   This is CSS3-compatible and works in EVERY browser.
    ========================================================================== */
 
-/* Helper: Widget exclusion selector fragment */
-/* We use this pattern: html.ca-xxx SELECTOR:not(#ca-a11y-drawer *):not(#ca-modal-dialog *):not(#ca-banner-card *):not(#ca-launcher *) */
-
-/* 1. Dyslexia Font: Switches ALL text across entire page to Google Lexend */
-html.ca-dyslexic-font *:not(#ca-a11y-drawer):not(#ca-a11y-drawer *):not(#ca-modal-dialog):not(#ca-modal-dialog *):not(#ca-banner-card):not(#ca-banner-card *):not(#ca-launcher):not(#ca-launcher *) {
+/* 1. Dyslexia Font */
+html.ca-dyslexic-font,
+html.ca-dyslexic-font * {
   font-family: 'Lexend', 'OpenDyslexic', sans-serif !important;
   letter-spacing: 0.04em !important;
   word-spacing: 0.08em !important;
 }
 
-/* 2. Text Scaling — zoom on body + font-size percentage for Firefox */
-html.ca-text-90 body {
-  zoom: 0.9 !important;
-  -moz-transform: scale(0.9) !important;
-  -moz-transform-origin: top left !important;
-}
-html.ca-text-110 body {
-  zoom: 1.1 !important;
-  -moz-transform: scale(1.1) !important;
-  -moz-transform-origin: top left !important;
-}
-html.ca-text-120 body {
-  zoom: 1.2 !important;
-  -moz-transform: scale(1.2) !important;
-  -moz-transform-origin: top left !important;
-}
-html.ca-text-125 body {
-  zoom: 1.25 !important;
-  -moz-transform: scale(1.25) !important;
-  -moz-transform-origin: top left !important;
-}
-html.ca-text-130 body {
-  zoom: 1.3 !important;
-  -moz-transform: scale(1.3) !important;
-  -moz-transform-origin: top left !important;
-}
-html.ca-text-140 body {
-  zoom: 1.4 !important;
-  -moz-transform: scale(1.4) !important;
-  -moz-transform-origin: top left !important;
-}
+/* 2. Text Scaling — zoom on body */
+html.ca-text-90 body  { zoom: 0.9 !important; }
+html.ca-text-110 body { zoom: 1.1 !important; }
+html.ca-text-120 body { zoom: 1.2 !important; }
+html.ca-text-125 body { zoom: 1.25 !important; }
+html.ca-text-130 body { zoom: 1.3 !important; }
+html.ca-text-140 body { zoom: 1.4 !important; }
 
-/* 3. Letter Spacing — universal * catches ALL elements on any site */
-html.ca-letter-spacing *:not(#ca-a11y-drawer):not(#ca-a11y-drawer *):not(#ca-modal-dialog):not(#ca-modal-dialog *):not(#ca-banner-card):not(#ca-banner-card *):not(#ca-launcher):not(#ca-launcher *) {
+/* 3. Letter Spacing */
+html.ca-letter-spacing,
+html.ca-letter-spacing * {
   letter-spacing: 0.18em !important;
   word-spacing: 0.28em !important;
 }
 
-/* 3b. Line Height — universal * catches ALL elements on any site */
-html.ca-line-height *:not(#ca-a11y-drawer):not(#ca-a11y-drawer *):not(#ca-modal-dialog):not(#ca-modal-dialog *):not(#ca-banner-card):not(#ca-banner-card *):not(#ca-launcher):not(#ca-launcher *) {
+/* 3b. Line Height */
+html.ca-line-height,
+html.ca-line-height * {
   line-height: 2.3 !important;
 }
 
-/* 4. High Contrast Dark — universal * catches ALL elements */
-html.ca-contrast-dark {
-  background-color: #0b0f19 !important;
-  color: #f8fafc !important;
-}
-html.ca-contrast-dark *:not(#ca-a11y-drawer):not(#ca-a11y-drawer *):not(#ca-modal-dialog):not(#ca-modal-dialog *):not(#ca-banner-card):not(#ca-banner-card *):not(#ca-launcher):not(#ca-launcher *):not(#ca-reading-guide-line):not(#ca-reading-mask-top):not(#ca-reading-mask-bottom) {
+/* 4. High Contrast Dark — apply dark to EVERYTHING */
+html.ca-contrast-dark,
+html.ca-contrast-dark * {
   background-color: #0f172a !important;
   color: #f1f5f9 !important;
   border-color: #334155 !important;
@@ -1080,35 +1055,35 @@ html.ca-contrast-dark *:not(#ca-a11y-drawer):not(#ca-a11y-drawer *):not(#ca-moda
   -webkit-text-fill-color: #f1f5f9 !important;
   background-image: none !important;
 }
-html.ca-contrast-dark a:not(#ca-a11y-drawer a):not(#ca-modal-dialog a):not(#ca-banner-card a):not(#ca-launcher a) {
+html.ca-contrast-dark {
+  background-color: #0b0f19 !important;
+}
+html.ca-contrast-dark a {
   color: #60a5fa !important;
   -webkit-text-fill-color: #60a5fa !important;
 }
-html.ca-contrast-dark h1:not(#ca-a11y-drawer h1):not(#ca-modal-dialog h1):not(#ca-banner-card h1),
-html.ca-contrast-dark h2:not(#ca-a11y-drawer h2):not(#ca-modal-dialog h2):not(#ca-banner-card h2),
-html.ca-contrast-dark h3:not(#ca-a11y-drawer h3):not(#ca-modal-dialog h3):not(#ca-banner-card h3),
-html.ca-contrast-dark h4:not(#ca-a11y-drawer h4):not(#ca-modal-dialog h4):not(#ca-banner-card h4),
+html.ca-contrast-dark h1, html.ca-contrast-dark h2,
+html.ca-contrast-dark h3, html.ca-contrast-dark h4,
 html.ca-contrast-dark h5, html.ca-contrast-dark h6 {
   color: #38bdf8 !important;
   -webkit-text-fill-color: #38bdf8 !important;
 }
-html.ca-contrast-dark button:not(#ca-a11y-drawer button):not(#ca-modal-dialog button):not(#ca-banner-card button):not(#ca-launcher button),
-html.ca-contrast-dark input:not(#ca-a11y-drawer input):not(#ca-modal-dialog input):not(#ca-banner-card input),
-html.ca-contrast-dark select:not(#ca-a11y-drawer select):not(#ca-modal-dialog select),
-html.ca-contrast-dark textarea:not(#ca-a11y-drawer textarea):not(#ca-modal-dialog textarea) {
+html.ca-contrast-dark button,
+html.ca-contrast-dark input,
+html.ca-contrast-dark select,
+html.ca-contrast-dark textarea {
   background-color: #1e293b !important;
   color: #f8fafc !important;
   border-color: #475569 !important;
   -webkit-text-fill-color: #f8fafc !important;
 }
-/* Hide ambient glows, gradient blobs, and decorative elements in dark contrast */
 html.ca-contrast-dark [class*="glow"],
 html.ca-contrast-dark [class*="blob"],
 html.ca-contrast-dark [class*="gradient-bg"],
 html.ca-contrast-dark [class*="bg-decoration"] {
   opacity: 0 !important;
 }
-html.ca-contrast-dark img:not(#ca-a11y-drawer img):not(#ca-modal-dialog img):not(#ca-banner-card img):not(#ca-launcher img) {
+html.ca-contrast-dark img {
   filter: brightness(0.8) contrast(1.1) !important;
 }
 
@@ -1116,52 +1091,28 @@ html.ca-contrast-dark img:not(#ca-a11y-drawer img):not(#ca-modal-dialog img):not
 html.ca-contrast-invert {
   filter: invert(100%) hue-rotate(180deg) !important;
 }
-/* Double-invert media and widget to keep them normal */
 html.ca-contrast-invert img,
 html.ca-contrast-invert video,
 html.ca-contrast-invert picture,
 html.ca-contrast-invert canvas,
 html.ca-contrast-invert iframe,
-html.ca-contrast-invert svg,
-html.ca-contrast-invert [style*="background-image"],
-html.ca-contrast-invert #ca-reading-guide-line,
-html.ca-contrast-invert #ca-reading-mask-top,
-html.ca-contrast-invert #ca-reading-mask-bottom,
-html.ca-contrast-invert #ca-modal-dialog,
-html.ca-contrast-invert #ca-a11y-drawer,
-html.ca-contrast-invert #ca-launcher,
-html.ca-contrast-invert #ca-banner-card,
-html.ca-contrast-invert #ca-banner-backdrop {
+html.ca-contrast-invert svg {
   filter: invert(100%) hue-rotate(180deg) !important;
 }
 
-/* 6. Monochrome / Grayscale */
+/* 6. Monochrome */
 html.ca-contrast-monochrome {
   filter: grayscale(100%) !important;
-}
-/* Keep widget colorful */
-html.ca-contrast-monochrome #ca-a11y-drawer,
-html.ca-contrast-monochrome #ca-modal-dialog,
-html.ca-contrast-monochrome #ca-banner-card,
-html.ca-contrast-monochrome #ca-launcher {
-  filter: grayscale(0%) !important;
 }
 
 /* 7. High Saturation */
 html.ca-high-saturation {
   filter: saturate(250%) !important;
 }
-/* Keep widget normal */
-html.ca-high-saturation #ca-a11y-drawer,
-html.ca-high-saturation #ca-modal-dialog,
-html.ca-high-saturation #ca-banner-card,
-html.ca-high-saturation #ca-launcher {
-  filter: saturate(100%) !important;
-}
 
-/* 8. Highlight Links — catches ALL links and link-like elements */
-html.ca-highlight-links a:not(#ca-a11y-drawer a):not(#ca-modal-dialog a):not(#ca-banner-card a):not(#ca-launcher a),
-html.ca-highlight-links [role="link"]:not(#ca-a11y-drawer [role="link"]):not(#ca-modal-dialog [role="link"]) {
+/* 8. Highlight Links */
+html.ca-highlight-links a,
+html.ca-highlight-links [role="link"] {
   text-decoration: underline !important;
   text-decoration-thickness: 3px !important;
   text-underline-offset: 3px !important;
@@ -1176,14 +1127,14 @@ html.ca-highlight-links [role="link"]:not(#ca-a11y-drawer [role="link"]):not(#ca
   background-image: none !important;
 }
 
-/* 9. Highlight Headings / Titles — catches ALL headings and heading-like elements */
-html.ca-highlight-headings h1:not(#ca-a11y-drawer h1):not(#ca-modal-dialog h1):not(#ca-banner-card h1),
-html.ca-highlight-headings h2:not(#ca-a11y-drawer h2):not(#ca-modal-dialog h2):not(#ca-banner-card h2),
-html.ca-highlight-headings h3:not(#ca-a11y-drawer h3):not(#ca-modal-dialog h3):not(#ca-banner-card h3),
-html.ca-highlight-headings h4:not(#ca-a11y-drawer h4):not(#ca-modal-dialog h4):not(#ca-banner-card h4),
-html.ca-highlight-headings h5:not(#ca-a11y-drawer h5):not(#ca-modal-dialog h5),
-html.ca-highlight-headings h6:not(#ca-a11y-drawer h6):not(#ca-modal-dialog h6),
-html.ca-highlight-headings [role="heading"]:not(#ca-a11y-drawer [role="heading"]):not(#ca-modal-dialog [role="heading"]) {
+/* 9. Highlight Headings */
+html.ca-highlight-headings h1,
+html.ca-highlight-headings h2,
+html.ca-highlight-headings h3,
+html.ca-highlight-headings h4,
+html.ca-highlight-headings h5,
+html.ca-highlight-headings h6,
+html.ca-highlight-headings [role="heading"] {
   outline: 3px solid #2563eb !important;
   outline-offset: 6px !important;
   background-color: rgba(37, 99, 235, 0.18) !important;
@@ -1191,7 +1142,7 @@ html.ca-highlight-headings [role="heading"]:not(#ca-a11y-drawer [role="heading"]
   padding: 4px !important;
 }
 
-/* 10. Stop Motion / Reduce Animations — kills everything */
+/* 10. Stop Motion */
 html.ca-stop-animations,
 html.ca-stop-animations *,
 html.ca-stop-animations *::before,
@@ -1206,26 +1157,14 @@ html.ca-stop-animations *::after {
   transition-delay: 0ms !important;
   scroll-behavior: auto !important;
 }
-html.ca-stop-animations video,
-html.ca-stop-animations [class*="animation"],
-html.ca-stop-animations [class*="animate"],
-html.ca-stop-animations [class*="motion"],
-html.ca-stop-animations marquee {
-  animation-play-state: paused !important;
-}
 
-/* 11. Big Cursors — universal * means it works on EVERY element */
+/* 11. Big Cursors */
 html.ca-big-cursor,
-html.ca-big-cursor *,
-html.ca-big-cursor *::before,
-html.ca-big-cursor *::after {
+html.ca-big-cursor * {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpolygon points='4,4 4,40 14,30 22,48 28,45 20,28 32,28' fill='%23ffffff' stroke='%23000000' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") 4 4, auto !important;
 }
-
 html.ca-big-cursor-black,
-html.ca-big-cursor-black *,
-html.ca-big-cursor-black *::before,
-html.ca-big-cursor-black *::after {
+html.ca-big-cursor-black * {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpolygon points='4,4 4,40 14,30 22,48 28,45 20,28 32,28' fill='%23000000' stroke='%23ffffff' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") 4 4, auto !important;
 }
 
@@ -1257,7 +1196,7 @@ html.ca-big-cursor-black *::after {
   display: none;
 }
 
-/* 14. Text-To-Speech Speaking Highlight */
+/* 14. Speaking Highlight */
 .ca-speaking-highlight {
   background: #fde047 !important;
   color: #0f172a !important;
@@ -1267,34 +1206,32 @@ html.ca-big-cursor-black *::after {
 }
 
 /* ==========================================================================
-   WIDGET ISOLATION — Keep AccessiAccess & CookieAccess UI pristine
-   Uses high-specificity selectors to undo any accessibility overrides
+   WIDGET ISOLATION — PHASE 2: RESET all accessibility overrides inside
+   the widget using ID selectors (higher specificity than class * rules)
+   
+   CRITICAL: These MUST come AFTER the accessibility rules above.
+   ID selectors (#id *) beat class selectors (html.ca-xxx *) in specificity.
    ========================================================================== */
 
-/* Base font reset */
+/* --- Font / Spacing / Line-height resets --- */
 #ca-a11y-drawer,
-#ca-modal-dialog,
-#ca-banner-card,
-#ca-launcher {
-  font-family: var(--ca-font) !important;
-  filter: none !important;
-}
-
-/* Reset all text properties inside widget */
 #ca-a11y-drawer *,
+#ca-modal-dialog,
 #ca-modal-dialog *,
+#ca-banner-card,
 #ca-banner-card *,
+#ca-launcher,
 #ca-launcher * {
+  font-family: var(--ca-font) !important;
   letter-spacing: normal !important;
   word-spacing: normal !important;
   line-height: normal !important;
-  font-family: var(--ca-font) !important;
   -webkit-text-fill-color: unset !important;
-  background-image: unset;
   text-shadow: unset !important;
+  filter: none !important;
 }
 
-/* Reset Links inside widget */
+/* --- Link highlights reset inside widget --- */
 #ca-a11y-drawer a,
 #ca-modal-dialog a,
 #ca-banner-card a,
@@ -1304,37 +1241,56 @@ html.ca-big-cursor-black *::after {
   color: inherit !important;
   font-weight: inherit !important;
   outline: none !important;
+  outline-offset: 0 !important;
   padding: 0 !important;
+  background-image: unset !important;
+  -webkit-text-fill-color: unset !important;
 }
 
-/* Reset Headings inside widget */
+/* --- Heading highlights reset inside widget --- */
 #ca-a11y-drawer h1, #ca-a11y-drawer h2, #ca-a11y-drawer h3, #ca-a11y-drawer h4,
 #ca-modal-dialog h1, #ca-modal-dialog h2, #ca-modal-dialog h3, #ca-modal-dialog h4,
 #ca-banner-card h1, #ca-banner-card h2, #ca-banner-card h3, #ca-banner-card h4 {
   outline: none !important;
   background-color: transparent !important;
   color: var(--ca-text-title) !important;
+  padding: 0 !important;
+  -webkit-text-fill-color: unset !important;
 }
 
-/* Dark Contrast: Keep widget white/light */
+/* --- Dark Contrast: Keep entire widget white/light --- */
 html.ca-contrast-dark #ca-a11y-drawer,
-html.ca-contrast-dark #ca-modal-dialog .ca-dialog-window,
-html.ca-contrast-dark #ca-banner-card {
+html.ca-contrast-dark #ca-a11y-drawer *,
+html.ca-contrast-dark #ca-modal-dialog,
+html.ca-contrast-dark #ca-modal-dialog *,
+html.ca-contrast-dark #ca-banner-card,
+html.ca-contrast-dark #ca-banner-card *,
+html.ca-contrast-dark #ca-launcher,
+html.ca-contrast-dark #ca-launcher * {
+  background-color: transparent !important;
+  color: inherit !important;
+  border-color: inherit !important;
+  box-shadow: unset !important;
+  -webkit-text-fill-color: unset !important;
+  background-image: unset !important;
+  filter: none !important;
+}
+html.ca-contrast-dark #ca-a11y-drawer {
   background-color: #ffffff !important;
   color: #0f172a !important;
   border-color: #e2e8f0 !important;
 }
-html.ca-contrast-dark #ca-a11y-drawer *,
-html.ca-contrast-dark #ca-modal-dialog *,
-html.ca-contrast-dark #ca-banner-card * {
-  background-color: inherit !important;
-  color: inherit !important;
-  border-color: inherit !important;
-  box-shadow: unset;
-  -webkit-text-fill-color: inherit !important;
-  background-image: unset !important;
+html.ca-contrast-dark #ca-modal-dialog .ca-dialog-window {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
 }
-/* Re-apply specific widget colors that got wiped */
+html.ca-contrast-dark #ca-banner-card {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+html.ca-contrast-dark #ca-banner-backdrop {
+  background-color: rgba(0,0,0,0.2) !important;
+}
 html.ca-contrast-dark .ca-a11y-topbar {
   background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
   color: #ffffff !important;
@@ -1354,8 +1310,8 @@ html.ca-contrast-dark .ca-tool-square-card.ca-active {
   background-color: #eff6ff !important;
   border-color: #2563eb !important;
 }
-html.ca-contrast-dark .ca-section-title,
-html.ca-contrast-dark .ca-a11y-section-title {
+html.ca-contrast-dark .ca-a11y-section-title,
+html.ca-contrast-dark .ca-section-title {
   color: #334155 !important;
   -webkit-text-fill-color: #334155 !important;
 }
@@ -1369,8 +1325,57 @@ html.ca-contrast-dark .ca-clean-footer,
 html.ca-contrast-dark .ca-a11y-footer {
   background-color: #ffffff !important;
 }
-html.ca-contrast-dark #ca-banner-backdrop {
-  background-color: rgba(0,0,0,0.2) !important;
+html.ca-contrast-dark .ca-adjust-font-card {
+  background-color: #f8fafc !important;
+  color: #334155 !important;
+}
+html.ca-contrast-dark .ca-profile-row {
+  background-color: #f8fafc !important;
+  color: #334155 !important;
+}
+
+/* --- Invert: Keep widget normal --- */
+html.ca-contrast-invert #ca-a11y-drawer,
+html.ca-contrast-invert #ca-modal-dialog,
+html.ca-contrast-invert #ca-banner-card,
+html.ca-contrast-invert #ca-banner-backdrop,
+html.ca-contrast-invert #ca-launcher {
+  filter: invert(100%) hue-rotate(180deg) !important;
+}
+
+/* --- Monochrome: Keep widget colorful --- */
+html.ca-contrast-monochrome #ca-a11y-drawer,
+html.ca-contrast-monochrome #ca-modal-dialog,
+html.ca-contrast-monochrome #ca-banner-card,
+html.ca-contrast-monochrome #ca-launcher {
+  filter: grayscale(0%) !important;
+}
+
+/* --- High Saturation: Keep widget normal --- */
+html.ca-high-saturation #ca-a11y-drawer,
+html.ca-high-saturation #ca-modal-dialog,
+html.ca-high-saturation #ca-banner-card,
+html.ca-high-saturation #ca-launcher {
+  filter: saturate(100%) !important;
+}
+
+/* --- Dark contrast images inside widget --- */
+html.ca-contrast-dark #ca-a11y-drawer img,
+html.ca-contrast-dark #ca-modal-dialog img,
+html.ca-contrast-dark #ca-banner-card img,
+html.ca-contrast-dark #ca-launcher img {
+  filter: none !important;
+}
+
+/* --- Reading guide/mask: shield from dark contrast --- */
+html.ca-contrast-dark #ca-reading-guide-line {
+  background-color: #2563eb !important;
+  color: unset !important;
+}
+html.ca-contrast-dark #ca-reading-mask-top,
+html.ca-contrast-dark #ca-reading-mask-bottom {
+  background: rgba(0, 0, 0, 0.82) !important;
+  color: unset !important;
 }
 
 /* ==========================================================================
