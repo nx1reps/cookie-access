@@ -1416,27 +1416,31 @@
   // =========================================================================
 
   function openBannerCard() {
-    if (elements.bannerCard) elements.bannerCard.classList.add('ca-active');
-    if (elements.bannerBackdrop && config.backdrop && (config.backdrop.show !== false && config.backdrop !== false)) {
-      elements.bannerBackdrop.classList.add('ca-open');
-    }
+    const card = document.getElementById('ca-banner-card') || elements.bannerCard;
+    const backdrop = document.getElementById('ca-banner-backdrop') || elements.bannerBackdrop;
+    if (card) card.classList.add('ca-active');
+    if (backdrop) backdrop.classList.add('ca-open');
   }
 
   function closeBannerCard() {
-    if (elements.bannerCard) elements.bannerCard.classList.remove('ca-active');
-    if (elements.bannerBackdrop) elements.bannerBackdrop.classList.remove('ca-open');
+    const card = document.getElementById('ca-banner-card') || elements.bannerCard;
+    const backdrop = document.getElementById('ca-banner-backdrop') || elements.bannerBackdrop;
+    if (card) card.classList.remove('ca-active');
+    if (backdrop) backdrop.classList.remove('ca-open');
   }
 
   function openPreferencesModal() {
-    if (elements.modalDialog) {
+    const modal = document.getElementById('ca-modal-dialog') || elements.modalDialog;
+    if (modal) {
       const saved = getSavedConsent();
       if (saved) syncToggles(saved.categories);
-      elements.modalDialog.classList.add('ca-active');
+      modal.classList.add('ca-active');
     }
   }
 
   function closePreferencesModal() {
-    if (elements.modalDialog) elements.modalDialog.classList.remove('ca-active');
+    const modal = document.getElementById('ca-modal-dialog') || elements.modalDialog;
+    if (modal) modal.classList.remove('ca-active');
   }
 
   function openA11yDrawer() {
