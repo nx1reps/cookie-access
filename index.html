@@ -360,6 +360,7 @@
     }
 
     /* Embed Code Generator */
+    /* Embed Code Generator Studio */
     .embed-card {
       background: var(--c-surface);
       border: 1px solid var(--c-border);
@@ -368,33 +369,187 @@
       box-shadow: var(--shadow-sm);
     }
 
+    .embed-mode-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--c-border);
+      padding-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .embed-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--c-border);
+      background: var(--c-subtle);
+      color: var(--c-text-muted);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .embed-tab-btn:hover {
+      color: var(--c-text);
+      background: var(--c-border);
+    }
+
+    .embed-tab-btn.active {
+      background: var(--c-primary);
+      color: #fff;
+      border-color: var(--c-primary);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    }
+
     .embed-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
+      gap: 18px;
+      margin-bottom: 24px;
     }
 
     .input-group {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 7px;
     }
 
     .input-label {
       font-size: 12.5px;
       font-weight: 700;
+      color: var(--c-text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .input-label span.sub {
+      font-weight: 500;
       color: var(--c-text-muted);
+      font-size: 11px;
     }
 
     .input-control {
       padding: 10px 14px;
       border: 1px solid var(--c-border);
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       font-size: 14px;
       font-family: inherit;
       background: var(--c-surface);
       color: var(--c-text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-control:focus {
+      outline: none;
+      border-color: var(--c-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    /* Color Swatches Grid */
+    .color-swatches-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1px var(--c-border), 0 2px 4px rgba(0,0,0,0.1);
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+    }
+
+    .color-swatch-btn:hover {
+      transform: scale(1.15);
+    }
+
+    .color-swatch-btn.active {
+      box-shadow: 0 0 0 2.5px var(--c-primary), 0 3px 8px rgba(0,0,0,0.2);
+      transform: scale(1.15);
+    }
+
+    .custom-color-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 4px;
+    }
+
+    .custom-color-picker {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      cursor: pointer;
+      background: none;
+    }
+
+    .code-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .code-box-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .code-box-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .code-action-btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f1f5f9;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .code-action-btn:hover {
+      background: var(--c-primary);
+      border-color: var(--c-primary);
+      color: #fff;
+    }
+
+    .code-action-btn.btn-preview {
+      background: #065f46;
+      border-color: #047857;
+      color: #a7f3d0;
+    }
+
+    .code-action-btn.btn-preview:hover {
+      background: #059669;
+      color: #fff;
     }
 
     .code-box {
@@ -406,25 +561,7 @@
       font-size: 13.5px;
       color: #e2e8f0;
       position: relative;
-    }
-
-    .copy-btn {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .copy-btn:hover {
-      background: var(--c-primary);
+      overflow-x: auto;
     }
 
     /* Comparison Table */
@@ -673,43 +810,158 @@
     </div>
   </section>
 
-  <!-- 1-Click Code Embed Generator -->
+  <!-- Universal Embed Code Studio -->
   <section class="container section-wrap" id="embed" style="padding-top: 0;">
-    <h2 class="section-title">1-Click Universal Code Embed Generator</h2>
-    <p class="section-subtitle">Drop this single script tag into the <code>&lt;head&gt;</code> of any website (WordPress, Webflow, Shopify, HTML, Next.js, Wix, etc.)</p>
+    <h2 class="section-title">Universal Embed Code Studio</h2>
+    <p class="section-subtitle">Choose your integration mode: quick zero-config 1-liner, fully branded custom theme (colors, font, curvature), or declarative window configuration.</p>
 
     <div class="embed-card">
-      <div class="embed-grid">
+      <!-- Mode Tabs -->
+      <div class="embed-mode-tabs" role="tablist">
+        <button class="embed-tab-btn active" id="tab-btn-standard" data-mode="standard">
+          <span>⚡</span> 1-Click Standard Script
+        </button>
+        <button class="embed-tab-btn" id="tab-btn-custom" data-mode="custom">
+          <span>🎨</span> Branded Theme (Colors, Font &amp; Radius)
+        </button>
+        <button class="embed-tab-btn" id="tab-btn-window" data-mode="window">
+          <span>⚙️</span> Window Config Object
+        </button>
+        <button class="embed-tab-btn" id="tab-btn-npm" data-mode="npm">
+          <span>⚛️</span> React / Next.js / NPM
+        </button>
+      </div>
+
+      <!-- Controls Grid -->
+      <div class="embed-grid" id="embed-controls-grid">
+        <!-- 1. GA ID -->
         <div class="input-group">
-          <label class="input-label">GA4 Measurement ID</label>
+          <label class="input-label" for="cfg-ga-id">
+            <span>GA4 Measurement ID</span>
+            <span class="sub">Auto Consent Mode v2</span>
+          </label>
           <input type="text" class="input-control" id="cfg-ga-id" value="G-DEMO123456" placeholder="G-XXXXXXXXXX">
         </div>
+
+        <!-- 2. CDN Source -->
         <div class="input-group">
-          <label class="input-label">Split-Circle Position</label>
-          <select class="input-control" id="cfg-pos">
-            <option value="bottom-right" selected>Bottom Right</option>
-            <option value="bottom-left">Bottom Left</option>
-            <option value="none">Hidden (Triggered via API)</option>
+          <label class="input-label" for="cfg-cdn-source">
+            <span>CDN Delivery Host</span>
+            <span class="sub">Global Edge</span>
+          </label>
+          <select class="input-control" id="cfg-cdn-source">
+            <option value="jsdelivr" selected>jsDelivr (Edge CDN - Free)</option>
+            <option value="netlify">Netlify / Self-Hosted Root</option>
           </select>
         </div>
+
+        <!-- 3. Position -->
         <div class="input-group">
-          <label class="input-label">Visual Theme</label>
-          <select class="input-control" id="cfg-theme">
-            <option value="light" selected>Clean Light (Default)</option>
-            <option value="dark">Sleek Dark</option>
+          <label class="input-label" for="cfg-pos">
+            <span>Split Badge Position</span>
+            <span class="sub">Corner</span>
+          </label>
+          <select class="input-control" id="cfg-pos">
+            <option value="bottom-right" selected>Bottom Right (Default)</option>
+            <option value="bottom-left">Bottom Left</option>
+            <option value="none">Hidden (Headless / API Only)</option>
           </select>
+        </div>
+
+        <!-- 4. Theme -->
+        <div class="input-group">
+          <label class="input-label" for="cfg-theme">
+            <span>Visual Theme</span>
+            <span class="sub">Appearance</span>
+          </label>
+          <select class="input-control" id="cfg-theme">
+            <option value="light" selected>Clean Light</option>
+            <option value="dark">Sleek Dark</option>
+            <option value="auto">Auto (Match User OS)</option>
+          </select>
+        </div>
+
+        <!-- Extra Controls for Custom Mode -->
+        <div class="input-group extra-custom-opt" id="group-primary-color">
+          <label class="input-label">
+            <span>Brand Primary Color</span>
+            <span class="sub" id="color-hex-label">#2563eb</span>
+          </label>
+          <div class="color-swatches-wrap">
+            <button type="button" class="color-swatch-btn active" data-color="#2563eb" style="background:#2563eb;" title="Royal Blue"></button>
+            <button type="button" class="color-swatch-btn" data-color="#6366f1" style="background:#6366f1;" title="Indigo Violet"></button>
+            <button type="button" class="color-swatch-btn" data-color="#059669" style="background:#059669;" title="Emerald Green"></button>
+            <button type="button" class="color-swatch-btn" data-color="#d97706" style="background:#d97706;" title="Sunset Amber"></button>
+            <button type="button" class="color-swatch-btn" data-color="#e11d48" style="background:#e11d48;" title="Rose Crimson"></button>
+            <button type="button" class="color-swatch-btn" data-color="#0f172a" style="background:#0f172a;" title="Obsidian Slate"></button>
+            <div class="custom-color-input-wrap">
+              <input type="color" class="custom-color-picker" id="cfg-color-picker" value="#2563eb" title="Custom Hex Color">
+            </div>
+          </div>
+        </div>
+
+        <div class="input-group extra-custom-opt" id="group-font">
+          <label class="input-label" for="cfg-font">
+            <span>Widget Font Family</span>
+            <span class="sub">Typography</span>
+          </label>
+          <select class="input-control" id="cfg-font">
+            <option value="" selected>Default (Plus Jakarta Sans)</option>
+            <option value="'Inter', sans-serif">Inter</option>
+            <option value="'Outfit', sans-serif">Outfit</option>
+            <option value="'Poppins', sans-serif">Poppins</option>
+            <option value="'Lexend', sans-serif">Lexend (High Legibility)</option>
+            <option value="'Roboto', sans-serif">Roboto</option>
+            <option value="system-ui, -apple-system, sans-serif">System Native Sans</option>
+          </select>
+        </div>
+
+        <div class="input-group extra-custom-opt" id="group-radius">
+          <label class="input-label" for="cfg-radius">
+            <span>Corner Curvature</span>
+            <span class="sub">Radius</span>
+          </label>
+          <select class="input-control" id="cfg-radius">
+            <option value="pill" selected>Pill / Smooth (24px - Modern)</option>
+            <option value="rounded">Rounded (12px - Subtle)</option>
+            <option value="sharp">Sharp (4px - Minimal / Enterprise)</option>
+          </select>
+        </div>
+
+        <div class="input-group extra-custom-opt" id="group-company">
+          <label class="input-label" for="cfg-company">
+            <span>Company / Brand Name</span>
+            <span class="sub">Optional</span>
+          </label>
+          <input type="text" class="input-control" id="cfg-company" value="" placeholder="e.g. Acme Studio">
+        </div>
+
+        <div class="input-group extra-custom-opt" id="group-privacy">
+          <label class="input-label" for="cfg-privacy">
+            <span>Privacy Policy URL</span>
+            <span class="sub">Optional</span>
+          </label>
+          <input type="text" class="input-control" id="cfg-privacy" value="" placeholder="https://example.com/privacy">
+        </div>
+      </div>
+
+      <!-- Generated Code Output Box -->
+      <div class="code-box-header">
+        <div class="code-box-title">
+          <span>📋</span> <span id="code-snippet-title">Embed Code (Copy &amp; Paste into &lt;head&gt;)</span>
+        </div>
+        <div class="code-box-actions">
+          <button class="code-action-btn btn-preview" id="btn-preview-theme" title="Apply these custom styles to the widget on this page right now!">
+            <span>▶</span> Preview Styles on Live Widget
+          </button>
+          <button class="code-action-btn" id="btn-copy-code">
+            <span>📋</span> Copy Embed Code
+          </button>
         </div>
       </div>
 
       <div class="code-box">
-        <button class="copy-btn" id="btn-copy-code">Copy Code</button>
-        <pre><code id="code-snippet">&lt;!-- CookieAccess: Universal Privacy &amp; Accessibility Suite --&gt;
-&lt;script 
-  src="https://cdn.jsdelivr.net/gh/your-username/cookie-access/dist/cookie-access.bundle.js"
-  data-ga="G-DEMO123456"
-  data-position="bottom-right"
-  data-theme="light"
-  data-a11y="true"&gt;&lt;/script&gt;</code></pre>
+        <pre><code id="code-snippet">&lt;!-- Code loading... --&gt;</code></pre>
       </div>
     </div>
   </section>
@@ -873,9 +1125,9 @@
     });
 
     // Header & Hero triggers
-    document.getElementById('btn-open-cookie-modal').addEventListener('click', function() { CookieAccess.openPreferencesModal(); });
+    document.getElementById('btn-open-cookie-modal').addEventListener('click', function() { CookieAccess.openBannerCard(); });
     document.getElementById('btn-open-a11y-drawer').addEventListener('click', function() { CookieAccess.openA11yDrawer(); });
-    document.getElementById('btn-hero-launch-cookie').addEventListener('click', function() { CookieAccess.openPreferencesModal(); });
+    document.getElementById('btn-hero-launch-cookie').addEventListener('click', function() { CookieAccess.openBannerCard(); });
     document.getElementById('btn-hero-launch-a11y').addEventListener('click', function() { CookieAccess.openA11yDrawer(); });
 
     document.getElementById('btn-hero-export-audit').addEventListener('click', function() { CookieAccess.exportConsentLog(); });
@@ -886,7 +1138,7 @@
       CookieAccess.resetA11y();
       logMessage('RESET', 'Cleared visitor session in localStorage.');
       refreshTelemetry();
-      CookieAccess.openPreferencesModal();
+      CookieAccess.openBannerCard();
     });
 
     // 1-Click Sandbox Test Triggers (Simulate clicking inside A11y drawer)
@@ -961,35 +1213,194 @@
       if (btn) btn.click();
     });
 
-    // Snippet generator
+    // Universal Embed Studio Controller
+    let currentEmbedMode = 'standard';
+    let currentPrimaryColor = '#2563eb';
+
+    const tabBtns = document.querySelectorAll('.embed-tab-btn');
+    const colorSwatches = document.querySelectorAll('.color-swatch-btn');
+    const colorPicker = document.getElementById('cfg-color-picker');
+    const colorHexLabel = document.getElementById('color-hex-label');
+    const customOptionGroups = document.querySelectorAll('.extra-custom-opt');
+
+    function getScriptSrc() {
+      const cdn = document.getElementById('cfg-cdn-source').value;
+      if (cdn === 'netlify') {
+        return 'https://cookie-access.netlify.app/cookie-access.bundle.js';
+      }
+      return 'https://cdn.jsdelivr.net/gh/nx1reps/cookie-access@main/dist/cookie-access.bundle.js';
+    }
+
     function updateSnippet() {
       const ga = document.getElementById('cfg-ga-id').value.trim() || 'G-XXXXXXXXXX';
       const pos = document.getElementById('cfg-pos').value;
       const theme = document.getElementById('cfg-theme').value;
+      const font = document.getElementById('cfg-font').value;
+      const radius = document.getElementById('cfg-radius').value;
+      const company = document.getElementById('cfg-company').value.trim();
+      const privacy = document.getElementById('cfg-privacy').value.trim();
+      const srcUrl = getScriptSrc();
 
-      const code = '<!-- CookieAccess: Universal Privacy & Accessibility Suite -->\n' +
-        '<script \n' +
-        '  src="https://cdn.jsdelivr.net/gh/your-username/cookie-access/dist/cookie-access.bundle.js"\n' +
-        '  data-ga="' + ga + '"\n' +
-        '  data-position="' + pos + '"\n' +
-        '  data-theme="' + theme + '"\n' +
-        '  data-a11y="true"><' + '/script>';
+      const titleEl = document.getElementById('code-snippet-title');
+      let code = '';
+
+      if (currentEmbedMode === 'standard') {
+        titleEl.textContent = '1-Click Zero-Config Embed (Drop into <head>)';
+        code = '<!-- CookieAccess: 1-Click Privacy & Accessibility Suite -->\n' +
+          '<script \n' +
+          '  src="' + srcUrl + '"\n' +
+          '  data-ga="' + ga + '"\n' +
+          '  data-position="' + pos + '"\n' +
+          '  data-theme="' + theme + '"\n' +
+          '  data-a11y="true"\n' +
+          '  defer><' + '/script>';
+      } else if (currentEmbedMode === 'custom') {
+        titleEl.textContent = 'Custom Branded Embed (Direct HTML Attributes)';
+        let attrs = [
+          '  src="' + srcUrl + '"',
+          '  data-ga="' + ga + '"',
+          '  data-primary-color="' + currentPrimaryColor + '"'
+        ];
+        if (font) attrs.push('  data-font="' + font + '"');
+        if (radius) attrs.push('  data-radius="' + radius + '"');
+        if (theme !== 'light') attrs.push('  data-theme="' + theme + '"');
+        if (pos !== 'bottom-right') attrs.push('  data-position="' + pos + '"');
+        if (company) attrs.push('  data-company="' + company + '"');
+        if (privacy) attrs.push('  data-privacy-url="' + privacy + '"');
+        attrs.push('  data-a11y="true"');
+        attrs.push('  defer');
+
+        code = '<!-- CookieAccess: Custom Branded Suite (Colors, Font & Radius) -->\n' +
+          '<script \n' + attrs.join('\n') + '><' + '/script>';
+      } else if (currentEmbedMode === 'window') {
+        titleEl.textContent = 'Declarative Window Config (window.CookieAccessConfig)';
+        const configObj = {
+          gaMeasurementId: ga,
+          primaryColor: currentPrimaryColor,
+          fontFamily: font || 'Plus Jakarta Sans, sans-serif',
+          borderRadius: radius,
+          theme: theme,
+          position: pos,
+          companyName: company || 'My Brand',
+          privacyPolicyUrl: privacy || '/privacy',
+          consentModeV2: true,
+          autoInjectGA: true
+        };
+
+        code = '<!-- CookieAccess: Declarative Global Configuration -->\n' +
+          '<script>\n' +
+          '  window.CookieAccessConfig = ' + JSON.stringify(configObj, null, 4).replace(/\n/g, '\n  ') + ';\n' +
+          '<' + '/script>\n' +
+          '<script src="' + srcUrl + '" defer><' + '/script>';
+      } else if (currentEmbedMode === 'npm') {
+        titleEl.textContent = 'Modern Framework Setup (React, Next.js, Vue, Vite)';
+        code = '// 1. Install or import CookieAccess\n' +
+          'import { CookieAccess } from \'cookie-access\';\n\n' +
+          '// 2. Initialize in your App or Root layout\n' +
+          'CookieAccess.init({\n' +
+          '  gaMeasurementId: \'' + ga + '\',\n' +
+          '  primaryColor: \'' + currentPrimaryColor + '\',\n' +
+          '  fontFamily: \'' + (font || 'Inter, sans-serif') + '\',\n' +
+          '  borderRadius: \'' + radius + '\',\n' +
+          '  theme: \'' + theme + '\',\n' +
+          '  position: \'' + pos + '\',\n' +
+          '  companyName: \'' + (company || 'My Company') + '\',\n' +
+          '  privacyPolicyUrl: \'' + (privacy || '/privacy') + '\',\n' +
+          '  consentModeV2: true\n' +
+          '});';
+      }
 
       document.getElementById('code-snippet').textContent = code;
     }
 
-    document.getElementById('cfg-ga-id').addEventListener('input', updateSnippet);
-    document.getElementById('cfg-pos').addEventListener('change', updateSnippet);
-    document.getElementById('cfg-theme').addEventListener('change', updateSnippet);
+    // Tab switching
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentEmbedMode = this.getAttribute('data-mode');
 
-    document.getElementById('btn-copy-code').addEventListener('click', function() {
-      const code = document.getElementById('code-snippet').textContent;
-      navigator.clipboard.writeText(code).then(function() {
-        const btn = document.getElementById('btn-copy-code');
-        btn.textContent = 'Copied! ✓';
-        setTimeout(function() { btn.textContent = 'Copy Code'; }, 2000);
+        // Toggle custom options visibility feel
+        const isCustom = currentEmbedMode === 'custom' || currentEmbedMode === 'window' || currentEmbedMode === 'npm';
+        customOptionGroups.forEach(grp => {
+          grp.style.opacity = isCustom ? '1' : '0.45';
+        });
+
+        updateSnippet();
       });
     });
+
+    // Color Swatches
+    colorSwatches.forEach(swatch => {
+      swatch.addEventListener('click', function() {
+        colorSwatches.forEach(s => s.classList.remove('active'));
+        this.classList.add('active');
+        currentPrimaryColor = this.getAttribute('data-color');
+        colorPicker.value = currentPrimaryColor;
+        colorHexLabel.textContent = currentPrimaryColor;
+        updateSnippet();
+      });
+    });
+
+    // Custom Color Input
+    colorPicker.addEventListener('input', function() {
+      colorSwatches.forEach(s => s.classList.remove('active'));
+      currentPrimaryColor = this.value;
+      colorHexLabel.textContent = currentPrimaryColor;
+      updateSnippet();
+    });
+
+    // Input listeners
+    ['cfg-ga-id', 'cfg-company', 'cfg-privacy'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', updateSnippet);
+    });
+
+    ['cfg-cdn-source', 'cfg-pos', 'cfg-theme', 'cfg-font', 'cfg-radius'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', updateSnippet);
+    });
+
+    // Live Preview Button (Instantly configures widget and opens modal)
+    document.getElementById('btn-preview-theme').addEventListener('click', function() {
+      const font = document.getElementById('cfg-font').value;
+      const radius = document.getElementById('cfg-radius').value;
+      const theme = document.getElementById('cfg-theme').value;
+      const pos = document.getElementById('cfg-pos').value;
+      const company = document.getElementById('cfg-company').value.trim();
+      const privacy = document.getElementById('cfg-privacy').value.trim();
+
+      if (window.CookieAccess && window.CookieAccess.configure) {
+        window.CookieAccess.configure({
+          primaryColor: currentPrimaryColor,
+          fontFamily: font,
+          borderRadius: radius,
+          theme: theme,
+          position: pos,
+          companyName: company || 'CookieAccess Live Preview',
+          privacyPolicyUrl: privacy || '#privacy'
+        });
+        window.CookieAccess.openPreferencesModal();
+      }
+
+      const prevBtn = this;
+      const origText = prevBtn.innerHTML;
+      prevBtn.innerHTML = '<span>✓</span> Applied to Live Widget!';
+      setTimeout(() => { prevBtn.innerHTML = origText; }, 2200);
+    });
+
+    // Copy Code Button
+    document.getElementById('btn-copy-code').addEventListener('click', function() {
+      const code = document.getElementById('code-snippet').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('btn-copy-code');
+        btn.innerHTML = '<span>✓</span> Copied to Clipboard!';
+        setTimeout(() => { btn.innerHTML = '<span>📋</span> Copy Embed Code'; }, 2000);
+      });
+    });
+
+    // Initial snippet population
+    updateSnippet();
 
     setTimeout(refreshTelemetry, 400);
   </script>

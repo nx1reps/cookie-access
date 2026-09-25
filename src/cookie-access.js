@@ -23,12 +23,17 @@
     autoInjectGA: true,
     consentModeV2: true,
 
-    companyName: 'Our Website',
-    privacyPolicyUrl: '#privacy',
-    cookiePolicyUrl: '#cookies',
-    theme: 'light',
-    position: 'bottom-right',
+    companyName: '',
+    privacyPolicyUrl: '',
+    cookiePolicyUrl: '',
+    theme: 'light',      // 'light' | 'dark' | 'auto'
+    position: 'bottom-right', // 'bottom-right' | 'bottom-left' | 'none'
     
+    primaryColor: '',    // Custom brand hex e.g. '#2563eb' or '#7c3aed'
+    cookieColor: '',     // Custom cookie accent hex e.g. '#d97706'
+    fontFamily: '',      // Custom font family e.g. 'Inter, sans-serif'
+    borderRadius: '',    // 'pill' | 'rounded' | 'sharp' | '18px'
+
     enableConsentBanner: true,
     enableAccessibility: true,
 
@@ -45,6 +50,101 @@
   const A11Y_KEY = 'ca_a11y_preferences';
 
   let config = { ...defaults };
+
+  function hexToRgba(hex, alpha = 1) {
+    if (!hex || typeof hex !== 'string') return `rgba(37, 99, 235, ${alpha})`;
+    let clean = hex.replace('#', '').trim();
+    if (clean.length === 3) {
+      clean = clean.split('').map(c => c + c).join('');
+    }
+    const num = parseInt(clean, 16);
+    if (isNaN(num)) return `rgba(37, 99, 235, ${alpha})`;
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  function adjustBrightness(hex, percent) {
+    if (!hex || typeof hex !== 'string') return '#1d4ed8';
+    let clean = hex.replace('#', '').trim();
+    if (clean.length === 3) clean = clean.split('').map(c => c + c).join('');
+    let num = parseInt(clean, 16);
+    if (isNaN(num)) return hex;
+    let r = Math.min(255, Math.max(0, ((num >> 16) & 255) + Math.round(255 * (percent / 100))));
+    let g = Math.min(255, Math.max(0, ((num >> 8) & 255) + Math.round(255 * (percent / 100))));
+    let b = Math.min(255, Math.max(0, (num & 255) + Math.round(255 * (percent / 100))));
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+  }
+
+  function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function applyCustomStyles(cfg) {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+
+    // 1. Primary brand color & derived tints
+    if (cfg.primaryColor) {
+      root.style.setProperty('--ca-primary', cfg.primaryColor);
+      root.style.setProperty('--ca-border-focus', cfg.primaryColor);
+      root.style.setProperty('--ca-primary-hover', adjustBrightness(cfg.primaryColor, -14));
+      root.style.setProperty('--ca-primary-soft', hexToRgba(cfg.primaryColor, 0.12));
+    }
+
+    // 2. Cookie Accent Color
+    if (cfg.cookieColor) {
+      root.style.setProperty('--ca-cookie', cfg.cookieColor);
+      root.style.setProperty('--ca-cookie-bg', hexToRgba(cfg.cookieColor, 0.12));
+    }
+
+    // 3. Custom Font Family
+    if (cfg.fontFamily) {
+      const knownGoogleFonts = ['Inter', 'Outfit', 'Poppins', 'Roboto', 'Montserrat', 'Open Sans', 'Lato'];
+      const matched = knownGoogleFonts.find(f => cfg.fontFamily.toLowerCase().includes(f.toLowerCase()));
+      if (matched && !document.getElementById(`ca-gfont-${matched}`)) {
+        const link = document.createElement('link');
+        link.id = `ca-gfont-${matched}`;
+        link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css2?family=${matched.replace(/\s+/g, '+')}:wght@400;500;600;700&display=swap`;
+        document.head.appendChild(link);
+      }
+      root.style.setProperty('--ca-font', cfg.fontFamily);
+    }
+
+    // 4. Border Radius Presets or Custom CSS Value
+    if (cfg.borderRadius) {
+      const r = String(cfg.borderRadius).toLowerCase().trim();
+      if (r === 'sharp' || r === '0' || r === 'none') {
+        root.style.setProperty('--ca-radius-2xl', '4px');
+        root.style.setProperty('--ca-radius-xl', '4px');
+        root.style.setProperty('--ca-radius-lg', '4px');
+        root.style.setProperty('--ca-radius-md', '2px');
+        root.style.setProperty('--ca-radius-sm', '2px');
+      } else if (r === 'rounded' || r === 'medium') {
+        root.style.setProperty('--ca-radius-2xl', '14px');
+        root.style.setProperty('--ca-radius-xl', '10px');
+        root.style.setProperty('--ca-radius-lg', '8px');
+        root.style.setProperty('--ca-radius-md', '6px');
+        root.style.setProperty('--ca-radius-sm', '4px');
+      } else if (r === 'pill' || r === 'smooth' || r === 'full') {
+        root.style.setProperty('--ca-radius-2xl', '28px');
+        root.style.setProperty('--ca-radius-xl', '20px');
+        root.style.setProperty('--ca-radius-lg', '14px');
+        root.style.setProperty('--ca-radius-md', '10px');
+        root.style.setProperty('--ca-radius-sm', '6px');
+      } else if (r.includes('px') || r.includes('rem')) {
+        root.style.setProperty('--ca-radius-2xl', r);
+      }
+    }
+  }
   let consentState = null;
 
   let a11yState = {
@@ -240,9 +340,11 @@
     const svgs = {
       cookie: `<svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12c0 5.5 4.5 10 10 10 5.5 0 10-4.5 10-10 0-.5 0-1-.1-1.5-1.5.3-3-.7-3.3-2.2-.2-1.1.4-2.1 1.3-2.7-.8-1.5-2.2-2.6-3.9-2.9-.6-1.5-2.1-2.5-3.8-2.5-.4 0-.8.1-1.2.2C11 2.5 11.5 2 12 2zm-3 7c.8 0 1.5.7 1.5 1.5S9.8 12 9 12s-1.5-.7-1.5-1.5S8.2 9 9 9zm6 4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5zm-5 3c.8 0 1.5.7 1.5 1.5S10.8 19 10 19s-1.5-.7-1.5-1.5.7-1.5 1.5-1.5z"/></svg>`,
       a11y: `<svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg>`,
-      close: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>`,
+      close: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`,
+      reset: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`,
+      diamondLogo: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
       brandLogo: `<svg viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>`,
-      search: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`
+      arrowRight: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`
     };
     return svgs[name] || '';
   }
@@ -298,7 +400,37 @@
       document.body.appendChild(launcher);
     }
 
-    // 3. Fluid Cards Consent Modal (No Dropdowns, Clean Fluid Rows)
+    // 2. Non-Invasive Bottom-Right Banner Card & Backdrop (Screenshot 1 & 3)
+    if (config.enableConsentBanner && !document.getElementById('ca-banner-card')) {
+      const bannerBackdrop = document.createElement('div');
+      bannerBackdrop.id = 'ca-banner-backdrop';
+      bannerBackdrop.className = 'ca-banner-backdrop';
+
+      const bannerCard = document.createElement('div');
+      bannerCard.id = 'ca-banner-card';
+      bannerCard.className = 'ca-banner-card';
+      bannerCard.setAttribute('role', 'region');
+      bannerCard.setAttribute('aria-label', 'Cookie Consent Banner');
+
+      bannerCard.innerHTML = `
+        <div class="ca-banner-text">
+          We use cookies on our site to enhance your user experience, provide personalized content, and analyze our traffic.
+        </div>
+        <div class="ca-banner-actions">
+          <button class="ca-banner-pill-btn ca-btn-accept" id="ca-banner-accept">Accept all</button>
+          <button class="ca-banner-pill-btn ca-btn-reject" id="ca-banner-reject">Reject non-essential</button>
+          <button class="ca-banner-text-btn" id="ca-banner-preferences">Preferences</button>
+          <div class="ca-banner-logo" title="CookieAccess">
+            ${getSVG('diamondLogo')}
+          </div>
+        </div>
+      `;
+
+      bannerBackdrop.appendChild(bannerCard);
+      document.body.appendChild(bannerBackdrop);
+    }
+
+    // 3. Customize Cookie Preferences Modal (Screenshot 2)
     if (config.enableConsentBanner && !document.getElementById('ca-modal-dialog')) {
       const modalBackdrop = document.createElement('div');
       modalBackdrop.id = 'ca-modal-dialog';
@@ -308,157 +440,131 @@
 
       modalBackdrop.innerHTML = `
         <div class="ca-dialog-window" id="ca-dialog-window">
-          <!-- Clean Standard Header -->
-          <div class="ca-clean-header">
-            <div class="ca-header-left">
-              <h2 style="font-size:17px;font-weight:700;color:var(--ca-text);margin:0;">Privacy &amp; Cookie Settings</h2>
-              <div style="font-size:12px;color:var(--ca-text-muted);margin-top:2px;">Manage how cookies and telemetry are used on this site</div>
-            </div>
-            <button class="ca-close-icon-btn" id="ca-modal-close-btn" aria-label="Close modal">${getSVG('close')}</button>
+          <div class="ca-pref-header">
+            <h2 class="ca-pref-title">Customize your cookie preferences</h2>
+            <button class="ca-pref-close-btn" id="ca-modal-close-btn" aria-label="Close preferences">
+              ${getSVG('close')}
+            </button>
           </div>
 
-          <!-- Body with Fluid Cards (NO DROPDOWNS) -->
-          <div class="ca-clean-body">
-            <p>
-              We value your privacy. We use essential cookies to maintain security and optional Google Analytics to enhance user experience. Adjust your permissions below:
-            </p>
+          <div class="ca-pref-subtitle">
+            We respect your right to privacy. You can choose not to allow some types of cookies. Your cookie preferences will apply across our website.
+          </div>
 
-            <div class="ca-fluid-cards-list">
-              <!-- 1. Strictly Necessary -->
-              <div class="ca-fluid-card">
-                <div class="ca-fluid-card-info">
-                  <div class="ca-fluid-card-icon" style="color:#059669;">🛡️</div>
-                  <div class="ca-fluid-card-text">
-                    <div class="ca-fluid-card-title">
-                      <span>Strictly Necessary</span>
-                      <span class="ca-card-tag ca-tag-required">Always Active</span>
-                    </div>
-                    <div class="ca-fluid-card-desc">Essential for secure authentication, session tokens, and saving consent choices.</div>
-                  </div>
+          <div class="ca-pref-body">
+            <!-- 1. Essential -->
+            <div class="ca-pref-row">
+              <div class="ca-pref-row-info">
+                <div class="ca-pref-row-title">Essential</div>
+                <div class="ca-pref-row-desc">
+                  These cookies are necessary for the website to function properly and cannot be switched off. They help with things like logging in and setting your privacy preferences.
                 </div>
-                <label class="ca-switch">
-                  <input type="checkbox" id="ca-toggle-necessary" checked disabled>
-                  <span class="ca-slider"></span>
-                </label>
               </div>
+              <label class="ca-pill-toggle ca-disabled" title="Strictly Necessary - Always Active">
+                <input type="checkbox" id="ca-toggle-necessary" checked disabled>
+                <span class="ca-pill-track">
+                  <span class="ca-pill-text-on">ON</span>
+                  <span class="ca-pill-text-off">OFF</span>
+                  <span class="ca-pill-thumb"></span>
+                </span>
+              </label>
+            </div>
 
-              <!-- 2. Google Analytics 4 (GA4) -->
-              <div class="ca-fluid-card">
-                <div class="ca-fluid-card-info">
-                  <div class="ca-fluid-card-icon" style="color:#2563eb;">📊</div>
-                  <div class="ca-fluid-card-text">
-                    <div class="ca-fluid-card-title">
-                      <span>Google Analytics (GA4)</span>
-                      <span class="ca-card-tag">Consent Mode v2</span>
-                    </div>
-                    <div class="ca-fluid-card-desc">Measures anonymous traffic trends, page views, and visitor performance telemetry.</div>
-                  </div>
+            <!-- 2. Analytics -->
+            <div class="ca-pref-row">
+              <div class="ca-pref-row-info">
+                <div class="ca-pref-row-title">Analytics</div>
+                <div class="ca-pref-row-desc">
+                  These cookies help us improve the site by tracking which pages are most popular and how visitors move around the site.
                 </div>
-                <label class="ca-switch">
-                  <input type="checkbox" id="ca-toggle-analytics">
-                  <span class="ca-slider"></span>
-                </label>
               </div>
+              <label class="ca-pill-toggle" title="Toggle Analytics Cookies">
+                <input type="checkbox" id="ca-toggle-analytics">
+                <span class="ca-pill-track">
+                  <span class="ca-pill-text-on">ON</span>
+                  <span class="ca-pill-text-off">OFF</span>
+                  <span class="ca-pill-thumb"></span>
+                </span>
+              </label>
+            </div>
 
-              <!-- 3. Functional & Preferences -->
-              <div class="ca-fluid-card">
-                <div class="ca-fluid-card-info">
-                  <div class="ca-fluid-card-icon" style="color:#d97706;">⚙️</div>
-                  <div class="ca-fluid-card-text">
-                    <div class="ca-fluid-card-title">
-                      <span>Functional & Preferences</span>
-                      <span class="ca-card-tag">Personalization</span>
-                    </div>
-                    <div class="ca-fluid-card-desc">Remembers chosen UI language, appearance preferences, and site settings.</div>
-                  </div>
+            <!-- 3. Marketing -->
+            <div class="ca-pref-row">
+              <div class="ca-pref-row-info">
+                <div class="ca-pref-row-title">Marketing</div>
+                <div class="ca-pref-row-desc">
+                  These cookies are used by us and our advertising partners to show you relevant ads on this site and elsewhere, and to measure how those campaigns perform.
                 </div>
-                <label class="ca-switch">
-                  <input type="checkbox" id="ca-toggle-functional">
-                  <span class="ca-slider"></span>
-                </label>
               </div>
-
-              <!-- 4. Marketing & Advertisement -->
-              <div class="ca-fluid-card">
-                <div class="ca-fluid-card-info">
-                  <div class="ca-fluid-card-icon" style="color:#ec4899;">🎯</div>
-                  <div class="ca-fluid-card-text">
-                    <div class="ca-fluid-card-title">
-                      <span>Targeting & Ads</span>
-                      <span class="ca-card-tag">Optional</span>
-                    </div>
-                    <div class="ca-fluid-card-desc">Used to deliver relevant behavioral advertising campaigns across partner platforms.</div>
-                  </div>
-                </div>
-                <label class="ca-switch">
-                  <input type="checkbox" id="ca-toggle-advertisement">
-                  <span class="ca-slider"></span>
-                </label>
-              </div>
+              <label class="ca-pill-toggle" title="Toggle Marketing Cookies">
+                <input type="checkbox" id="ca-toggle-advertisement">
+                <span class="ca-pill-track">
+                  <span class="ca-pill-text-on">ON</span>
+                  <span class="ca-pill-text-off">OFF</span>
+                  <span class="ca-pill-thumb"></span>
+                </span>
+              </label>
             </div>
           </div>
 
-          <!-- Clean Footer Actions with Subtle Branding -->
-          <div class="ca-clean-footer">
-            <div class="ca-footer-brand-tag">
-              <span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ca-text-muted);">
-                ${getSVG('brandLogo')}
-                <span>Powered by <strong style="color:var(--ca-text);">CookieAccess</strong></span>
-              </span>
+          <div class="ca-pref-footer">
+            <div class="ca-pref-footer-btns">
+              <button class="ca-banner-pill-btn ca-btn-accept" id="ca-modal-save">Save and close</button>
+              <button class="ca-banner-pill-btn ca-btn-reject" id="ca-modal-reject">Reject non-essential</button>
             </div>
-            <div class="ca-footer-actions-right">
-              <button class="ca-btn ca-btn-outline" id="ca-modal-reject">Decline Non-Essential</button>
-              <button class="ca-btn ca-btn-outline" id="ca-modal-save">Save Choices</button>
-              <button class="ca-btn ca-btn-primary" id="ca-modal-accept">Accept All</button>
-            </div>
+            <a href="https://github.com/nx1reps/cookie-access" target="_blank" rel="noopener" class="ca-pref-free-link">
+              Get this banner for free
+            </a>
           </div>
         </div>
       `;
       document.body.appendChild(modalBackdrop);
     }
 
-    // 4. Accessibility Side Drawer (accessiBe / UserWay Clone)
+    // 4. Accessibility Side Drawer (accessiBe / UserWay / AccessiYes Screenshot 3)
     if (config.enableAccessibility && !document.getElementById('ca-a11y-drawer')) {
       const drawer = document.createElement('div');
       drawer.id = 'ca-a11y-drawer';
       drawer.setAttribute('role', 'region');
-      drawer.setAttribute('aria-label', 'Accessibility Assistant');
+      drawer.setAttribute('aria-label', 'Accessibility menu');
 
       drawer.innerHTML = `
         <div class="ca-a11y-topbar">
           <div class="ca-a11y-topbar-title">
-            <span style="font-size:19px;">♿</span>
-            <span style="font-size:16px;font-weight:700;color:var(--ca-text);">Accessibility Assistant</span>
+            <span style="font-size:18px;">♿</span>
+            <span>Accessibility menu <span style="font-size:11.5px;font-weight:500;opacity:0.85;">(Option+A)</span></span>
           </div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <button class="ca-btn ca-btn-outline ca-btn-sm" id="ca-a11y-reset-btn" title="Reset all adjustments">Reset</button>
-            <button class="ca-close-icon-btn" id="ca-a11y-close-btn" aria-label="Close accessibility panel">${getSVG('close')}</button>
+          <div class="ca-a11y-topbar-actions">
+            <button class="ca-a11y-icon-btn" id="ca-a11y-reset-btn" title="Reset all adjustments">${getSVG('reset')}</button>
+            <button class="ca-a11y-icon-btn" id="ca-a11y-close-btn" aria-label="Close accessibility panel">${getSVG('close')}</button>
           </div>
         </div>
 
         <div class="ca-a11y-scrollable">
-          <!-- Audio Screen Reader (TTS) -->
-          <div class="ca-audio-panel">
-            <div class="ca-audio-status" id="ca-audio-status">
-              <span>🔊</span>
-              <span id="ca-audio-text">Audio Reader: Ready</span>
+          <!-- 1. Language Card -->
+          <div class="ca-a11y-card-row" id="ca-lang-row">
+            <div class="ca-a11y-card-row-left">
+              <span class="ca-a11y-badge-icon">EN</span>
+              <span>English (English)</span>
             </div>
-            <div style="display:flex;gap:6px;">
-              <button class="ca-btn ca-btn-primary ca-btn-sm" id="ca-audio-read-btn">Read Page</button>
-              <button class="ca-btn ca-btn-outline ca-btn-sm" id="ca-audio-click-btn" title="Click any sentence to hear it read">Click-to-Speak</button>
-            </div>
+            ${getSVG('arrowRight')}
           </div>
 
-          <!-- Section 1: Pre-set Profiles -->
-          <div class="ca-section-heading">
-            <span>ACCESSIBILITY PROFILES</span>
-            <span style="font-weight:400;font-size:11px;color:var(--ca-text-muted);">One-Click Presets</span>
+          <!-- 2. Accessibility Profiles Card -->
+          <div class="ca-a11y-card-row ca-subtle-border" id="ca-profiles-trigger">
+            <div class="ca-a11y-card-row-left">
+              <span class="ca-a11y-badge-icon" style="font-size:13px;">♿</span>
+              <span>Accessibility Profiles</span>
+            </div>
+            ${getSVG('arrowRight')}
           </div>
-          <div class="ca-profile-list">
+
+          <!-- Expandable Profiles Panel -->
+          <div class="ca-profile-list" id="ca-profiles-panel" style="display:none;margin-bottom:14px;">
             <div class="ca-profile-row" data-profile="seizure">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">🛡️ Seizure Safe Profile</span>
-                <span class="ca-profile-desc">Freezes motion & removes flashes to prevent seizure triggers.</span>
+                <span class="ca-profile-desc">Freezes motion & removes flashes</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="seizure"><span class="ca-slider"></span></label>
             </div>
@@ -466,7 +572,7 @@
             <div class="ca-profile-row" data-profile="vision">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">👁️ Vision Impaired Profile</span>
-                <span class="ca-profile-desc">125% text scale, high dark contrast, and link highlights.</span>
+                <span class="ca-profile-desc">125% text scale, high contrast, link highlights</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="vision"><span class="ca-slider"></span></label>
             </div>
@@ -474,7 +580,7 @@
             <div class="ca-profile-row" data-profile="adhd">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">⚡ ADHD Friendly Profile</span>
-                <span class="ca-profile-desc">Reading mask focus slit & stops background animations.</span>
+                <span class="ca-profile-desc">Reading mask focus slit & stops animations</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="adhd"><span class="ca-slider"></span></label>
             </div>
@@ -482,7 +588,7 @@
             <div class="ca-profile-row" data-profile="dyslexia">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">📖 Dyslexia Friendly Profile</span>
-                <span class="ca-profile-desc">Lexend readable font with increased letter spacing.</span>
+                <span class="ca-profile-desc">Lexend font with increased letter spacing</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="dyslexia"><span class="ca-slider"></span></label>
             </div>
@@ -490,143 +596,102 @@
             <div class="ca-profile-row" data-profile="cognitive">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">🧠 Cognitive Focus Profile</span>
-                <span class="ca-profile-desc">Laser reading guide line & highlighted section titles.</span>
+                <span class="ca-profile-desc">Reading guide line & highlighted headings</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="cognitive"><span class="ca-slider"></span></label>
             </div>
           </div>
 
-          <!-- Section 2: Content & Typography -->
-          <div class="ca-section-heading">CONTENT & TYPOGRAPHY</div>
-          <div class="ca-tools-grid">
-            <div class="ca-tool-card" id="ca-tool-dyslexic">
-              <div class="ca-tool-icon">📖</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Dyslexia Font</span>
-                <span class="ca-tool-status">Lexend Typeface</span>
+          <!-- Section: Content adjustments -->
+          <div class="ca-a11y-section-title">Content adjustments</div>
+
+          <!-- Adjust Font Size & Highlight Title row -->
+          <div class="ca-adjuster-card-row">
+            <div class="ca-adjust-font-card">
+              <div class="ca-card-label">
+                <span style="font-size:15px;font-weight:700;letter-spacing:-0.5px;">TT</span>
+                <span>Adjust Font Size</span>
+              </div>
+              <div class="ca-font-stepper">
+                <button class="ca-step-btn" id="ca-font-dec" aria-label="Decrease font size">−</button>
+                <span class="ca-step-val" id="ca-font-val">100%</span>
+                <button class="ca-step-btn" id="ca-font-inc" aria-label="Increase font size">+</button>
               </div>
             </div>
 
-            <div class="ca-tool-card" id="ca-tool-size">
-              <div class="ca-tool-icon" style="font-weight:800;">A+</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Bigger Text</span>
-                <span class="ca-tool-status" id="ca-status-size">Default (100%)</span>
-              </div>
-            </div>
-
-            <div class="ca-tool-card" id="ca-tool-spacing">
-              <div class="ca-tool-icon">↔</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Text Spacing</span>
-                <span class="ca-tool-status">Letter Spacing</span>
-              </div>
-            </div>
-
-            <div class="ca-tool-card" id="ca-tool-line-height">
-              <div class="ca-tool-icon">↕</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Line Height</span>
-                <span class="ca-tool-status">Double Spacing</span>
-              </div>
-            </div>
-
-            <div class="ca-tool-card" id="ca-tool-highlight-links">
-              <div class="ca-tool-icon">🔗</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Highlight Links</span>
-                <span class="ca-tool-status">High Visibility</span>
-              </div>
-            </div>
-
-            <div class="ca-tool-card" id="ca-tool-highlight-headings">
-              <div class="ca-tool-icon">🏷️</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Highlight Titles</span>
-                <span class="ca-tool-status">Outline Headings</span>
-              </div>
+            <div class="ca-tool-square-card" id="ca-tool-highlight-headings" title="Highlight Titles">
+              <div style="font-size:15px;border:1.5px solid #64748b;border-radius:4px;padding:0 5px;font-weight:700;color:#334155;line-height:1.2;">T</div>
+              <div class="ca-square-tool-title">Highlight Title</div>
             </div>
           </div>
 
-          <!-- Section 3: Color & Contrast -->
-          <div class="ca-section-heading">COLOR & CONTRAST</div>
-          <div class="ca-tools-grid">
-            <div class="ca-tool-card" id="ca-tool-contrast-dark">
-              <div class="ca-tool-icon">🌓</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Dark Contrast</span>
-                <span class="ca-tool-status">High Contrast</span>
-              </div>
+          <!-- 3-Column Square Tools Grid (Screenshot 3) -->
+          <div class="ca-square-tools-grid">
+            <div class="ca-square-tool-btn" id="ca-tool-highlight-links" title="Highlight Links">
+              <div class="ca-square-tool-icon">🔗</div>
+              <div class="ca-square-tool-title">Highlight Links</div>
             </div>
 
-            <div class="ca-tool-card" id="ca-tool-contrast-invert">
-              <div class="ca-tool-icon">🔄</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Invert Colors</span>
-                <span class="ca-tool-status">Color Reversal</span>
-              </div>
+            <div class="ca-square-tool-btn" id="ca-tool-dyslexic" title="Dyslexia Font">
+              <div class="ca-square-tool-icon" style="font-weight:700;font-size:17px;font-family:sans-serif;">Df</div>
+              <div class="ca-square-tool-title">Dyslexia Font</div>
             </div>
 
-            <div class="ca-tool-card" id="ca-tool-monochrome">
-              <div class="ca-tool-icon">⚪</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Monochrome</span>
-                <span class="ca-tool-status">Black & White</span>
-              </div>
+            <div class="ca-square-tool-btn" id="ca-tool-spacing" title="Text Spacing">
+              <div class="ca-square-tool-icon" style="font-weight:700;font-size:13px;letter-spacing:1px;">A↔V</div>
+              <div class="ca-square-tool-title">Text Spacing</div>
             </div>
 
-            <div class="ca-tool-card" id="ca-tool-saturation">
-              <div class="ca-tool-icon">🎨</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">High Saturation</span>
-                <span class="ca-tool-status">Vivid Colors</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Section 4: Orientation & Tools -->
-          <div class="ca-section-heading">ORIENTATION & VISUAL AIDS</div>
-          <div class="ca-tools-grid">
-            <div class="ca-tool-card" id="ca-tool-stop-animations">
-              <div class="ca-tool-icon">⏹️</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Stop Animations</span>
-                <span class="ca-tool-status">Freeze Motion</span>
-              </div>
+            <div class="ca-square-tool-btn" id="ca-tool-line-height" title="Line Height">
+              <div class="ca-square-tool-icon">↕</div>
+              <div class="ca-square-tool-title">Line Height</div>
             </div>
 
-            <div class="ca-tool-card" id="ca-tool-reading-guide">
-              <div class="ca-tool-icon">📏</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Reading Guide</span>
-                <span class="ca-tool-status">Follow Cursor</span>
-              </div>
+            <div class="ca-square-tool-btn" id="ca-tool-contrast-dark" title="Dark Contrast">
+              <div class="ca-square-tool-icon">🌓</div>
+              <div class="ca-square-tool-title">Dark Contrast</div>
             </div>
 
-            <div class="ca-tool-card" id="ca-tool-reading-mask">
-              <div class="ca-tool-icon">🕶️</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Reading Mask</span>
-                <span class="ca-tool-status">Focus Slit</span>
-              </div>
+            <div class="ca-square-tool-btn" id="ca-tool-contrast-invert" title="Invert Colors">
+              <div class="ca-square-tool-icon">🔄</div>
+              <div class="ca-square-tool-title">Invert Colors</div>
             </div>
 
-            <div class="ca-tool-card" id="ca-tool-cursor">
-              <div class="ca-tool-icon">👆</div>
-              <div class="ca-tool-meta">
-                <span class="ca-tool-name">Big Cursor</span>
-                <span class="ca-tool-status" id="ca-status-cursor">Default</span>
-              </div>
+            <div class="ca-square-tool-btn" id="ca-tool-monochrome" title="Monochrome">
+              <div class="ca-square-tool-icon">⚪</div>
+              <div class="ca-square-tool-title">Monochrome</div>
+            </div>
+
+            <div class="ca-square-tool-btn" id="ca-tool-cursor" title="Big Cursor">
+              <div class="ca-square-tool-icon">👆</div>
+              <div class="ca-square-tool-title" id="ca-status-cursor">Big Cursor</div>
+            </div>
+
+            <div class="ca-square-tool-btn" id="ca-tool-reading-guide" title="Reading Guide">
+              <div class="ca-square-tool-icon">📏</div>
+              <div class="ca-square-tool-title">Reading Guide</div>
+            </div>
+
+            <div class="ca-square-tool-btn" id="ca-tool-reading-mask" title="Reading Mask">
+              <div class="ca-square-tool-icon">🕶️</div>
+              <div class="ca-square-tool-title">Reading Mask</div>
+            </div>
+
+            <div class="ca-square-tool-btn" id="ca-tool-stop-animations" title="Stop Motion">
+              <div class="ca-square-tool-icon">⏹️</div>
+              <div class="ca-square-tool-title">Stop Motion</div>
+            </div>
+
+            <div class="ca-square-tool-btn" id="ca-tool-audio" title="Audio Screen Reader">
+              <div class="ca-square-tool-icon">🔊</div>
+              <div class="ca-square-tool-title" id="ca-audio-tool-text">Click to Read</div>
             </div>
           </div>
         </div>
 
-        <div class="ca-a11y-footer">
-          <span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ca-text-muted);">
-            ${getSVG('brandLogo')}
-            <span>Powered by <strong style="color:var(--ca-text);">CookieAccess</strong></span>
-          </span>
-          <button class="ca-btn ca-btn-primary ca-btn-sm" id="ca-a11y-done-btn">Done</button>
+        <div class="ca-a11y-footer" style="padding:14px 20px;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:#64748b;font-weight:600;background:#ffffff;">
+          <span style="color:#2563eb;font-size:15px;">♿</span>
+          <span><strong style="color:#0f172a;">AccessiYes</strong> by CookieAccess</span>
         </div>
       `;
       document.body.appendChild(drawer);
@@ -642,23 +707,26 @@
       launcherCookie: document.getElementById('ca-launcher-cookie'),
       launcherA11y: document.getElementById('ca-launcher-a11y'),
       splitBadge: document.getElementById('ca-split-badge'),
+      bannerBackdrop: document.getElementById('ca-banner-backdrop'),
+      bannerCard: document.getElementById('ca-banner-card'),
+      bannerAccept: document.getElementById('ca-banner-accept'),
+      bannerReject: document.getElementById('ca-banner-reject'),
+      bannerPreferences: document.getElementById('ca-banner-preferences'),
       modalDialog: document.getElementById('ca-modal-dialog'),
       modalCloseBtn: document.getElementById('ca-modal-close-btn'),
-      modalAccept: document.getElementById('ca-modal-accept'),
-      modalReject: document.getElementById('ca-modal-reject'),
       modalSave: document.getElementById('ca-modal-save'),
+      modalReject: document.getElementById('ca-modal-reject'),
       toggleNecessary: document.getElementById('ca-toggle-necessary'),
-      toggleFunctional: document.getElementById('ca-toggle-functional'),
       toggleAnalytics: document.getElementById('ca-toggle-analytics'),
       toggleAdvertisement: document.getElementById('ca-toggle-advertisement'),
       a11yDrawer: document.getElementById('ca-a11y-drawer'),
       a11yCloseBtn: document.getElementById('ca-a11y-close-btn'),
-      a11yDoneBtn: document.getElementById('ca-a11y-done-btn'),
       a11yResetBtn: document.getElementById('ca-a11y-reset-btn'),
-      audioStatus: document.getElementById('ca-audio-status'),
-      audioText: document.getElementById('ca-audio-text'),
-      audioReadBtn: document.getElementById('ca-audio-read-btn'),
-      audioClickBtn: document.getElementById('ca-audio-click-btn'),
+      profilesTrigger: document.getElementById('ca-profiles-trigger'),
+      profilesPanel: document.getElementById('ca-profiles-panel'),
+      fontDec: document.getElementById('ca-font-dec'),
+      fontInc: document.getElementById('ca-font-inc'),
+      fontVal: document.getElementById('ca-font-val'),
       readingGuideLine: document.getElementById('ca-reading-guide-line'),
       readingMaskTop: document.getElementById('ca-reading-mask-top'),
       readingMaskBottom: document.getElementById('ca-reading-mask-bottom')
@@ -666,13 +734,42 @@
   }
 
   function bindEvents() {
+    // Split launcher
     if (elements.launcherCookie) {
-      elements.launcherCookie.addEventListener('click', () => openPreferencesModal());
+      elements.launcherCookie.addEventListener('click', () => {
+        closeBannerCard();
+        openPreferencesModal();
+      });
     }
     if (elements.launcherA11y) {
       elements.launcherA11y.addEventListener('click', () => openA11yDrawer());
     }
 
+    // Banner card actions (Screenshot 1 & 3)
+    if (elements.bannerAccept) {
+      elements.bannerAccept.addEventListener('click', () => {
+        const choice = { necessary: true, functional: true, analytics: true, advertisement: true };
+        saveConsent(choice);
+        syncToggles(choice);
+        closeBannerCard();
+      });
+    }
+    if (elements.bannerReject) {
+      elements.bannerReject.addEventListener('click', () => {
+        const choice = { necessary: true, functional: false, analytics: false, advertisement: false };
+        saveConsent(choice);
+        syncToggles(choice);
+        closeBannerCard();
+      });
+    }
+    if (elements.bannerPreferences) {
+      elements.bannerPreferences.addEventListener('click', () => {
+        closeBannerCard();
+        openPreferencesModal();
+      });
+    }
+
+    // Preferences modal actions (Screenshot 2)
     if (elements.modalCloseBtn) {
       elements.modalCloseBtn.addEventListener('click', () => closePreferencesModal());
     }
@@ -681,16 +778,18 @@
         if (e.target === elements.modalDialog) closePreferencesModal();
       });
     }
-
-    if (elements.modalAccept) {
-      elements.modalAccept.addEventListener('click', () => {
-        const choice = { necessary: true, functional: true, analytics: true, advertisement: true };
+    if (elements.modalSave) {
+      elements.modalSave.addEventListener('click', () => {
+        const choice = {
+          necessary: true,
+          functional: false,
+          analytics: elements.toggleAnalytics ? elements.toggleAnalytics.checked : false,
+          advertisement: elements.toggleAdvertisement ? elements.toggleAdvertisement.checked : false
+        };
         saveConsent(choice);
-        syncToggles(choice);
         closePreferencesModal();
       });
     }
-
     if (elements.modalReject) {
       elements.modalReject.addEventListener('click', () => {
         const choice = { necessary: true, functional: false, analytics: false, advertisement: false };
@@ -700,27 +799,55 @@
       });
     }
 
-    if (elements.modalSave) {
-      elements.modalSave.addEventListener('click', () => {
-        const choice = {
-          necessary: true,
-          functional: elements.toggleFunctional ? elements.toggleFunctional.checked : false,
-          analytics: elements.toggleAnalytics ? elements.toggleAnalytics.checked : false,
-          advertisement: elements.toggleAdvertisement ? elements.toggleAdvertisement.checked : false
-        };
-        saveConsent(choice);
-        closePreferencesModal();
+    // Accessibility drawer actions (Screenshot 3)
+    if (elements.a11yCloseBtn) elements.a11yCloseBtn.addEventListener('click', () => closeA11yDrawer());
+    if (elements.a11yResetBtn) elements.a11yResetBtn.addEventListener('click', () => resetA11ySettings());
+
+    // Profiles expandable panel
+    if (elements.profilesTrigger && elements.profilesPanel) {
+      elements.profilesTrigger.addEventListener('click', () => {
+        const isHidden = elements.profilesPanel.style.display === 'none';
+        elements.profilesPanel.style.display = isHidden ? 'flex' : 'none';
       });
     }
 
-    if (elements.a11yCloseBtn) elements.a11yCloseBtn.addEventListener('click', () => closeA11yDrawer());
-    if (elements.a11yDoneBtn) elements.a11yDoneBtn.addEventListener('click', () => closeA11yDrawer());
-    if (elements.a11yResetBtn) elements.a11yResetBtn.addEventListener('click', () => resetA11ySettings());
+    // Font size stepper
+    const FONT_SIZES = [90, 100, 110, 120, 125, 130, 140];
+    if (elements.fontDec) {
+      elements.fontDec.addEventListener('click', () => {
+        let idx = FONT_SIZES.indexOf(a11yState.textSize);
+        if (idx === -1) idx = 1;
+        if (idx > 0) {
+          a11yState.textSize = FONT_SIZES[idx - 1];
+          applyA11yState();
+        }
+      });
+    }
+    if (elements.fontInc) {
+      elements.fontInc.addEventListener('click', () => {
+        let idx = FONT_SIZES.indexOf(a11yState.textSize);
+        if (idx === -1) idx = 1;
+        if (idx < FONT_SIZES.length - 1) {
+          a11yState.textSize = FONT_SIZES[idx + 1];
+          applyA11yState();
+        }
+      });
+    }
 
+    // Keyboard shortcuts: Escape closes all, Option+A / Alt+A toggles accessibility
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closePreferencesModal();
         closeA11yDrawer();
+        closeBannerCard();
+      }
+      if (e.altKey && (e.key === 'a' || e.key === 'A' || e.code === 'KeyA')) {
+        e.preventDefault();
+        if (elements.a11yDrawer && elements.a11yDrawer.classList.contains('ca-open')) {
+          closeA11yDrawer();
+        } else {
+          openA11yDrawer();
+        }
       }
     });
 
@@ -855,6 +982,24 @@
       });
     });
 
+    // 12. Audio Reader / Click-to-Speak tool
+    const btnAudio = document.getElementById('ca-tool-audio');
+    if (btnAudio) {
+      btnAudio.addEventListener('click', () => {
+        clickToSpeakActive = !clickToSpeakActive;
+        btnAudio.classList.toggle('ca-active', clickToSpeakActive);
+        const audioText = document.getElementById('ca-audio-tool-text');
+        if (clickToSpeakActive) {
+          if (audioText) audioText.textContent = 'Speaking: On';
+          document.body.style.cursor = 'help';
+        } else {
+          if (audioText) audioText.textContent = 'Click to Read';
+          document.body.style.cursor = '';
+          stopSpeech();
+        }
+      });
+    }
+
     setupAudioTTS();
   }
 
@@ -897,12 +1042,11 @@
     docEl.classList.toggle('ca-dyslexic-font', a11yState.dyslexicFont);
     toggleCardActive('ca-tool-dyslexic', a11yState.dyslexicFont);
 
-    // 2. Text Sizing
-    docEl.classList.remove('ca-text-110', 'ca-text-125', 'ca-text-140');
-    if (a11yState.textSize > 100) docEl.classList.add(`ca-text-${a11yState.textSize}`);
-    const sizeStatus = document.getElementById('ca-status-size');
-    if (sizeStatus) sizeStatus.textContent = `${a11yState.textSize}%`;
-    toggleCardActive('ca-tool-size', a11yState.textSize > 100);
+    // 2. Text Sizing (stepper)
+    docEl.classList.remove('ca-text-90', 'ca-text-110', 'ca-text-120', 'ca-text-125', 'ca-text-130', 'ca-text-140');
+    if (a11yState.textSize !== 100) docEl.classList.add(`ca-text-${a11yState.textSize}`);
+    const fontValEl = document.getElementById('ca-font-val');
+    if (fontValEl) fontValEl.textContent = `${a11yState.textSize}%`;
 
     // 3. Spacing & Line Height
     docEl.classList.toggle('ca-letter-spacing', a11yState.letterSpacing);
@@ -1145,8 +1289,18 @@
   }
 
   // =========================================================================
-  // MODAL / DRAWER CONTROLS
+  // MODAL / BANNER / DRAWER CONTROLS
   // =========================================================================
+
+  function openBannerCard() {
+    if (elements.bannerCard) elements.bannerCard.classList.add('ca-active');
+    if (elements.bannerBackdrop) elements.bannerBackdrop.classList.add('ca-active');
+  }
+
+  function closeBannerCard() {
+    if (elements.bannerCard) elements.bannerCard.classList.remove('ca-active');
+    if (elements.bannerBackdrop) elements.bannerBackdrop.classList.remove('ca-active');
+  }
 
   function openPreferencesModal() {
     if (elements.modalDialog) {
@@ -1169,7 +1323,6 @@
   }
 
   function syncToggles(categories) {
-    if (elements.toggleFunctional) elements.toggleFunctional.checked = Boolean(categories.functional);
     if (elements.toggleAnalytics) elements.toggleAnalytics.checked = Boolean(categories.analytics);
     if (elements.toggleAdvertisement) elements.toggleAdvertisement.checked = Boolean(categories.advertisement);
   }
@@ -1178,11 +1331,36 @@
   // INITIALIZATION API
   // =========================================================================
 
+  function configure(options = {}) {
+    config = { ...config, ...options };
+    applyCustomStyles(config);
+
+    if (config.theme === 'dark' || (config.theme === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('ca-theme-dark');
+    } else if (config.theme === 'light') {
+      document.documentElement.classList.remove('ca-theme-dark');
+    }
+
+    const launcher = document.getElementById('ca-launcher');
+    if (launcher) {
+      if (config.position === 'none') {
+        launcher.style.display = 'none';
+      } else {
+        launcher.style.display = '';
+        launcher.className = config.position === 'bottom-left' ? 'ca-pos-bottom-left' : 'ca-pos-bottom-right';
+      }
+    }
+  }
+
   function init(options = {}) {
     config = { ...defaults, ...options };
 
-    if (config.theme === 'dark') {
+    applyCustomStyles(config);
+
+    if (config.theme === 'dark' || (config.theme === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('ca-theme-dark');
+    } else if (config.theme === 'light') {
+      document.documentElement.classList.remove('ca-theme-dark');
     }
 
     initGoogleConsentMode();
@@ -1202,7 +1380,7 @@
     const saved = getSavedConsent();
     if (!saved && config.enableConsentBanner) {
       setTimeout(() => {
-        openPreferencesModal();
+        openBannerCard();
       }, 350);
     } else if (saved) {
       consentState = saved;
@@ -1211,21 +1389,35 @@
   }
 
   function autoInitFromScriptTag() {
-    const script = document.currentScript || document.querySelector('script[src*="cookie-access"]');
-    if (!script) return;
+    const globalConfig = (typeof window !== 'undefined' && window.CookieAccessConfig) || {};
+    const script = (typeof document !== 'undefined') && (document.currentScript || document.querySelector('script[src*="cookie-access"]'));
+    const opts = { ...globalConfig };
 
-    const ga = script.getAttribute('data-ga') || script.getAttribute('data-ga-id');
-    const gtm = script.getAttribute('data-gtm');
-    const pos = script.getAttribute('data-position');
-    const theme = script.getAttribute('data-theme');
-    const a11y = script.getAttribute('data-a11y');
+    if (script) {
+      const ga = script.getAttribute('data-ga') || script.getAttribute('data-ga-id');
+      const gtm = script.getAttribute('data-gtm');
+      const pos = script.getAttribute('data-position');
+      const theme = script.getAttribute('data-theme');
+      const a11y = script.getAttribute('data-a11y');
+      const company = script.getAttribute('data-company') || script.getAttribute('data-company-name');
+      const privacy = script.getAttribute('data-privacy-url') || script.getAttribute('data-privacy');
+      const primary = script.getAttribute('data-primary-color') || script.getAttribute('data-color');
+      const cookieCol = script.getAttribute('data-cookie-color');
+      const font = script.getAttribute('data-font') || script.getAttribute('data-font-family');
+      const radius = script.getAttribute('data-radius') || script.getAttribute('data-border-radius');
 
-    const opts = {};
-    if (ga) opts.gaMeasurementId = ga;
-    if (gtm) opts.gtmId = gtm;
-    if (pos) opts.position = pos;
-    if (theme) opts.theme = theme;
-    if (a11y === 'false') opts.enableAccessibility = false;
+      if (ga) opts.gaMeasurementId = ga;
+      if (gtm) opts.gtmId = gtm;
+      if (pos) opts.position = pos;
+      if (theme) opts.theme = theme;
+      if (a11y === 'false') opts.enableAccessibility = false;
+      if (company) opts.companyName = company;
+      if (privacy) opts.privacyPolicyUrl = privacy;
+      if (primary) opts.primaryColor = primary;
+      if (cookieCol) opts.cookieColor = cookieCol;
+      if (font) opts.fontFamily = font;
+      if (radius) opts.borderRadius = radius;
+    }
 
     init(opts);
   }
@@ -1234,6 +1426,9 @@
 
   return {
     init,
+    configure,
+    openBannerCard,
+    closeBannerCard,
     openPreferencesModal,
     closePreferencesModal,
     openA11yDrawer,
