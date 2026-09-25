@@ -1,9 +1,9 @@
 /**
- * CookieAccess v1.3.0
- * Unified Split Circle (Half Cookie / Half Accessibility)
- * Clean, Rounded, Smooth Animated First Popup & Enterprise Accessibility Suite.
+ * CookieAccess v2.0.0
+ * Universal Privacy Consent (Auto GA4 & Consent Mode v2) & Accessibility Suite
+ * 100% Free Live Suite - Zero SaaS Subscriptions
  * 
- * MIT License - 100% Free & Open Source
+ * MIT License
  */
 
 (function (root, factory) {
@@ -36,7 +36,6 @@
       necessary: true,
       functional: false,
       analytics: false,
-      performance: false,
       advertisement: false
     }
   };
@@ -53,11 +52,11 @@
     textSize: 100,
     letterSpacing: false,
     lineHeight: false,
-    contrast: 'normal',
+    contrast: 'normal', // 'normal', 'dark', 'invert', 'monochrome', 'saturate'
     highlightLinks: false,
     highlightHeadings: false,
     stopAnimations: false,
-    bigCursor: 'none',
+    bigCursor: 'none', // 'none', 'white', 'black'
     readingGuide: false,
     readingMask: false,
     speechActive: false
@@ -66,31 +65,6 @@
   let activeSpeechUtterance = null;
   let clickToSpeakActive = false;
   let elements = {};
-
-  const cookieInventory = {
-    necessary: [
-      { name: 'ca_consent_preferences', provider: 'CookieAccess', duration: '1 year', type: 'HTTP Cookie', purpose: 'Stores visitor cookie consent choices.' },
-      { name: 'ca_a11y_preferences', provider: 'CookieAccess', duration: '1 year', type: 'Local Storage', purpose: 'Remembers accessibility preferences across visits.' },
-      { name: 'session_id', provider: 'First-party', duration: 'Session', type: 'HTTP Cookie', purpose: 'Maintains user session security and authentication.' }
-    ],
-    functional: [
-      { name: 'ca_lang', provider: 'First-party', duration: '1 year', type: 'Local Storage', purpose: 'Remembers selected interface language.' },
-      { name: 'ca_theme', provider: 'First-party', duration: '1 year', type: 'Local Storage', purpose: 'Preserves preferred visual theme.' }
-    ],
-    analytics: [
-      { name: '_ga', provider: 'Google Analytics', duration: '2 years', type: 'HTTP Cookie', purpose: 'Distinguishes unique visitors for anonymous telemetry.' },
-      { name: '_ga_*', provider: 'Google Analytics', duration: '2 years', type: 'HTTP Cookie', purpose: 'Used by GA4 to persist session state.' },
-      { name: '_gid', provider: 'Google Analytics', duration: '24 hours', type: 'HTTP Cookie', purpose: 'Counts anonymous pageviews.' }
-    ],
-    performance: [
-      { name: '__cf_bm', provider: 'Cloudflare', duration: '30 minutes', type: 'HTTP Cookie', purpose: 'Cloudflare bot mitigation identifier.' },
-      { name: 'speed_rum', provider: 'First-party', duration: 'Session', type: 'Local Storage', purpose: 'Collects anonymous Real User Monitoring metrics (LCP, FID).' }
-    ],
-    advertisement: [
-      { name: '_fbp', provider: 'Meta Pixel', duration: '3 months', type: 'HTTP Cookie', purpose: 'Tracks advertising conversions on Facebook.' },
-      { name: '_gcl_au', provider: 'Google Ads', duration: '3 months', type: 'HTTP Cookie', purpose: 'Conversion tracking and ad efficiency attribution.' }
-    ]
-  };
 
   // =========================================================================
   // GOOGLE CONSENT MODE V2 & AUTO GA4
@@ -172,7 +146,7 @@
       send_page_view: true
     });
 
-    console.log(`[CookieAccess] Injected Google Analytics 4 (${measurementId})`);
+    console.log(`[CookieAccess] Active Google Analytics 4 (${measurementId})`);
   }
 
   function injectGoogleTagManager(gtmId) {
@@ -185,7 +159,7 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer',gtmId);
 
-    console.log(`[CookieAccess] Injected Google Tag Manager (${gtmId})`);
+    console.log(`[CookieAccess] Active Google Tag Manager (${gtmId})`);
   }
 
   function unblockScripts(categories) {
@@ -202,7 +176,7 @@
         newScript.type = 'text/javascript';
         newScript.innerHTML = oldScript.innerHTML;
         oldScript.parentNode.replaceChild(newScript, oldScript);
-        console.log(`[CookieAccess] Unblocked category script: ${cat}`);
+        console.log(`[CookieAccess] Unblocked script category: ${cat}`);
       }
     });
   }
@@ -224,12 +198,11 @@
     const consentRecord = {
       consentId: 'ca_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36),
       timestamp: new Date().toISOString(),
-      version: '1.3.0',
+      version: '2.0.0',
       categories: {
         necessary: true,
         functional: Boolean(categories.functional),
         analytics: Boolean(categories.analytics),
-        performance: Boolean(categories.performance),
         advertisement: Boolean(categories.advertisement)
       },
       userAgent: navigator.userAgent
@@ -260,16 +233,15 @@
   }
 
   // =========================================================================
-  // DOM CREATION (UNIFIED SPLIT CIRCLE + CLEAN ROUNDED MODAL)
+  // DOM CREATION (UNIFIED SPLIT CIRCLE + FLUID CARDS MODAL)
   // =========================================================================
 
   function getSVG(name) {
     const svgs = {
       cookie: `<svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12c0 5.5 4.5 10 10 10 5.5 0 10-4.5 10-10 0-.5 0-1-.1-1.5-1.5.3-3-.7-3.3-2.2-.2-1.1.4-2.1 1.3-2.7-.8-1.5-2.2-2.6-3.9-2.9-.6-1.5-2.1-2.5-3.8-2.5-.4 0-.8.1-1.2.2C11 2.5 11.5 2 12 2zm-3 7c.8 0 1.5.7 1.5 1.5S9.8 12 9 12s-1.5-.7-1.5-1.5S8.2 9 9 9zm6 4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5zm-5 3c.8 0 1.5.7 1.5 1.5S10.8 19 10 19s-1.5-.7-1.5-1.5.7-1.5 1.5-1.5z"/></svg>`,
       a11y: `<svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg>`,
-      chevron: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>`,
       close: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>`,
-      shield: `<svg width="22" height="22" viewBox="0 0 24 24" fill="#1868db"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>`,
+      brandLogo: `<svg viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>`,
       search: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`
     };
     return svgs[name] || '';
@@ -295,7 +267,7 @@
           guideLine.style.top = (e.clientY - 2) + 'px';
         }
         if (a11yState.readingMask) {
-          const slitHeight = 100;
+          const slitHeight = 110;
           const topH = Math.max(0, e.clientY - (slitHeight / 2));
           const botY = e.clientY + (slitHeight / 2);
           maskTop.style.top = '0';
@@ -314,7 +286,7 @@
 
       launcher.innerHTML = `
         <div class="ca-split-circle" id="ca-split-circle" title="Cookie Preferences & Accessibility Assistant">
-          <button class="ca-half-btn ca-half-cookie" id="ca-launcher-cookie" data-tooltip="Privacy & Cookies" aria-label="Privacy & Cookie Preferences">
+          <button class="ca-half-btn ca-half-cookie" id="ca-launcher-cookie" data-tooltip="Cookie & Privacy Preferences" aria-label="Privacy & Cookie Preferences">
             ${getSVG('cookie')}
           </button>
           <button class="ca-half-btn ca-half-a11y" id="ca-launcher-a11y" data-tooltip="Accessibility Assistant" aria-label="Accessibility Assistant">
@@ -326,7 +298,7 @@
       document.body.appendChild(launcher);
     }
 
-    // 3. Clean, Rounded Animated Consent Modal (Starts Simple, Expands Smoothly)
+    // 3. Fluid Cards Consent Modal (No Dropdowns, Clean Fluid Rows)
     if (config.enableConsentBanner && !document.getElementById('ca-modal-dialog')) {
       const modalBackdrop = document.createElement('div');
       modalBackdrop.id = 'ca-modal-dialog';
@@ -336,123 +308,113 @@
 
       modalBackdrop.innerHTML = `
         <div class="ca-dialog-window" id="ca-dialog-window">
-          <!-- Clean Header -->
+          <!-- Branded Header -->
           <div class="ca-clean-header">
-            <div class="ca-clean-header-title">
-              <div class="ca-shield-icon-badge">${getSVG('shield')}</div>
+            <div class="ca-brand-header">
+              <div class="ca-brand-logo-icon">
+                ${getSVG('brandLogo')}
+              </div>
               <div>
-                <h2>We value your privacy</h2>
-                <span class="ca-clean-header-sub">GDPR, CCPA & ePrivacy Compliant</span>
+                <div class="ca-brand-title">
+                  <span>CookieAccess</span>
+                  <span class="ca-verified-badge">Privacy Shield</span>
+                </div>
+                <div style="font-size:12px;color:var(--ca-text-muted);">Universal Privacy & Consent Center</div>
               </div>
             </div>
             <button class="ca-close-icon-btn" id="ca-modal-close-btn" aria-label="Close modal">${getSVG('close')}</button>
           </div>
 
-          <!-- Clean Body -->
+          <!-- Body with Fluid Cards (NO DROPDOWNS) -->
           <div class="ca-clean-body">
             <p>
-              We use cookies to improve your browsing experience, provide secure logins, analyze site performance, and serve relevant content. By clicking <strong>"Accept All"</strong>, you consent to our use of cookies as detailed in our <a href="${config.privacyPolicyUrl}" target="_blank" rel="noopener">Privacy Notice</a> and <a href="${config.cookiePolicyUrl}" target="_blank" rel="noopener">Cookie Policy</a>.
+              We value your privacy. We use essential cookies to maintain security and optional Google Analytics to enhance user experience. Adjust your permissions below:
             </p>
 
-            <!-- Quick Active Categories Overview -->
-            <div class="ca-quick-badges">
-              <span class="ca-pill-badge ca-pill-active">✓ Strictly Necessary</span>
-              <span class="ca-pill-badge" id="ca-badge-analytics">Analytics (GA4)</span>
-              <span class="ca-pill-badge" id="ca-badge-functional">Functional</span>
-              <span class="ca-pill-badge" id="ca-badge-marketing">Advertisement</span>
-            </div>
-
-            <!-- Detailed Accordions (Hidden until 'Customize Settings' is clicked) -->
-            <div class="ca-details-section" id="ca-details-section">
-              <!-- Necessary -->
-              <div class="ca-pref-group ca-open">
-                <div class="ca-pref-header">
-                  <div class="ca-pref-left">
-                    <span class="ca-pref-icon">${getSVG('chevron')}</span>
-                    <div>
-                      <span class="ca-pref-name">Strictly Necessary Cookies</span>
-                      <span class="ca-pref-badge ca-locked">Always Active</span>
+            <div class="ca-fluid-cards-list">
+              <!-- 1. Strictly Necessary -->
+              <div class="ca-fluid-card">
+                <div class="ca-fluid-card-info">
+                  <div class="ca-fluid-card-icon" style="color:#059669;">🛡️</div>
+                  <div class="ca-fluid-card-text">
+                    <div class="ca-fluid-card-title">
+                      <span>Strictly Necessary</span>
+                      <span class="ca-card-tag ca-tag-required">Always Active</span>
                     </div>
-                  </div>
-                  <div class="ca-pref-right">
-                    <label class="ca-switch"><input type="checkbox" id="ca-toggle-necessary" checked disabled><span class="ca-slider"></span></label>
+                    <div class="ca-fluid-card-desc">Essential for secure authentication, session tokens, and saving consent choices.</div>
                   </div>
                 </div>
-                <div class="ca-pref-body">
-                  <p class="ca-pref-desc-text">Essential for secure authentication, CSRF validation, and storing your consent choices.</p>
-                  ${renderCookieTable(cookieInventory.necessary)}
-                </div>
+                <label class="ca-switch">
+                  <input type="checkbox" id="ca-toggle-necessary" checked disabled>
+                  <span class="ca-slider"></span>
+                </label>
               </div>
 
-              <!-- Analytics (GA4) -->
-              <div class="ca-pref-group">
-                <div class="ca-pref-header">
-                  <div class="ca-pref-left">
-                    <span class="ca-pref-icon">${getSVG('chevron')}</span>
-                    <div>
-                      <span class="ca-pref-name">Analytics & Telemetry (GA4)</span>
-                      <span class="ca-pref-badge ca-opt-in">Optional</span>
+              <!-- 2. Google Analytics 4 (GA4) -->
+              <div class="ca-fluid-card">
+                <div class="ca-fluid-card-info">
+                  <div class="ca-fluid-card-icon" style="color:#2563eb;">📊</div>
+                  <div class="ca-fluid-card-text">
+                    <div class="ca-fluid-card-title">
+                      <span>Google Analytics (GA4)</span>
+                      <span class="ca-card-tag">Consent Mode v2</span>
                     </div>
-                  </div>
-                  <div class="ca-pref-right">
-                    <label class="ca-switch"><input type="checkbox" id="ca-toggle-analytics"><span class="ca-slider"></span></label>
+                    <div class="ca-fluid-card-desc">Measures anonymous traffic trends, page views, and visitor performance telemetry.</div>
                   </div>
                 </div>
-                <div class="ca-pref-body">
-                  <p class="ca-pref-desc-text">Enables Google Analytics 4 telemetry with Google Consent Mode v2 to analyze visitor traffic anonymously.</p>
-                  ${renderCookieTable(cookieInventory.analytics)}
-                </div>
+                <label class="ca-switch">
+                  <input type="checkbox" id="ca-toggle-analytics">
+                  <span class="ca-slider"></span>
+                </label>
               </div>
 
-              <!-- Functional -->
-              <div class="ca-pref-group">
-                <div class="ca-pref-header">
-                  <div class="ca-pref-left">
-                    <span class="ca-pref-icon">${getSVG('chevron')}</span>
-                    <div>
-                      <span class="ca-pref-name">Functional Preferences</span>
-                      <span class="ca-pref-badge ca-opt-in">Optional</span>
+              <!-- 3. Functional & Preferences -->
+              <div class="ca-fluid-card">
+                <div class="ca-fluid-card-info">
+                  <div class="ca-fluid-card-icon" style="color:#d97706;">⚙️</div>
+                  <div class="ca-fluid-card-text">
+                    <div class="ca-fluid-card-title">
+                      <span>Functional & Preferences</span>
+                      <span class="ca-card-tag">Personalization</span>
                     </div>
-                  </div>
-                  <div class="ca-pref-right">
-                    <label class="ca-switch"><input type="checkbox" id="ca-toggle-functional"><span class="ca-slider"></span></label>
+                    <div class="ca-fluid-card-desc">Remembers chosen UI language, appearance preferences, and site settings.</div>
                   </div>
                 </div>
-                <div class="ca-pref-body">
-                  <p class="ca-pref-desc-text">Remembers language and appearance preferences across visits.</p>
-                  ${renderCookieTable(cookieInventory.functional)}
-                </div>
+                <label class="ca-switch">
+                  <input type="checkbox" id="ca-toggle-functional">
+                  <span class="ca-slider"></span>
+                </label>
               </div>
 
-              <!-- Advertisement -->
-              <div class="ca-pref-group">
-                <div class="ca-pref-header">
-                  <div class="ca-pref-left">
-                    <span class="ca-pref-icon">${getSVG('chevron')}</span>
-                    <div>
-                      <span class="ca-pref-name">Marketing & Advertising</span>
-                      <span class="ca-pref-badge ca-opt-in">Optional</span>
+              <!-- 4. Marketing & Advertisement -->
+              <div class="ca-fluid-card">
+                <div class="ca-fluid-card-info">
+                  <div class="ca-fluid-card-icon" style="color:#ec4899;">🎯</div>
+                  <div class="ca-fluid-card-text">
+                    <div class="ca-fluid-card-title">
+                      <span>Targeting & Ads</span>
+                      <span class="ca-card-tag">Optional</span>
                     </div>
-                  </div>
-                  <div class="ca-pref-right">
-                    <label class="ca-switch"><input type="checkbox" id="ca-toggle-advertisement"><span class="ca-slider"></span></label>
+                    <div class="ca-fluid-card-desc">Used to deliver relevant behavioral advertising campaigns across partner platforms.</div>
                   </div>
                 </div>
-                <div class="ca-pref-body">
-                  <p class="ca-pref-desc-text">Used to deliver personalized advertising campaigns and measure conversion efficacy.</p>
-                  ${renderCookieTable(cookieInventory.advertisement)}
-                </div>
+                <label class="ca-switch">
+                  <input type="checkbox" id="ca-toggle-advertisement">
+                  <span class="ca-slider"></span>
+                </label>
               </div>
             </div>
           </div>
 
-          <!-- Clean Footer Actions -->
+          <!-- Clean Footer Actions with Branding -->
           <div class="ca-clean-footer">
-            <div class="ca-footer-actions-left">
-              <button class="ca-btn-link" id="ca-btn-toggle-customize">Customize Settings ⚙️</button>
+            <div class="ca-footer-brand-tag">
+              ${getSVG('brandLogo')}
+              <span>Powered by <strong>CookieAccess</strong> • Free Forever</span>
             </div>
             <div class="ca-footer-actions-right">
-              <button class="ca-btn ca-btn-outline" id="ca-modal-reject">Reject Non-Essential</button>
+              <button class="ca-btn ca-btn-outline" id="ca-modal-reject">Decline Non-Essential</button>
+              <button class="ca-btn ca-btn-outline" id="ca-modal-save">Save Choices</button>
               <button class="ca-btn ca-btn-primary" id="ca-modal-accept">Accept All</button>
             </div>
           </div>
@@ -471,27 +433,24 @@
       drawer.innerHTML = `
         <div class="ca-a11y-topbar">
           <div class="ca-a11y-topbar-title">
-            ${getSVG('a11y')}
-            <span>Accessibility Assistant</span>
+            <div class="ca-brand-logo-icon" style="width:34px;height:34px;">${getSVG('a11y')}</div>
+            <div>
+              <div style="font-size:15px;font-weight:800;">CookieAccess</div>
+              <div style="font-size:11px;color:var(--ca-text-muted);">Accessibility Suite (WCAG 2.2 AA)</div>
+            </div>
           </div>
-          <div class="ca-a11y-top-actions">
-            <button class="ca-btn ca-btn-subtle ca-btn-sm" id="ca-a11y-reset-btn" title="Reset all adjustments">Reset</button>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <button class="ca-btn ca-btn-outline ca-btn-sm" id="ca-a11y-reset-btn" title="Reset all adjustments">Reset</button>
             <button class="ca-close-icon-btn" id="ca-a11y-close-btn" aria-label="Close accessibility panel">${getSVG('close')}</button>
           </div>
         </div>
 
         <div class="ca-a11y-scrollable">
-          <!-- Search Bar -->
-          <div class="ca-a11y-search-wrap">
-            <span class="ca-a11y-search-icon">${getSVG('search')}</span>
-            <input type="text" class="ca-a11y-search-input" id="ca-a11y-search" placeholder="Search features (e.g. font, contrast)...">
-          </div>
-
-          <!-- Audio Screen Reader -->
+          <!-- Audio Screen Reader (TTS) -->
           <div class="ca-audio-panel">
             <div class="ca-audio-status" id="ca-audio-status">
               <span>🔊</span>
-              <span id="ca-audio-text">Screen Reader: Ready</span>
+              <span id="ca-audio-text">Audio Reader: Ready</span>
             </div>
             <div style="display:flex;gap:6px;">
               <button class="ca-btn ca-btn-primary ca-btn-sm" id="ca-audio-read-btn">Read Page</button>
@@ -499,16 +458,16 @@
             </div>
           </div>
 
-          <!-- Profiles -->
+          <!-- Section 1: Pre-set Profiles -->
           <div class="ca-section-heading">
             <span>ACCESSIBILITY PROFILES</span>
-            <span style="font-weight:400;font-size:11px;color:var(--ca-text-muted);">Quick Pre-sets</span>
+            <span style="font-weight:400;font-size:11px;color:var(--ca-text-muted);">One-Click Presets</span>
           </div>
           <div class="ca-profile-list">
             <div class="ca-profile-row" data-profile="seizure">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">🛡️ Seizure Safe Profile</span>
-                <span class="ca-profile-desc">Clears flashes & pauses animations to eliminate risks.</span>
+                <span class="ca-profile-desc">Freezes motion & removes flashes to prevent seizure triggers.</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="seizure"><span class="ca-slider"></span></label>
             </div>
@@ -516,7 +475,7 @@
             <div class="ca-profile-row" data-profile="vision">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">👁️ Vision Impaired Profile</span>
-                <span class="ca-profile-desc">Enhances text scale, dark contrast, and link highlights.</span>
+                <span class="ca-profile-desc">125% text scale, high dark contrast, and link highlights.</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="vision"><span class="ca-slider"></span></label>
             </div>
@@ -524,7 +483,7 @@
             <div class="ca-profile-row" data-profile="adhd">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">⚡ ADHD Friendly Profile</span>
-                <span class="ca-profile-desc">Reading mask with focused slit to prevent distractions.</span>
+                <span class="ca-profile-desc">Reading mask focus slit & stops background animations.</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="adhd"><span class="ca-slider"></span></label>
             </div>
@@ -532,7 +491,7 @@
             <div class="ca-profile-row" data-profile="dyslexia">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">📖 Dyslexia Friendly Profile</span>
-                <span class="ca-profile-desc">Legible dyslexic font with increased letter spacing.</span>
+                <span class="ca-profile-desc">Lexend readable font with increased letter spacing.</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="dyslexia"><span class="ca-slider"></span></label>
             </div>
@@ -540,25 +499,25 @@
             <div class="ca-profile-row" data-profile="cognitive">
               <div class="ca-profile-text">
                 <span class="ca-profile-title">🧠 Cognitive Focus Profile</span>
-                <span class="ca-profile-desc">Reading guide line and outlined headings for focus.</span>
+                <span class="ca-profile-desc">Laser reading guide line & highlighted section titles.</span>
               </div>
               <label class="ca-switch"><input type="checkbox" data-profile-switch="cognitive"><span class="ca-slider"></span></label>
             </div>
           </div>
 
-          <!-- Content Adjustments -->
+          <!-- Section 2: Content & Typography -->
           <div class="ca-section-heading">CONTENT & TYPOGRAPHY</div>
           <div class="ca-tools-grid">
             <div class="ca-tool-card" id="ca-tool-dyslexic">
               <div class="ca-tool-icon">📖</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">Dyslexia Font</span>
-                <span class="ca-tool-status">Legible typeface</span>
+                <span class="ca-tool-status">Lexend Typeface</span>
               </div>
             </div>
 
             <div class="ca-tool-card" id="ca-tool-size">
-              <div class="ca-tool-icon" style="font-weight:700;">A+</div>
+              <div class="ca-tool-icon" style="font-weight:800;">A+</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">Bigger Text</span>
                 <span class="ca-tool-status" id="ca-status-size">Default (100%)</span>
@@ -569,7 +528,7 @@
               <div class="ca-tool-icon">↔</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">Text Spacing</span>
-                <span class="ca-tool-status">Letter spacing</span>
+                <span class="ca-tool-status">Letter Spacing</span>
               </div>
             </div>
 
@@ -577,7 +536,7 @@
               <div class="ca-tool-icon">↕</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">Line Height</span>
-                <span class="ca-tool-status">Double spacing</span>
+                <span class="ca-tool-status">Double Spacing</span>
               </div>
             </div>
 
@@ -585,27 +544,27 @@
               <div class="ca-tool-icon">🔗</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">Highlight Links</span>
-                <span class="ca-tool-status">High visibility</span>
+                <span class="ca-tool-status">High Visibility</span>
               </div>
             </div>
 
             <div class="ca-tool-card" id="ca-tool-highlight-headings">
               <div class="ca-tool-icon">🏷️</div>
               <div class="ca-tool-meta">
-                <span class="ca-tool-name">Highlight Headings</span>
-                <span class="ca-tool-status">Outline H1-H6</span>
+                <span class="ca-tool-name">Highlight Titles</span>
+                <span class="ca-tool-status">Outline Headings</span>
               </div>
             </div>
           </div>
 
-          <!-- Color Adjustments -->
+          <!-- Section 3: Color & Contrast -->
           <div class="ca-section-heading">COLOR & CONTRAST</div>
           <div class="ca-tools-grid">
             <div class="ca-tool-card" id="ca-tool-contrast-dark">
               <div class="ca-tool-icon">🌓</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">Dark Contrast</span>
-                <span class="ca-tool-status">High contrast</span>
+                <span class="ca-tool-status">High Contrast</span>
               </div>
             </div>
 
@@ -613,7 +572,7 @@
               <div class="ca-tool-icon">🔄</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">Invert Colors</span>
-                <span class="ca-tool-status">Color reversal</span>
+                <span class="ca-tool-status">Color Reversal</span>
               </div>
             </div>
 
@@ -621,7 +580,7 @@
               <div class="ca-tool-icon">⚪</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">Monochrome</span>
-                <span class="ca-tool-status">Black & white</span>
+                <span class="ca-tool-status">Black & White</span>
               </div>
             </div>
 
@@ -629,19 +588,19 @@
               <div class="ca-tool-icon">🎨</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">High Saturation</span>
-                <span class="ca-tool-status">Vivid colors</span>
+                <span class="ca-tool-status">Vivid Colors</span>
               </div>
             </div>
           </div>
 
-          <!-- Orientation -->
+          <!-- Section 4: Orientation & Tools -->
           <div class="ca-section-heading">ORIENTATION & VISUAL AIDS</div>
           <div class="ca-tools-grid">
             <div class="ca-tool-card" id="ca-tool-stop-animations">
               <div class="ca-tool-icon">⏹️</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">Stop Animations</span>
-                <span class="ca-tool-status">Freeze motion</span>
+                <span class="ca-tool-status">Freeze Motion</span>
               </div>
             </div>
 
@@ -649,7 +608,7 @@
               <div class="ca-tool-icon">📏</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">Reading Guide</span>
-                <span class="ca-tool-status">Follows cursor</span>
+                <span class="ca-tool-status">Follow Cursor</span>
               </div>
             </div>
 
@@ -657,7 +616,7 @@
               <div class="ca-tool-icon">🕶️</div>
               <div class="ca-tool-meta">
                 <span class="ca-tool-name">Reading Mask</span>
-                <span class="ca-tool-status">Focus slit</span>
+                <span class="ca-tool-status">Focus Slit</span>
               </div>
             </div>
 
@@ -672,7 +631,7 @@
         </div>
 
         <div class="ca-a11y-footer">
-          <span style="font-size:11.5px;color:var(--ca-text-muted);">WCAG 2.2 Level AA / ADA Compliant</span>
+          <span style="font-size:11.5px;color:var(--ca-text-muted);">ADA Title III & WCAG 2.2 Compliant</span>
           <button class="ca-btn ca-btn-primary ca-btn-sm" id="ca-a11y-done-btn">Done</button>
         </div>
       `;
@@ -684,52 +643,20 @@
     loadA11yState();
   }
 
-  function renderCookieTable(cookies) {
-    let rows = cookies.map(c => `
-      <tr>
-        <td class="ca-cookie-name">${c.name}</td>
-        <td>${c.provider}</td>
-        <td>${c.duration}</td>
-        <td>${c.purpose}</td>
-      </tr>
-    `).join('');
-
-    return `
-      <table class="ca-cookie-table">
-        <thead>
-          <tr>
-            <th>Cookie</th>
-            <th>Provider</th>
-            <th>Duration</th>
-            <th>Purpose</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rows}
-        </tbody>
-      </table>
-    `;
-  }
-
   function cacheDOM() {
     elements = {
       launcherCookie: document.getElementById('ca-launcher-cookie'),
       launcherA11y: document.getElementById('ca-launcher-a11y'),
       splitBadge: document.getElementById('ca-split-badge'),
       modalDialog: document.getElementById('ca-modal-dialog'),
-      dialogWindow: document.getElementById('ca-dialog-window'),
-      detailsSection: document.getElementById('ca-details-section'),
-      btnToggleCustomize: document.getElementById('ca-btn-toggle-customize'),
       modalCloseBtn: document.getElementById('ca-modal-close-btn'),
       modalAccept: document.getElementById('ca-modal-accept'),
       modalReject: document.getElementById('ca-modal-reject'),
+      modalSave: document.getElementById('ca-modal-save'),
       toggleNecessary: document.getElementById('ca-toggle-necessary'),
       toggleFunctional: document.getElementById('ca-toggle-functional'),
       toggleAnalytics: document.getElementById('ca-toggle-analytics'),
       toggleAdvertisement: document.getElementById('ca-toggle-advertisement'),
-      badgeAnalytics: document.getElementById('ca-badge-analytics'),
-      badgeFunctional: document.getElementById('ca-badge-functional'),
-      badgeMarketing: document.getElementById('ca-badge-marketing'),
       a11yDrawer: document.getElementById('ca-a11y-drawer'),
       a11yCloseBtn: document.getElementById('ca-a11y-close-btn'),
       a11yDoneBtn: document.getElementById('ca-a11y-done-btn'),
@@ -745,7 +672,6 @@
   }
 
   function bindEvents() {
-    // Split Circle Click Handlers
     if (elements.launcherCookie) {
       elements.launcherCookie.addEventListener('click', () => openPreferencesModal());
     }
@@ -753,7 +679,6 @@
       elements.launcherA11y.addEventListener('click', () => openA11yDrawer());
     }
 
-    // Modal Actions
     if (elements.modalCloseBtn) {
       elements.modalCloseBtn.addEventListener('click', () => closePreferencesModal());
     }
@@ -763,20 +688,9 @@
       });
     }
 
-    // "Customize Settings" toggle
-    let isExpanded = false;
-    if (elements.btnToggleCustomize) {
-      elements.btnToggleCustomize.addEventListener('click', () => {
-        isExpanded = !isExpanded;
-        if (elements.detailsSection) elements.detailsSection.classList.toggle('ca-show', isExpanded);
-        if (elements.dialogWindow) elements.dialogWindow.classList.toggle('ca-expanded', isExpanded);
-        elements.btnToggleCustomize.textContent = isExpanded ? 'Hide Settings ▲' : 'Customize Settings ⚙️';
-      });
-    }
-
     if (elements.modalAccept) {
       elements.modalAccept.addEventListener('click', () => {
-        const choice = { necessary: true, functional: true, analytics: true, performance: true, advertisement: true };
+        const choice = { necessary: true, functional: true, analytics: true, advertisement: true };
         saveConsent(choice);
         syncToggles(choice);
         closePreferencesModal();
@@ -785,23 +699,26 @@
 
     if (elements.modalReject) {
       elements.modalReject.addEventListener('click', () => {
-        const choice = { necessary: true, functional: false, analytics: false, performance: false, advertisement: false };
+        const choice = { necessary: true, functional: false, analytics: false, advertisement: false };
         saveConsent(choice);
         syncToggles(choice);
         closePreferencesModal();
       });
     }
 
-    // Accordions
-    document.querySelectorAll('.ca-pref-header').forEach(header => {
-      header.addEventListener('click', (e) => {
-        if (e.target.closest('.ca-switch')) return;
-        const group = header.closest('.ca-pref-group');
-        if (group) group.classList.toggle('ca-open');
+    if (elements.modalSave) {
+      elements.modalSave.addEventListener('click', () => {
+        const choice = {
+          necessary: true,
+          functional: elements.toggleFunctional ? elements.toggleFunctional.checked : false,
+          analytics: elements.toggleAnalytics ? elements.toggleAnalytics.checked : false,
+          advertisement: elements.toggleAdvertisement ? elements.toggleAdvertisement.checked : false
+        };
+        saveConsent(choice);
+        closePreferencesModal();
       });
-    });
+    }
 
-    // Drawer Buttons
     if (elements.a11yCloseBtn) elements.a11yCloseBtn.addEventListener('click', () => closeA11yDrawer());
     if (elements.a11yDoneBtn) elements.a11yDoneBtn.addEventListener('click', () => closeA11yDrawer());
     if (elements.a11yResetBtn) elements.a11yResetBtn.addEventListener('click', () => resetA11ySettings());
@@ -817,10 +734,11 @@
   }
 
   // =========================================================================
-  // A11Y TOOLS
+  // 100% WORKING ACCESSIBILITY TOOLS
   // =========================================================================
 
   function setupA11yTools() {
+    // 1. Dyslexia Font (Swaps to Lexend)
     const btnDyslexic = document.getElementById('ca-tool-dyslexic');
     if (btnDyslexic) {
       btnDyslexic.addEventListener('click', () => {
@@ -829,17 +747,19 @@
       });
     }
 
+    // 2. Bigger Text (Cycle 100% -> 110% -> 125% -> 140% -> 100%)
     const btnSize = document.getElementById('ca-tool-size');
     if (btnSize) {
       btnSize.addEventListener('click', () => {
         if (a11yState.textSize === 100) a11yState.textSize = 110;
-        else if (a11yState.textSize === 110) a11yState.textSize = 120;
-        else if (a11yState.textSize === 120) a11yState.textSize = 130;
+        else if (a11yState.textSize === 110) a11yState.textSize = 125;
+        else if (a11yState.textSize === 125) a11yState.textSize = 140;
         else a11yState.textSize = 100;
         applyA11yState();
       });
     }
 
+    // 3. Spacing
     const btnSpacing = document.getElementById('ca-tool-spacing');
     if (btnSpacing) {
       btnSpacing.addEventListener('click', () => {
@@ -848,6 +768,7 @@
       });
     }
 
+    // 4. Line height
     const btnLineHeight = document.getElementById('ca-tool-line-height');
     if (btnLineHeight) {
       btnLineHeight.addEventListener('click', () => {
@@ -856,6 +777,7 @@
       });
     }
 
+    // 5. Highlight links & headings
     const btnLinks = document.getElementById('ca-tool-highlight-links');
     if (btnLinks) {
       btnLinks.addEventListener('click', () => {
@@ -872,6 +794,7 @@
       });
     }
 
+    // 6. Contrast buttons
     const contrasts = [
       { id: 'ca-tool-contrast-dark', val: 'dark' },
       { id: 'ca-tool-contrast-invert', val: 'invert' },
@@ -888,6 +811,7 @@
       }
     });
 
+    // 7. Stop motion
     const btnStopMotion = document.getElementById('ca-tool-stop-animations');
     if (btnStopMotion) {
       btnStopMotion.addEventListener('click', () => {
@@ -896,6 +820,7 @@
       });
     }
 
+    // 8. Reading guide
     const btnGuide = document.getElementById('ca-tool-reading-guide');
     if (btnGuide) {
       btnGuide.addEventListener('click', () => {
@@ -904,6 +829,7 @@
       });
     }
 
+    // 9. Reading mask
     const btnMask = document.getElementById('ca-tool-reading-mask');
     if (btnMask) {
       btnMask.addEventListener('click', () => {
@@ -912,6 +838,7 @@
       });
     }
 
+    // 10. Big Cursor (none -> white -> black -> none)
     const btnCursor = document.getElementById('ca-tool-cursor');
     if (btnCursor) {
       btnCursor.addEventListener('click', () => {
@@ -922,6 +849,7 @@
       });
     }
 
+    // 11. Profile switches
     document.querySelectorAll('[data-profile-switch]').forEach(sw => {
       sw.addEventListener('change', () => {
         const prof = sw.getAttribute('data-profile-switch');
@@ -934,17 +862,6 @@
     });
 
     setupAudioTTS();
-
-    const searchInput = document.getElementById('ca-a11y-search');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        const q = e.target.value.toLowerCase().trim();
-        document.querySelectorAll('.ca-tool-card, .ca-profile-row').forEach(card => {
-          const text = card.innerText.toLowerCase();
-          card.style.display = text.includes(q) ? '' : 'none';
-        });
-      });
-    }
   }
 
   function applyProfile(profile) {
@@ -956,7 +873,7 @@
         a11yState.contrast = 'monochrome';
         break;
       case 'vision':
-        a11yState.textSize = 120;
+        a11yState.textSize = 125;
         a11yState.contrast = 'dark';
         a11yState.highlightLinks = true;
         a11yState.bigCursor = 'white';
@@ -982,27 +899,32 @@
   function applyA11yState() {
     const docEl = document.documentElement;
 
+    // 1. Dyslexia Font
     docEl.classList.toggle('ca-dyslexic-font', a11yState.dyslexicFont);
     toggleCardActive('ca-tool-dyslexic', a11yState.dyslexicFont);
 
-    docEl.classList.remove('ca-text-110', 'ca-text-120', 'ca-text-130');
+    // 2. Text Sizing
+    docEl.classList.remove('ca-text-110', 'ca-text-125', 'ca-text-140');
     if (a11yState.textSize > 100) docEl.classList.add(`ca-text-${a11yState.textSize}`);
     const sizeStatus = document.getElementById('ca-status-size');
     if (sizeStatus) sizeStatus.textContent = `${a11yState.textSize}%`;
     toggleCardActive('ca-tool-size', a11yState.textSize > 100);
 
+    // 3. Spacing & Line Height
     docEl.classList.toggle('ca-letter-spacing', a11yState.letterSpacing);
     toggleCardActive('ca-tool-spacing', a11yState.letterSpacing);
 
     docEl.classList.toggle('ca-line-height', a11yState.lineHeight);
     toggleCardActive('ca-tool-line-height', a11yState.lineHeight);
 
+    // 4. Links & Headings
     docEl.classList.toggle('ca-highlight-links', a11yState.highlightLinks);
     toggleCardActive('ca-tool-highlight-links', a11yState.highlightLinks);
 
     docEl.classList.toggle('ca-highlight-headings', a11yState.highlightHeadings);
     toggleCardActive('ca-tool-highlight-headings', a11yState.highlightHeadings);
 
+    // 5. Contrasts
     docEl.classList.remove('ca-contrast-dark', 'ca-contrast-invert', 'ca-contrast-monochrome', 'ca-high-saturation');
     toggleCardActive('ca-tool-contrast-dark', a11yState.contrast === 'dark');
     toggleCardActive('ca-tool-contrast-invert', a11yState.contrast === 'invert');
@@ -1014,9 +936,11 @@
     else if (a11yState.contrast === 'monochrome') docEl.classList.add('ca-contrast-monochrome');
     else if (a11yState.contrast === 'saturate') docEl.classList.add('ca-high-saturation');
 
+    // 6. Stop Motion
     docEl.classList.toggle('ca-stop-animations', a11yState.stopAnimations);
     toggleCardActive('ca-tool-stop-animations', a11yState.stopAnimations);
 
+    // 7. Big Cursor
     docEl.classList.remove('ca-big-cursor', 'ca-big-cursor-black');
     const cursorStatus = document.getElementById('ca-status-cursor');
     if (a11yState.bigCursor === 'white') {
@@ -1032,11 +956,13 @@
       toggleCardActive('ca-tool-cursor', false);
     }
 
+    // 8. Reading Guide
     if (elements.readingGuideLine) {
       elements.readingGuideLine.style.display = a11yState.readingGuide ? 'block' : 'none';
       toggleCardActive('ca-tool-reading-guide', a11yState.readingGuide);
     }
 
+    // 9. Reading Mask
     if (elements.readingMaskTop && elements.readingMaskBottom) {
       const showMask = a11yState.readingMask;
       elements.readingMaskTop.style.display = showMask ? 'block' : 'none';
@@ -1044,6 +970,7 @@
       toggleCardActive('ca-tool-reading-mask', showMask);
     }
 
+    // Count Active
     let count = 0;
     if (a11yState.dyslexicFont) count++;
     if (a11yState.textSize > 100) count++;
@@ -1112,7 +1039,7 @@
 
   function setupAudioTTS() {
     if (!('speechSynthesis' in window)) {
-      if (elements.audioText) elements.audioText.textContent = 'Speech synthesis not supported';
+      if (elements.audioText) elements.audioText.textContent = 'Audio not supported in browser';
       return;
     }
 
@@ -1131,10 +1058,10 @@
         clickToSpeakActive = !clickToSpeakActive;
         elements.audioClickBtn.classList.toggle('ca-btn-primary', clickToSpeakActive);
         if (clickToSpeakActive) {
-          elements.audioText.textContent = 'Click any paragraph to hear it';
+          elements.audioText.textContent = 'Click any paragraph to hear it read';
           document.body.style.cursor = 'help';
         } else {
-          elements.audioText.textContent = 'Screen Reader: Ready';
+          elements.audioText.textContent = 'Audio Reader: Ready';
           document.body.style.cursor = '';
         }
       });
@@ -1220,7 +1147,7 @@
     }
     document.querySelectorAll('.ca-speaking-highlight').forEach(el => el.classList.remove('ca-speaking-highlight'));
     if (elements.audioReadBtn) elements.audioReadBtn.textContent = 'Read Page';
-    if (elements.audioText) elements.audioText.textContent = 'Screen Reader: Ready';
+    if (elements.audioText) elements.audioText.textContent = 'Audio Reader: Ready';
   }
 
   // =========================================================================
@@ -1251,23 +1178,10 @@
     if (elements.toggleFunctional) elements.toggleFunctional.checked = Boolean(categories.functional);
     if (elements.toggleAnalytics) elements.toggleAnalytics.checked = Boolean(categories.analytics);
     if (elements.toggleAdvertisement) elements.toggleAdvertisement.checked = Boolean(categories.advertisement);
-
-    if (elements.badgeAnalytics) {
-      elements.badgeAnalytics.classList.toggle('ca-pill-active', Boolean(categories.analytics));
-      elements.badgeAnalytics.textContent = (categories.analytics ? '✓ ' : '') + 'Analytics (GA4)';
-    }
-    if (elements.badgeFunctional) {
-      elements.badgeFunctional.classList.toggle('ca-pill-active', Boolean(categories.functional));
-      elements.badgeFunctional.textContent = (categories.functional ? '✓ ' : '') + 'Functional';
-    }
-    if (elements.badgeMarketing) {
-      elements.badgeMarketing.classList.toggle('ca-pill-active', Boolean(categories.advertisement));
-      elements.badgeMarketing.textContent = (categories.advertisement ? '✓ ' : '') + 'Advertisement';
-    }
   }
 
   // =========================================================================
-  // PUBLIC INITIALIZATION API
+  // INITIALIZATION API
   // =========================================================================
 
   function init(options = {}) {
@@ -1293,7 +1207,6 @@
   function checkInitialState() {
     const saved = getSavedConsent();
     if (!saved && config.enableConsentBanner) {
-      // First visit: Show the clean rounded popup with blurred backdrop
       setTimeout(() => {
         openPreferencesModal();
       }, 350);
