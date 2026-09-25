@@ -432,16 +432,21 @@
 
       window.addEventListener('mousemove', function (e) {
         if (a11yState.readingGuide) {
-          guideLine.style.top = (e.clientY - 2) + 'px';
+          const g = document.getElementById('ca-reading-guide-line');
+          if (g) g.style.top = (e.clientY - 4) + 'px';
         }
         if (a11yState.readingMask) {
-          const slitHeight = 110;
-          const topH = Math.max(0, e.clientY - (slitHeight / 2));
-          const botY = e.clientY + (slitHeight / 2);
-          maskTop.style.top = '0';
-          maskTop.style.height = topH + 'px';
-          maskBottom.style.top = botY + 'px';
-          maskBottom.style.height = (window.innerHeight - botY) + 'px';
+          const mTop = document.getElementById('ca-reading-mask-top');
+          const mBot = document.getElementById('ca-reading-mask-bottom');
+          if (mTop && mBot) {
+            const slitHeight = 120;
+            const topH = Math.max(0, e.clientY - (slitHeight / 2));
+            const botY = e.clientY + (slitHeight / 2);
+            mTop.style.top = '0';
+            mTop.style.height = topH + 'px';
+            mBot.style.top = botY + 'px';
+            mBot.style.height = Math.max(0, window.innerHeight - botY) + 'px';
+          }
         }
       });
     }
@@ -618,7 +623,7 @@
           </div>
           <div class="ca-a11y-topbar-actions">
             <button class="ca-a11y-icon-btn" id="ca-a11y-reset-btn" title="Reset all adjustments">${getSVG('reset')}</button>
-            <button class="ca-a11y-icon-btn" id="ca-a11y-close-btn" aria-label="Close accessibility panel">${getSVG('close')}</button>
+            <button class="ca-a11y-icon-btn" id="ca-a11y-close-btn" aria-label="Close AccessiAccess panel">${getSVG('close')}</button>
           </div>
         </div>
 
@@ -636,7 +641,7 @@
           <div class="ca-a11y-card-row ca-subtle-border" id="ca-profiles-trigger">
             <div class="ca-a11y-card-row-left">
               <span class="ca-a11y-badge-icon" style="font-size:13px;">♿</span>
-              <span>Accessibility Profiles</span>
+              <span>AccessiAccess Profiles</span>
             </div>
             ${getSVG('arrowRight')}
           </div>
@@ -684,8 +689,8 @@
             </div>
           </div>
 
-          <!-- Section: Content adjustments -->
-          <div class="ca-a11y-section-title">Content adjustments</div>
+          <!-- Section: AccessiAccess Adjustments -->
+          <div class="ca-a11y-section-title">AccessiAccess Adjustments</div>
 
           <!-- Adjust Font Size & Highlight Title row -->
           <div class="ca-adjuster-card-row">
@@ -742,6 +747,11 @@
             <div class="ca-square-tool-btn" id="ca-tool-monochrome" title="Monochrome">
               <div class="ca-square-tool-icon">⚪</div>
               <div class="ca-square-tool-title">Monochrome</div>
+            </div>
+
+            <div class="ca-square-tool-btn" id="ca-tool-saturation" title="High Saturation">
+              <div class="ca-square-tool-icon">🌈</div>
+              <div class="ca-square-tool-title">High Saturation</div>
             </div>
 
             <div class="ca-square-tool-btn" id="ca-tool-cursor" title="Big Cursor">
@@ -1132,7 +1142,16 @@
 
     // 2. Text Sizing (stepper)
     docEl.classList.remove('ca-text-90', 'ca-text-110', 'ca-text-120', 'ca-text-125', 'ca-text-130', 'ca-text-140');
-    if (a11yState.textSize !== 100) docEl.classList.add(`ca-text-${a11yState.textSize}`);
+    if (a11yState.textSize !== 100) {
+      docEl.classList.add(`ca-text-${a11yState.textSize}`);
+      if (document.body) {
+        document.body.style.zoom = (a11yState.textSize / 100);
+      }
+    } else {
+      if (document.body) {
+        document.body.style.zoom = '';
+      }
+    }
     const fontValEl = document.getElementById('ca-font-val');
     if (fontValEl) fontValEl.textContent = `${a11yState.textSize}%`;
 
@@ -1183,27 +1202,31 @@
     }
 
     // 8. Reading Guide
-    if (elements.readingGuideLine) {
-      elements.readingGuideLine.style.display = a11yState.readingGuide ? 'block' : 'none';
-      if (a11yState.readingGuide && !elements.readingGuideLine.style.top) {
-        elements.readingGuideLine.style.top = (window.innerHeight / 2) + 'px';
+    const guideEl = document.getElementById('ca-reading-guide-line');
+    if (guideEl) {
+      guideEl.style.display = a11yState.readingGuide ? 'block' : 'none';
+      if (a11yState.readingGuide) {
+        guideEl.style.top = (window.innerHeight / 2) + 'px';
       }
       toggleCardActive('ca-tool-reading-guide', a11yState.readingGuide);
     }
 
     // 9. Reading Mask
-    if (elements.readingMaskTop && elements.readingMaskBottom) {
+    const maskTopEl = document.getElementById('ca-reading-mask-top');
+    const maskBotEl = document.getElementById('ca-reading-mask-bottom');
+    if (maskTopEl && maskBotEl) {
       const showMask = a11yState.readingMask;
-      elements.readingMaskTop.style.display = showMask ? 'block' : 'none';
-      elements.readingMaskBottom.style.display = showMask ? 'block' : 'none';
-      if (showMask && !elements.readingMaskTop.style.height) {
+      maskTopEl.style.display = showMask ? 'block' : 'none';
+      maskBotEl.style.display = showMask ? 'block' : 'none';
+      if (showMask) {
         const slitHeight = 120;
-        const topH = Math.max(0, (window.innerHeight / 2) - (slitHeight / 2));
-        const botY = (window.innerHeight / 2) + (slitHeight / 2);
-        elements.readingMaskTop.style.top = '0';
-        elements.readingMaskTop.style.height = topH + 'px';
-        elements.readingMaskBottom.style.top = botY + 'px';
-        elements.readingMaskBottom.style.height = (window.innerHeight - botY) + 'px';
+        const mid = window.innerHeight / 2;
+        const topH = Math.max(0, mid - (slitHeight / 2));
+        const botY = mid + (slitHeight / 2);
+        maskTopEl.style.top = '0';
+        maskTopEl.style.height = topH + 'px';
+        maskBotEl.style.top = botY + 'px';
+        maskBotEl.style.height = Math.max(0, window.innerHeight - botY) + 'px';
       }
       toggleCardActive('ca-tool-reading-mask', showMask);
     }

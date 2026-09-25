@@ -78,11 +78,11 @@ You can block any external script by changing `type="text/javascript"` to `type=
 
 ---
 
-## ♿ Complete Accessibility Assistance Suite (WCAG 2.2 AA)
+## ♿ AccessiAccess — Integrated Web Accessibility Suite (WCAG 2.2 AA)
 
-CookieAccess includes an integrated accessiBe/UserWay alternative toolbar:
+CookieAccess includes **AccessiAccess**, a complete, integrated accessibility assistant and accessiBe/UserWay alternative:
 
-### 1. One-Click Accessibility Profiles
+### 1. One-Click AccessiAccess Profiles
 - 👁️ **Vision Impaired Profile**: 125% text scale, enhanced contrast, link highlights, big white cursor.
 - ⚡ **ADHD Friendly Profile**: Reading mask focus slit, frozen animations, noise reduction.
 - 📖 **Dyslexia Friendly Profile**: OpenDyslexic legible typography, increased letter & line spacing.
