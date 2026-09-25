@@ -308,19 +308,11 @@
 
       modalBackdrop.innerHTML = `
         <div class="ca-dialog-window" id="ca-dialog-window">
-          <!-- Branded Header -->
+          <!-- Clean Standard Header -->
           <div class="ca-clean-header">
-            <div class="ca-brand-header">
-              <div class="ca-brand-logo-icon">
-                ${getSVG('brandLogo')}
-              </div>
-              <div>
-                <div class="ca-brand-title">
-                  <span>CookieAccess</span>
-                  <span class="ca-verified-badge">Privacy Shield</span>
-                </div>
-                <div style="font-size:12px;color:var(--ca-text-muted);">Universal Privacy & Consent Center</div>
-              </div>
+            <div class="ca-header-left">
+              <h2 style="font-size:17px;font-weight:700;color:var(--ca-text);margin:0;">Privacy &amp; Cookie Settings</h2>
+              <div style="font-size:12px;color:var(--ca-text-muted);margin-top:2px;">Manage how cookies and telemetry are used on this site</div>
             </div>
             <button class="ca-close-icon-btn" id="ca-modal-close-btn" aria-label="Close modal">${getSVG('close')}</button>
           </div>
@@ -406,11 +398,13 @@
             </div>
           </div>
 
-          <!-- Clean Footer Actions with Branding -->
+          <!-- Clean Footer Actions with Subtle Branding -->
           <div class="ca-clean-footer">
             <div class="ca-footer-brand-tag">
-              ${getSVG('brandLogo')}
-              <span>Powered by <strong>CookieAccess</strong> • Free Forever</span>
+              <span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ca-text-muted);">
+                ${getSVG('brandLogo')}
+                <span>Powered by <strong style="color:var(--ca-text);">CookieAccess</strong></span>
+              </span>
             </div>
             <div class="ca-footer-actions-right">
               <button class="ca-btn ca-btn-outline" id="ca-modal-reject">Decline Non-Essential</button>
@@ -433,11 +427,8 @@
       drawer.innerHTML = `
         <div class="ca-a11y-topbar">
           <div class="ca-a11y-topbar-title">
-            <div class="ca-brand-logo-icon" style="width:34px;height:34px;">${getSVG('a11y')}</div>
-            <div>
-              <div style="font-size:15px;font-weight:800;">CookieAccess</div>
-              <div style="font-size:11px;color:var(--ca-text-muted);">Accessibility Suite (WCAG 2.2 AA)</div>
-            </div>
+            <span style="font-size:19px;">♿</span>
+            <span style="font-size:16px;font-weight:700;color:var(--ca-text);">Accessibility Assistant</span>
           </div>
           <div style="display:flex;align-items:center;gap:6px;">
             <button class="ca-btn ca-btn-outline ca-btn-sm" id="ca-a11y-reset-btn" title="Reset all adjustments">Reset</button>
@@ -631,7 +622,10 @@
         </div>
 
         <div class="ca-a11y-footer">
-          <span style="font-size:11.5px;color:var(--ca-text-muted);">ADA Title III & WCAG 2.2 Compliant</span>
+          <span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ca-text-muted);">
+            ${getSVG('brandLogo')}
+            <span>Powered by <strong style="color:var(--ca-text);">CookieAccess</strong></span>
+          </span>
           <button class="ca-btn ca-btn-primary ca-btn-sm" id="ca-a11y-done-btn">Done</button>
         </div>
       `;
