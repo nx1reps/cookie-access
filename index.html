@@ -32,14 +32,8 @@
       --c-primary-hover: #1352b0;
       --c-primary-soft: #eff6ff;
       
-      --c-success: #059669;
-      --c-warning: #d97706;
-      --c-danger: #dc2626;
-      
       --radius: 8px;
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
     }
 
     * {
@@ -63,7 +57,7 @@
       padding: 0 24px;
     }
 
-    /* Top Enterprise Navigation (CookieYes / Silktide Style) */
+    /* Enterprise Navigation */
     header {
       background: var(--c-surface);
       border-bottom: 1px solid var(--c-border);
@@ -145,11 +139,6 @@
       border-color: var(--c-border-subtle);
     }
 
-    .btn-sm {
-      padding: 6px 12px;
-      font-size: 12px;
-    }
-
     /* Hero Section */
     .hero {
       padding: 56px 0 40px;
@@ -168,7 +157,7 @@
     }
 
     .hero h1 {
-      font-size: clamp(32px, 4vw, 48px);
+      font-size: clamp(30px, 4vw, 46px);
       font-weight: 800;
       line-height: 1.2;
       letter-spacing: -0.03em;
@@ -178,7 +167,7 @@
     }
 
     .hero-lead {
-      font-size: 17px;
+      font-size: 16.5px;
       color: var(--c-text-muted);
       max-width: 820px;
       line-height: 1.6;
@@ -192,7 +181,7 @@
       flex-wrap: wrap;
     }
 
-    /* Live Telemetry Bar */
+    /* Realtime Telemetry Status Bar */
     .telemetry-bar {
       margin-top: 36px;
       background: var(--c-surface-subtle);
@@ -238,7 +227,7 @@
     .dot.amber { background: #d97706; }
     .dot.red { background: #dc2626; }
 
-    /* Telemetry Stream Console (JetBrains Mono) */
+    /* Telemetry Stream Console */
     .terminal-box {
       margin-top: 20px;
       background: #0f172a;
@@ -273,7 +262,7 @@
       font-weight: 600;
     }
 
-    /* Comparison Table (Silktide / CookieYes Enterprise) */
+    /* Comparison Table */
     .section-wrap {
       padding: 60px 0;
     }
@@ -324,7 +313,7 @@
       color: var(--c-primary);
     }
 
-    /* Interactive Sample Content (To test A11y on real elements) */
+    /* Interactive Sandbox */
     .demo-sandbox {
       background: var(--c-surface);
       border: 1px solid var(--c-border);
@@ -429,7 +418,7 @@
 </head>
 <body>
 
-  <!-- Enterprise Header -->
+  <!-- Header -->
   <header>
     <div class="container header-inner">
       <a href="#" class="brand-logo">
@@ -438,7 +427,6 @@
         <span class="brand-badge">Enterprise Open Source</span>
       </a>
       <div class="header-actions">
-        <button class="btn btn-outline" id="btn-show-banner">Show Consent Notice</button>
         <button class="btn btn-outline" id="btn-show-modal">Cookie Preferences</button>
         <button class="btn btn-outline" id="btn-show-a11y">Accessibility Drawer</button>
         <a href="#embed" class="btn btn-primary">Get Embed Code</a>
@@ -446,7 +434,7 @@
     </div>
   </header>
 
-  <!-- Hero & Live Control Center -->
+  <!-- Hero Section -->
   <section class="hero">
     <div class="container">
       <div class="hero-pre">
@@ -460,10 +448,9 @@
       </p>
 
       <div class="hero-controls">
-        <button class="btn btn-primary" id="btn-hero-banner">Test Cookie Banner</button>
-        <button class="btn btn-outline" id="btn-hero-modal">Open Cookie Preferences</button>
+        <button class="btn btn-primary" id="btn-hero-modal">Launch Full Cookie Popup (Blurred Background)</button>
         <button class="btn btn-outline" id="btn-hero-a11y">Open Accessibility Drawer</button>
-        <button class="btn btn-outline" id="btn-reset-visitor" style="color: var(--c-danger);">Reset Visitor State</button>
+        <button class="btn btn-outline" id="btn-reset-visitor" style="color: #dc2626;">Reset Visitor State</button>
         <button class="btn btn-outline" id="btn-export-log">Export Audit Log (JSON)</button>
       </div>
 
@@ -508,7 +495,7 @@
     </div>
   </section>
 
-  <!-- Interactive Sandbox & Typography Sample -->
+  <!-- Interactive Sandbox -->
   <section class="container section-wrap">
     <div class="section-header">
       <h2>Interactive Accessibility Testing Sandbox</h2>
@@ -530,7 +517,7 @@
     </div>
   </section>
 
-  <!-- Comparison Matrix (Enterprise Clean) -->
+  <!-- Comparison Matrix -->
   <section class="container section-wrap" style="padding-top: 0;">
     <div class="section-header">
       <h2>Comparison Matrix</h2>
@@ -605,7 +592,7 @@
   <section class="container section-wrap" id="embed" style="padding-top: 0;">
     <div class="section-header">
       <h2>1-Click Code Embed Generator</h2>
-      <p>Add CookieAccess to your website (WordPress, Webflow, Shopify, HTML, React, etc.)</p>
+      <p>Add CookieAccess to any website (WordPress, Webflow, Shopify, HTML, Next.js, Wix, etc.)</p>
     </div>
 
     <div class="embed-card">
@@ -633,7 +620,7 @@
 
       <div class="code-box">
         <button class="copy-btn" id="btn-copy-code">Copy Code</button>
-        <pre><code id="code-snippet">&lt;!-- CookieAccess: Enterprise Cookie & Accessibility Suite --&gt;
+        <pre><code id="code-snippet">&lt;!-- CookieAccess: Enterprise Cookie &amp; Accessibility Suite --&gt;
 &lt;link rel="stylesheet" href="cookie-access.min.css"&gt;
 &lt;script src="cookie-access.min.js"
   data-ga="G-DEMO123456"
@@ -652,7 +639,7 @@
     </div>
   </footer>
 
-  <!-- Load CookieAccess -->
+  <!-- Load CookieAccess Script -->
   <script src="/src/cookie-access.js"></script>
 
   <script>
@@ -675,7 +662,7 @@
       const now = new Date().toTimeString().split(' ')[0];
       const div = document.createElement('div');
       div.className = 'log-line';
-      div.innerHTML = `<span style="color:#64748b;">[${now}]</span> <span class="log-tag">[${tag}]</span> ${msg}`;
+      div.innerHTML = '<span style="color:#64748b;">[' + now + ']</span> <span class="log-tag">[' + tag + ']</span> ' + msg;
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
     }
@@ -691,19 +678,19 @@
       const a11yEl = document.getElementById('val-a11y-count');
 
       if (!saved) {
-        consentEl.innerHTML = `<span class="dot amber"></span> Awaiting Consent`;
-        gaEl.innerHTML = `<span class="dot amber"></span> Pending User Opt-In`;
+        consentEl.innerHTML = '<span class="dot amber"></span> Awaiting Consent';
+        gaEl.innerHTML = '<span class="dot amber"></span> Pending User Opt-In';
         catEl.textContent = 'Necessary Only';
       } else {
-        consentEl.innerHTML = `<span class="dot green"></span> Active (${saved.consentId.slice(0, 10)})`;
+        consentEl.innerHTML = '<span class="dot green"></span> Active (' + saved.consentId.slice(0, 10) + ')';
         if (saved.categories.analytics) {
-          gaEl.innerHTML = `<span class="dot green"></span> Injected (G-DEMO998877)`;
+          gaEl.innerHTML = '<span class="dot green"></span> Injected (G-DEMO998877)';
         } else {
-          gaEl.innerHTML = `<span class="dot red"></span> Denied / Blocked`;
+          gaEl.innerHTML = '<span class="dot red"></span> Denied / Blocked';
         }
 
-        const active = Object.keys(saved.categories).filter(k => saved.categories[k]);
-        catEl.textContent = active.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ');
+        const active = Object.keys(saved.categories).filter(function(k) { return saved.categories[k]; });
+        catEl.textContent = active.map(function(c) { return c.charAt(0).toUpperCase() + c.slice(1); }).join(', ');
       }
 
       const a11y = CookieAccess.getA11ySettings();
@@ -719,38 +706,35 @@
       if (a11y.readingGuide) activeCount++;
       if (a11y.readingMask) activeCount++;
       if (a11y.bigCursor !== 'none') activeCount++;
-      a11yEl.textContent = `${activeCount} active setting${activeCount === 1 ? '' : 's'}`;
+      a11yEl.textContent = activeCount + ' active setting' + (activeCount === 1 ? '' : 's');
     }
 
-    window.addEventListener('cookieAccessConsentUpdate', (e) => {
+    window.addEventListener('cookieAccessConsentUpdate', function(e) {
       const detail = e.detail;
-      logMessage('CONSENT_UPDATE', `Consent choices saved: ${JSON.stringify(detail.categories)}`);
+      logMessage('CONSENT_UPDATE', 'Consent choices saved: ' + JSON.stringify(detail.categories));
       if (detail.categories.analytics) {
-        logMessage('GA4_INJECT', `gtag('consent', 'update', { analytics_storage: 'granted' }) & injected G-DEMO998877`);
+        logMessage('GA4_INJECT', 'gtag("consent", "update", { analytics_storage: "granted" }) & injected G-DEMO998877');
       } else {
-        logMessage('GA4_BLOCK', `gtag('consent', 'update', { analytics_storage: 'denied' })`);
+        logMessage('GA4_BLOCK', 'gtag("consent", "update", { analytics_storage: "denied" })');
       }
       refreshTelemetry();
     });
 
     // Trigger button bindings
-    document.getElementById('btn-show-banner').addEventListener('click', () => CookieAccess.openNoticeBar());
-    document.getElementById('btn-show-modal').addEventListener('click', () => CookieAccess.openPreferencesModal());
-    document.getElementById('btn-show-a11y').addEventListener('click', () => CookieAccess.openA11yDrawer());
+    document.getElementById('btn-show-modal').addEventListener('click', function() { CookieAccess.openPreferencesModal(); });
+    document.getElementById('btn-show-a11y').addEventListener('click', function() { CookieAccess.openA11yDrawer(); });
+    document.getElementById('btn-hero-modal').addEventListener('click', function() { CookieAccess.openPreferencesModal(); });
+    document.getElementById('btn-hero-a11y').addEventListener('click', function() { CookieAccess.openA11yDrawer(); });
 
-    document.getElementById('btn-hero-banner').addEventListener('click', () => CookieAccess.openNoticeBar());
-    document.getElementById('btn-hero-modal').addEventListener('click', () => CookieAccess.openPreferencesModal());
-    document.getElementById('btn-hero-a11y').addEventListener('click', () => CookieAccess.openA11yDrawer());
+    document.getElementById('btn-export-log').addEventListener('click', function() { CookieAccess.exportConsentLog(); });
 
-    document.getElementById('btn-export-log').addEventListener('click', () => CookieAccess.exportConsentLog());
-
-    document.getElementById('btn-reset-visitor').addEventListener('click', () => {
+    document.getElementById('btn-reset-visitor').addEventListener('click', function() {
       localStorage.removeItem('ca_consent_preferences');
       localStorage.removeItem('ca_a11y_preferences');
       CookieAccess.resetA11y();
       logMessage('RESET', 'Cleared visitor session in localStorage.');
       refreshTelemetry();
-      CookieAccess.openNoticeBar();
+      CookieAccess.openPreferencesModal();
     });
 
     // Snippet generator
@@ -759,13 +743,13 @@
       const pos = document.getElementById('cfg-pos').value;
       const theme = document.getElementById('cfg-theme').value;
 
-      const code = `<!-- CookieAccess: Enterprise Cookie & Accessibility Suite -->
-<link rel="stylesheet" href="cookie-access.min.css">
-<script src="cookie-access.min.js"
-  data-ga="${ga}"
-  data-position="${pos}"
-  data-theme="${theme}"
-  data-a11y="true"></script>`;
+      const code = '<!-- CookieAccess: Enterprise Cookie & Accessibility Suite -->\n' +
+        '<link rel="stylesheet" href="cookie-access.min.css">\n' +
+        '<script src="cookie-access.min.js"\n' +
+        '  data-ga="' + ga + '"\n' +
+        '  data-position="' + pos + '"\n' +
+        '  data-theme="' + theme + '"\n' +
+        '  data-a11y="true"><' + '/script>';
 
       document.getElementById('code-snippet').textContent = code;
     }
@@ -774,12 +758,12 @@
     document.getElementById('cfg-pos').addEventListener('change', updateSnippet);
     document.getElementById('cfg-theme').addEventListener('change', updateSnippet);
 
-    document.getElementById('btn-copy-code').addEventListener('click', () => {
+    document.getElementById('btn-copy-code').addEventListener('click', function() {
       const code = document.getElementById('code-snippet').textContent;
-      navigator.clipboard.writeText(code).then(() => {
+      navigator.clipboard.writeText(code).then(function() {
         const btn = document.getElementById('btn-copy-code');
         btn.textContent = 'Copied! ✓';
-        setTimeout(() => { btn.textContent = 'Copy Code'; }, 2000);
+        setTimeout(function() { btn.textContent = 'Copy Code'; }, 2000);
       });
     });
 

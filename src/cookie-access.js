@@ -1,5 +1,5 @@
 /**
- * CookieAccess v1.1.0
+ * CookieAccess v1.2.0
  * The Enterprise-Grade Cookie Consent (Silktide & CookieYes clone)
  * with Auto GA4 & Google Consent Mode v2, and Complete Accessibility Suite (accessiBe / UserWay clone).
  * 
@@ -18,24 +18,20 @@
   'use strict';
 
   const defaults = {
-    // Analytics & Consent Mode
     gaMeasurementId: '', // e.g. 'G-XXXXXXXXXX'
     gtmId: '',           // e.g. 'GTM-XXXXXX'
     autoInjectGA: true,
     consentModeV2: true,
 
-    // Branding & Links
     companyName: 'Our Website',
     privacyPolicyUrl: '#privacy',
     cookiePolicyUrl: '#cookies',
-    theme: 'light', // 'light' (standard enterprise default) or 'dark'
+    theme: 'light', // 'light' or 'dark'
     position: 'bottom-right', // 'bottom-left' | 'bottom-right' | 'none'
     
-    // Modules
     enableConsentBanner: true,
     enableAccessibility: true,
 
-    // Initial default categories
     categories: {
       necessary: true,
       functional: false,
@@ -57,11 +53,11 @@
     textSize: 100,
     letterSpacing: false,
     lineHeight: false,
-    contrast: 'normal', // 'normal', 'dark', 'invert', 'monochrome', 'saturate'
+    contrast: 'normal',
     highlightLinks: false,
     highlightHeadings: false,
     stopAnimations: false,
-    bigCursor: 'none', // 'none', 'white', 'black'
+    bigCursor: 'none',
     readingGuide: false,
     readingMask: false,
     speechActive: false
@@ -71,7 +67,6 @@
   let clickToSpeakActive = false;
   let elements = {};
 
-  // Authentic Silktide / CookieYes detailed cookie database
   const cookieInventory = {
     necessary: [
       { name: 'ca_consent_preferences', provider: 'CookieAccess', duration: '1 year', type: 'HTTP Cookie', purpose: 'Stores the visitor\'s cookie consent choices.' },
@@ -98,7 +93,7 @@
   };
 
   // =========================================================================
-  // GOOGLE CONSENT MODE V2 & AUTO GA4 ENGINE
+  // GOOGLE CONSENT MODE V2 & AUTO GA4
   // =========================================================================
 
   function initGoogleConsentMode() {
@@ -113,7 +108,6 @@
 
     const saved = getSavedConsent();
     if (!saved) {
-      // Default: Strictly DENIED for all tracking before user choice
       window.gtag('consent', 'default', {
         'analytics_storage': 'denied',
         'ad_storage': 'denied',
@@ -214,7 +208,7 @@
   }
 
   // =========================================================================
-  // CONSENT STATE & AUDIT LOGS
+  // STATE MANAGEMENT & AUDIT LOGS
   // =========================================================================
 
   function getSavedConsent() {
@@ -230,7 +224,7 @@
     const consentRecord = {
       consentId: 'ca_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36),
       timestamp: new Date().toISOString(),
-      version: '1.1.0',
+      version: '1.2.0',
       categories: {
         necessary: true,
         functional: Boolean(categories.functional),
@@ -266,7 +260,7 @@
   }
 
   // =========================================================================
-  // DOM CREATION (COOKIEBOT / COOKIEYES + ACCESSIBE ENTERPRISE CLONES)
+  // DOM CREATION (COMPACT CIRCLE BUTTONS & FULL BLURRED MODAL)
   // =========================================================================
 
   function getSVG(name) {
@@ -281,7 +275,7 @@
   }
 
   function injectDOM() {
-    // 1. Accessibility Overlays (Reading Guide Line & Reading Mask)
+    // 1. Accessibility Overlays (Reading Guide & Reading Mask)
     if (!document.getElementById('ca-reading-guide-line')) {
       const guideLine = document.createElement('div');
       guideLine.id = 'ca-reading-guide-line';
@@ -311,27 +305,25 @@
       });
     }
 
-    // 2. Authentic Floating Launcher Badges
+    // 2. Compact Circular Floating Badges (accessiBe + CookieYes Style)
     if (config.position !== 'none' && !document.getElementById('ca-launcher')) {
       const launcher = document.createElement('div');
       launcher.id = 'ca-launcher';
       launcher.className = config.position === 'bottom-left' ? 'ca-pos-bottom-left' : 'ca-pos-bottom-right';
 
       let html = '';
-      if (config.enableConsentBanner) {
+      if (config.enableAccessibility) {
         html += `
-          <button class="ca-launcher-pill" id="ca-launcher-consent" title="Cookie Preferences">
-            ${getSVG('cookie')}
-            <span>Cookies</span>
+          <button class="ca-circle-btn" id="ca-launcher-a11y" data-tooltip="Accessibility Assistant" aria-label="Accessibility Assistant">
+            ${getSVG('a11y')}
+            <span class="ca-circle-badge" id="ca-launcher-a11y-badge" style="display:none;">0</span>
           </button>
         `;
       }
-      if (config.enableAccessibility) {
+      if (config.enableConsentBanner) {
         html += `
-          <button class="ca-launcher-pill" id="ca-launcher-a11y" title="Accessibility Assistant">
-            ${getSVG('a11y')}
-            <span>Accessibility</span>
-            <span class="ca-launcher-badge-count" id="ca-launcher-a11y-badge" style="display:none;">0</span>
+          <button class="ca-circle-btn ca-btn-cookie" id="ca-launcher-consent" data-tooltip="Cookie Preferences" aria-label="Cookie Preferences">
+            ${getSVG('cookie')}
           </button>
         `;
       }
@@ -339,35 +331,7 @@
       document.body.appendChild(launcher);
     }
 
-    // 3. CookieYes / Silktide Bottom Banner
-    if (config.enableConsentBanner && !document.getElementById('ca-consent-bar')) {
-      const bar = document.createElement('div');
-      bar.id = 'ca-consent-bar';
-      bar.setAttribute('role', 'region');
-      bar.setAttribute('aria-label', 'Cookie Consent Banner');
-
-      bar.innerHTML = `
-        <div class="ca-banner-inner">
-          <div class="ca-banner-text-wrap">
-            <div class="ca-banner-title">
-              ${getSVG('cookie')}
-              <span>We value your privacy</span>
-            </div>
-            <p class="ca-banner-desc">
-              We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies in accordance with our <a href="${config.cookiePolicyUrl}" target="_blank" rel="noopener">Cookie Policy</a> and <a href="${config.privacyPolicyUrl}" target="_blank" rel="noopener">Privacy Policy</a>.
-            </p>
-          </div>
-          <div class="ca-banner-actions">
-            <button class="ca-btn ca-btn-outline" id="ca-bar-customize">Customize</button>
-            <button class="ca-btn ca-btn-outline" id="ca-bar-reject">Reject All</button>
-            <button class="ca-btn ca-btn-primary" id="ca-bar-accept">Accept All</button>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(bar);
-    }
-
-    // 4. Silktide / Cookiebot Detailed Preferences Center Modal
+    // 3. Full Popup Modal with Background Blur (Silktide / Cookiebot / CookieYes)
     if (config.enableConsentBanner && !document.getElementById('ca-modal-dialog')) {
       const modalBackdrop = document.createElement('div');
       modalBackdrop.id = 'ca-modal-dialog';
@@ -377,12 +341,11 @@
 
       modalBackdrop.innerHTML = `
         <div class="ca-dialog-window">
-          <!-- Header with Navigation Tabs -->
           <div class="ca-dialog-header">
             <div class="ca-dialog-top-row">
               <h2 class="ca-dialog-title">
                 ${getSVG('cookie')}
-                <span>Customize Consent Preferences</span>
+                <span>Privacy & Cookie Preferences</span>
               </h2>
               <button class="ca-dialog-close" id="ca-modal-close-btn" aria-label="Close modal">${getSVG('close')}</button>
             </div>
@@ -393,17 +356,16 @@
             </div>
           </div>
 
-          <!-- Body Panels -->
           <div class="ca-dialog-body">
             <!-- TAB 1: Consent Accordion -->
             <div class="ca-tab-pane ca-active" id="ca-pane-consent">
               <p style="font-size:13.5px;color:var(--ca-text-secondary);margin-bottom:16px;line-height:1.5;">
-                We use cookies to help you navigate efficiently and perform certain functions. You will find detailed information about all cookies under each consent category below.
+                We use cookies and automated Google Analytics to ensure secure operation, analyze traffic patterns, and provide personalized services. You can adjust your consent settings for each category below.
               </p>
 
-              <!-- Category 1: Necessary -->
+              <!-- Strictly Necessary -->
               <div class="ca-pref-group ca-open">
-                <div class="ca-pref-header" data-toggle="ca-pref-group">
+                <div class="ca-pref-header">
                   <div class="ca-pref-left">
                     <span class="ca-pref-icon">${getSVG('chevron')}</span>
                     <div>
@@ -420,15 +382,15 @@
                 </div>
                 <div class="ca-pref-body">
                   <p class="ca-pref-desc-text">
-                    Necessary cookies are crucial for the basic functions of the website and the website will not work in its intended way without them. These cookies do not store any personally identifiable data.
+                    Necessary cookies are essential for website security, user authentication, and saving your privacy preferences. They do not store personally identifiable data.
                   </p>
                   ${renderCookieTable(cookieInventory.necessary)}
                 </div>
               </div>
 
-              <!-- Category 2: Functional -->
+              <!-- Functional -->
               <div class="ca-pref-group">
-                <div class="ca-pref-header" data-toggle="ca-pref-group">
+                <div class="ca-pref-header">
                   <div class="ca-pref-left">
                     <span class="ca-pref-icon">${getSVG('chevron')}</span>
                     <div>
@@ -445,15 +407,15 @@
                 </div>
                 <div class="ca-pref-body">
                   <p class="ca-pref-desc-text">
-                    Functional cookies help perform certain functionalities like sharing content of the website on social media platforms, collecting feedback, and remembering language choices.
+                    Functional cookies enable enhanced website features, language preferences, and user interface customizations.
                   </p>
                   ${renderCookieTable(cookieInventory.functional)}
                 </div>
               </div>
 
-              <!-- Category 3: Analytics (GA4) -->
+              <!-- Analytics (GA4) -->
               <div class="ca-pref-group">
-                <div class="ca-pref-header" data-toggle="ca-pref-group">
+                <div class="ca-pref-header">
                   <div class="ca-pref-left">
                     <span class="ca-pref-icon">${getSVG('chevron')}</span>
                     <div>
@@ -470,15 +432,15 @@
                 </div>
                 <div class="ca-pref-body">
                   <p class="ca-pref-desc-text">
-                    Analytical cookies are used to understand how visitors interact with the website. These cookies help provide metrics on number of visitors, bounce rate, traffic source, etc. Powered by Google Analytics 4 and Google Consent Mode v2.
+                    Enables Google Analytics 4 telemetry with Google Consent Mode v2 to calculate visitor counts, traffic sources, and page performance anonymously.
                   </p>
                   ${renderCookieTable(cookieInventory.analytics)}
                 </div>
               </div>
 
-              <!-- Category 4: Performance -->
+              <!-- Performance -->
               <div class="ca-pref-group">
-                <div class="ca-pref-header" data-toggle="ca-pref-group">
+                <div class="ca-pref-header">
                   <div class="ca-pref-left">
                     <span class="ca-pref-icon">${getSVG('chevron')}</span>
                     <div>
@@ -495,15 +457,15 @@
                 </div>
                 <div class="ca-pref-body">
                   <p class="ca-pref-desc-text">
-                    Performance cookies are used to understand and analyze the key performance indexes of the website which helps in delivering a better user experience for the visitors.
+                    Performance cookies analyze website speed, bot mitigation, and user experience metrics.
                   </p>
                   ${renderCookieTable(cookieInventory.performance)}
                 </div>
               </div>
 
-              <!-- Category 5: Advertisement -->
+              <!-- Advertisement -->
               <div class="ca-pref-group">
-                <div class="ca-pref-header" data-toggle="ca-pref-group">
+                <div class="ca-pref-header">
                   <div class="ca-pref-left">
                     <span class="ca-pref-icon">${getSVG('chevron')}</span>
                     <div>
@@ -520,14 +482,14 @@
                 </div>
                 <div class="ca-pref-body">
                   <p class="ca-pref-desc-text">
-                    Advertisement cookies are used to provide visitors with customized advertisements based on the pages you visited previously and to analyze the effectiveness of the ad campaigns.
+                    Used to deliver customized advertisements relevant to your interests across third-party platforms.
                   </p>
                   ${renderCookieTable(cookieInventory.advertisement)}
                 </div>
               </div>
             </div>
 
-            <!-- TAB 2: Full Cookie Audit Table (Silktide Clone) -->
+            <!-- TAB 2: Full Cookie Audit Table -->
             <div class="ca-tab-pane" id="ca-pane-details">
               <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Full Cookie Declaration Audit</h3>
               ${renderAllCookiesDeclaration()}
@@ -537,15 +499,14 @@
             <div class="ca-tab-pane" id="ca-pane-about">
               <h3 style="font-size:14px;font-weight:700;margin-bottom:8px;">About Cookies & Legal Compliance</h3>
               <p style="font-size:13px;line-height:1.6;color:var(--ca-text-secondary);margin-bottom:12px;">
-                Cookies are small text files that are stored on your computer or mobile device when you visit a website. Under the EU General Data Protection Regulation (GDPR), the ePrivacy Directive, and the California Consumer Privacy Act (CCPA/CPRA), websites are legally obligated to obtain explicit, affirmative opt-in consent from visitors before deploying non-essential tracking cookies.
+                Under the EU General Data Protection Regulation (GDPR), the ePrivacy Directive, and the California Consumer Privacy Act (CCPA/CPRA), websites are legally obligated to obtain explicit, affirmative opt-in consent from visitors before deploying non-essential tracking cookies.
               </p>
               <p style="font-size:13px;line-height:1.6;color:var(--ca-text-secondary);">
-                You can change or withdraw your consent at any time by clicking the "Cookies" launcher in the bottom corner of this page.
+                You can change or withdraw your consent at any time by clicking the circular Cookie badge in the bottom corner of this page.
               </p>
             </div>
           </div>
 
-          <!-- Modal Footer (Silktide / CookieYes Action Bar) -->
           <div class="ca-dialog-footer">
             <div class="ca-footer-brand">
               Powered by <strong>CookieAccess</strong> (Open Source)
@@ -561,7 +522,7 @@
       document.body.appendChild(modalBackdrop);
     }
 
-    // 5. accessiBe / UserWay Clone Accessibility Drawer
+    // 4. Accessibility Side Drawer (accessiBe / UserWay Clone)
     if (config.enableAccessibility && !document.getElementById('ca-a11y-drawer')) {
       const drawer = document.createElement('div');
       drawer.id = 'ca-a11y-drawer';
@@ -581,13 +542,13 @@
         </div>
 
         <div class="ca-a11y-scrollable">
-          <!-- accessiBe Search Bar -->
+          <!-- Search Bar -->
           <div class="ca-a11y-search-wrap">
             <span class="ca-a11y-search-icon">${getSVG('search')}</span>
             <input type="text" class="ca-a11y-search-input" id="ca-a11y-search" placeholder="Search accessibility features (e.g. font, contrast)...">
           </div>
 
-          <!-- Audio Screen Reader Panel -->
+          <!-- Audio Screen Reader -->
           <div class="ca-audio-panel">
             <div class="ca-audio-status" id="ca-audio-status">
               <span>🔊</span>
@@ -599,7 +560,7 @@
             </div>
           </div>
 
-          <!-- Section 1: Accessibility Profiles (accessiBe Style) -->
+          <!-- Pre-set Profiles -->
           <div class="ca-section-heading">
             <span>ACCESSIBILITY PROFILES</span>
             <span style="font-weight:400;font-size:11px;color:var(--ca-text-muted);">Quick Pre-sets</span>
@@ -646,7 +607,7 @@
             </div>
           </div>
 
-          <!-- Section 2: Content & Typography Adjustments -->
+          <!-- Content Adjustments -->
           <div class="ca-section-heading">CONTENT & TYPOGRAPHY</div>
           <div class="ca-tools-grid">
             <div class="ca-tool-card" id="ca-tool-dyslexic">
@@ -698,7 +659,7 @@
             </div>
           </div>
 
-          <!-- Section 3: Color & Contrast Adjustments -->
+          <!-- Color Adjustments -->
           <div class="ca-section-heading">COLOR & CONTRAST</div>
           <div class="ca-tools-grid">
             <div class="ca-tool-card" id="ca-tool-contrast-dark">
@@ -734,7 +695,7 @@
             </div>
           </div>
 
-          <!-- Section 4: Orientation & Tools -->
+          <!-- Visual Aids -->
           <div class="ca-section-heading">ORIENTATION & VISUAL AIDS</div>
           <div class="ca-tools-grid">
             <div class="ca-tool-card" id="ca-tool-stop-animations">
@@ -841,10 +802,6 @@
       launcherConsent: document.getElementById('ca-launcher-consent'),
       launcherA11y: document.getElementById('ca-launcher-a11y'),
       a11yBadge: document.getElementById('ca-launcher-a11y-badge'),
-      consentBar: document.getElementById('ca-consent-bar'),
-      barCustomize: document.getElementById('ca-bar-customize'),
-      barReject: document.getElementById('ca-bar-reject'),
-      barAccept: document.getElementById('ca-bar-accept'),
       modalDialog: document.getElementById('ca-modal-dialog'),
       modalCloseBtn: document.getElementById('ca-modal-close-btn'),
       modalAccept: document.getElementById('ca-modal-accept'),
@@ -870,7 +827,6 @@
   }
 
   function bindEvents() {
-    // Launcher Buttons
     if (elements.launcherConsent) {
       elements.launcherConsent.addEventListener('click', () => openPreferencesModal());
     }
@@ -878,31 +834,6 @@
       elements.launcherA11y.addEventListener('click', () => openA11yDrawer());
     }
 
-    // Bottom Bar Buttons
-    if (elements.barCustomize) {
-      elements.barCustomize.addEventListener('click', () => {
-        closeNoticeBar();
-        openPreferencesModal();
-      });
-    }
-    if (elements.barReject) {
-      elements.barReject.addEventListener('click', () => {
-        const choice = { necessary: true, functional: false, analytics: false, performance: false, advertisement: false };
-        saveConsent(choice);
-        syncToggles(choice);
-        closeNoticeBar();
-      });
-    }
-    if (elements.barAccept) {
-      elements.barAccept.addEventListener('click', () => {
-        const choice = { necessary: true, functional: true, analytics: true, performance: true, advertisement: true };
-        saveConsent(choice);
-        syncToggles(choice);
-        closeNoticeBar();
-      });
-    }
-
-    // Modal Actions
     if (elements.modalCloseBtn) {
       elements.modalCloseBtn.addEventListener('click', () => closePreferencesModal());
     }
@@ -917,7 +848,6 @@
         saveConsent(choice);
         syncToggles(choice);
         closePreferencesModal();
-        closeNoticeBar();
       });
     }
     if (elements.modalReject) {
@@ -926,7 +856,6 @@
         saveConsent(choice);
         syncToggles(choice);
         closePreferencesModal();
-        closeNoticeBar();
       });
     }
     if (elements.modalSave) {
@@ -940,11 +869,9 @@
         };
         saveConsent(choice);
         closePreferencesModal();
-        closeNoticeBar();
       });
     }
 
-    // Modal Navigation Tabs
     const tabButtons = document.querySelectorAll('.ca-tab-btn');
     tabButtons.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -958,21 +885,18 @@
       });
     });
 
-    // Modal Accordion expand/collapse
     document.querySelectorAll('.ca-pref-header').forEach(header => {
       header.addEventListener('click', (e) => {
-        if (e.target.closest('.ca-switch')) return; // ignore toggle click
+        if (e.target.closest('.ca-switch')) return;
         const group = header.closest('.ca-pref-group');
         if (group) group.classList.toggle('ca-open');
       });
     });
 
-    // Accessibility Drawer Close/Done/Reset
     if (elements.a11yCloseBtn) elements.a11yCloseBtn.addEventListener('click', () => closeA11yDrawer());
     if (elements.a11yDoneBtn) elements.a11yDoneBtn.addEventListener('click', () => closeA11yDrawer());
     if (elements.a11yResetBtn) elements.a11yResetBtn.addEventListener('click', () => resetA11ySettings());
 
-    // ESC key closes everything
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closePreferencesModal();
@@ -980,16 +904,14 @@
       }
     });
 
-    // Bind A11y Tools & Profiles
     setupA11yTools();
   }
 
   // =========================================================================
-  // ACCESSIBILITY TOOLS IMPLEMENTATION (accessiBe / UserWay Clone)
+  // A11Y TOOLS
   // =========================================================================
 
   function setupA11yTools() {
-    // 1. Dyslexia Font
     const btnDyslexic = document.getElementById('ca-tool-dyslexic');
     if (btnDyslexic) {
       btnDyslexic.addEventListener('click', () => {
@@ -998,7 +920,6 @@
       });
     }
 
-    // 2. Bigger Text (Cycle: 100% -> 110% -> 120% -> 130% -> 100%)
     const btnSize = document.getElementById('ca-tool-size');
     if (btnSize) {
       btnSize.addEventListener('click', () => {
@@ -1010,7 +931,6 @@
       });
     }
 
-    // 3. Spacing
     const btnSpacing = document.getElementById('ca-tool-spacing');
     if (btnSpacing) {
       btnSpacing.addEventListener('click', () => {
@@ -1019,7 +939,6 @@
       });
     }
 
-    // 4. Line height
     const btnLineHeight = document.getElementById('ca-tool-line-height');
     if (btnLineHeight) {
       btnLineHeight.addEventListener('click', () => {
@@ -1028,7 +947,6 @@
       });
     }
 
-    // 5. Highlight links & headings
     const btnLinks = document.getElementById('ca-tool-highlight-links');
     if (btnLinks) {
       btnLinks.addEventListener('click', () => {
@@ -1045,7 +963,6 @@
       });
     }
 
-    // 6. Contrast buttons
     const contrasts = [
       { id: 'ca-tool-contrast-dark', val: 'dark' },
       { id: 'ca-tool-contrast-invert', val: 'invert' },
@@ -1062,7 +979,6 @@
       }
     });
 
-    // 7. Stop motion
     const btnStopMotion = document.getElementById('ca-tool-stop-animations');
     if (btnStopMotion) {
       btnStopMotion.addEventListener('click', () => {
@@ -1071,7 +987,6 @@
       });
     }
 
-    // 8. Reading guide
     const btnGuide = document.getElementById('ca-tool-reading-guide');
     if (btnGuide) {
       btnGuide.addEventListener('click', () => {
@@ -1080,7 +995,6 @@
       });
     }
 
-    // 9. Reading mask
     const btnMask = document.getElementById('ca-tool-reading-mask');
     if (btnMask) {
       btnMask.addEventListener('click', () => {
@@ -1089,7 +1003,6 @@
       });
     }
 
-    // 10. Big Cursor
     const btnCursor = document.getElementById('ca-tool-cursor');
     if (btnCursor) {
       btnCursor.addEventListener('click', () => {
@@ -1100,7 +1013,6 @@
       });
     }
 
-    // 11. Profile Switches (accessiBe Style)
     document.querySelectorAll('[data-profile-switch]').forEach(sw => {
       sw.addEventListener('change', () => {
         const prof = sw.getAttribute('data-profile-switch');
@@ -1112,10 +1024,8 @@
       });
     });
 
-    // 12. Audio Screen Reader
     setupAudioTTS();
 
-    // 13. Search Filter in Drawer
     const searchInput = document.getElementById('ca-a11y-search');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
@@ -1129,7 +1039,7 @@
   }
 
   function applyProfile(profile) {
-    resetA11ySettings(false); // clear without full reset
+    resetA11ySettings(false);
 
     switch (profile) {
       case 'seizure':
@@ -1163,32 +1073,27 @@
   function applyA11yState() {
     const docEl = document.documentElement;
 
-    // Dyslexia
     docEl.classList.toggle('ca-dyslexic-font', a11yState.dyslexicFont);
     toggleCardActive('ca-tool-dyslexic', a11yState.dyslexicFont);
 
-    // Text Size
     docEl.classList.remove('ca-text-110', 'ca-text-120', 'ca-text-130');
     if (a11yState.textSize > 100) docEl.classList.add(`ca-text-${a11yState.textSize}`);
     const sizeStatus = document.getElementById('ca-status-size');
     if (sizeStatus) sizeStatus.textContent = `${a11yState.textSize}%`;
     toggleCardActive('ca-tool-size', a11yState.textSize > 100);
 
-    // Spacing
     docEl.classList.toggle('ca-letter-spacing', a11yState.letterSpacing);
     toggleCardActive('ca-tool-spacing', a11yState.letterSpacing);
 
     docEl.classList.toggle('ca-line-height', a11yState.lineHeight);
     toggleCardActive('ca-tool-line-height', a11yState.lineHeight);
 
-    // Links & Headings
     docEl.classList.toggle('ca-highlight-links', a11yState.highlightLinks);
     toggleCardActive('ca-tool-highlight-links', a11yState.highlightLinks);
 
     docEl.classList.toggle('ca-highlight-headings', a11yState.highlightHeadings);
     toggleCardActive('ca-tool-highlight-headings', a11yState.highlightHeadings);
 
-    // Contrast
     docEl.classList.remove('ca-contrast-dark', 'ca-contrast-invert', 'ca-contrast-monochrome', 'ca-high-saturation');
     toggleCardActive('ca-tool-contrast-dark', a11yState.contrast === 'dark');
     toggleCardActive('ca-tool-contrast-invert', a11yState.contrast === 'invert');
@@ -1200,11 +1105,9 @@
     else if (a11yState.contrast === 'monochrome') docEl.classList.add('ca-contrast-monochrome');
     else if (a11yState.contrast === 'saturate') docEl.classList.add('ca-high-saturation');
 
-    // Motion
     docEl.classList.toggle('ca-stop-animations', a11yState.stopAnimations);
     toggleCardActive('ca-tool-stop-animations', a11yState.stopAnimations);
 
-    // Cursor
     docEl.classList.remove('ca-big-cursor', 'ca-big-cursor-black');
     const cursorStatus = document.getElementById('ca-status-cursor');
     if (a11yState.bigCursor === 'white') {
@@ -1220,13 +1123,11 @@
       toggleCardActive('ca-tool-cursor', false);
     }
 
-    // Reading Guide
     if (elements.readingGuideLine) {
       elements.readingGuideLine.style.display = a11yState.readingGuide ? 'block' : 'none';
       toggleCardActive('ca-tool-reading-guide', a11yState.readingGuide);
     }
 
-    // Reading Mask
     if (elements.readingMaskTop && elements.readingMaskBottom) {
       const showMask = a11yState.readingMask;
       elements.readingMaskTop.style.display = showMask ? 'block' : 'none';
@@ -1234,7 +1135,6 @@
       toggleCardActive('ca-tool-reading-mask', showMask);
     }
 
-    // Update active count badge on launcher
     let count = 0;
     if (a11yState.dyslexicFont) count++;
     if (a11yState.textSize > 100) count++;
@@ -1249,7 +1149,7 @@
     if (a11yState.bigCursor !== 'none') count++;
 
     if (elements.a11yBadge) {
-      elements.a11yBadge.style.display = count > 0 ? 'inline-flex' : 'none';
+      elements.a11yBadge.style.display = count > 0 ? 'flex' : 'none';
       elements.a11yBadge.textContent = count;
     }
 
@@ -1282,7 +1182,6 @@
     stopSpeech();
     clickToSpeakActive = false;
     document.body.style.cursor = '';
-
     document.querySelectorAll('[data-profile-switch]').forEach(sw => sw.checked = false);
 
     if (applyImmediately) applyA11yState();
@@ -1299,7 +1198,7 @@
   }
 
   // =========================================================================
-  // AUDIO SCREEN READER (TEXT-TO-SPEECH)
+  // AUDIO SCREEN READER
   // =========================================================================
 
   function setupAudioTTS() {
@@ -1334,7 +1233,7 @@
 
     document.addEventListener('click', (e) => {
       if (!clickToSpeakActive) return;
-      if (e.target.closest('#ca-a11y-drawer') || e.target.closest('#ca-launcher') || e.target.closest('#ca-modal-dialog') || e.target.closest('#ca-consent-bar')) return;
+      if (e.target.closest('#ca-a11y-drawer') || e.target.closest('#ca-launcher') || e.target.closest('#ca-modal-dialog')) return;
 
       e.preventDefault();
       e.stopPropagation();
@@ -1351,7 +1250,7 @@
     const elementsToRead = mainEl.querySelectorAll('h1, h2, h3, h4, p, li');
     let texts = [];
     elementsToRead.forEach(el => {
-      if (el.closest('#ca-launcher') || el.closest('#ca-modal-dialog') || el.closest('#ca-a11y-drawer') || el.closest('#ca-consent-bar')) return;
+      if (el.closest('#ca-launcher') || el.closest('#ca-modal-dialog') || el.closest('#ca-a11y-drawer')) return;
       const t = el.innerText.trim();
       if (t.length > 2) texts.push({ el, text: t });
     });
@@ -1419,14 +1318,6 @@
   // MODAL / DRAWER CONTROLS
   // =========================================================================
 
-  function openNoticeBar() {
-    if (elements.consentBar) elements.consentBar.classList.add('ca-visible');
-  }
-
-  function closeNoticeBar() {
-    if (elements.consentBar) elements.consentBar.classList.remove('ca-visible');
-  }
-
   function openPreferencesModal() {
     if (elements.modalDialog) {
       const saved = getSavedConsent();
@@ -1481,10 +1372,10 @@
   function checkInitialState() {
     const saved = getSavedConsent();
     if (!saved && config.enableConsentBanner) {
-      // First visit: Show CookieYes bottom notice bar
+      // First visit: Show the Full Popup Modal with blurred background!
       setTimeout(() => {
-        openNoticeBar();
-      }, 300);
+        openPreferencesModal();
+      }, 350);
     } else if (saved) {
       consentState = saved;
       syncToggles(saved.categories);
@@ -1517,8 +1408,6 @@
     init,
     openPreferencesModal,
     closePreferencesModal,
-    openNoticeBar,
-    closeNoticeBar,
     openA11yDrawer,
     closeA11yDrawer,
     getConsent: () => getSavedConsent(),

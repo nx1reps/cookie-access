@@ -9,22 +9,43 @@ if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 }
 
-// Copy standalone library files directly to dist/
-fs.copyFileSync(srcJsPath, path.join(distDir, 'cookie-access.js'));
-fs.copyFileSync(srcCssPath, path.join(distDir, 'cookie-access.css'));
-
-// Create lightweight minified versions (stripping comments and excess whitespace)
 let jsCode = fs.readFileSync(srcJsPath, 'utf8');
 let cssCode = fs.readFileSync(srcCssPath, 'utf8');
 
-// Basic minification
+// Minify CSS
 const minCss = cssCode
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .replace(/\s*([\{\}:;,])\s*/g, '$1')
   .replace(/\s+/g, ' ')
   .trim();
 
+// Write raw and minified CSS
+fs.writeFileSync(path.join(distDir, 'cookie-access.css'), cssCode);
 fs.writeFileSync(path.join(distDir, 'cookie-access.min.css'), minCss);
+
+// Write raw and minified JS
+fs.writeFileSync(path.join(distDir, 'cookie-access.js'), jsCode);
 fs.writeFileSync(path.join(distDir, 'cookie-access.min.js'), jsCode);
 
-console.log('✓ Successfully created dist/cookie-access.js, dist/cookie-access.min.js, and CSS files!');
+// Create the ultimate ALL-IN-ONE Standalone Bundle (with auto-embedded CSS)
+// Anyone can just embed this ONE script file from a CDN and it works everywhere!
+const autoCssInjection = `
+(function() {
+  if (typeof document !== 'undefined' && !document.getElementById('ca-embedded-styles')) {
+    var style = document.createElement('style');
+    style.id = 'ca-embedded-styles';
+    style.textContent = ${JSON.stringify(minCss)};
+    document.head.appendChild(style);
+  }
+})();
+`;
+
+const bundleJs = autoCssInjection + '\n' + jsCode;
+fs.writeFileSync(path.join(distDir, 'cookie-access.bundle.js'), bundleJs);
+
+console.log('✓ Successfully created:');
+console.log('  - dist/cookie-access.css');
+console.log('  - dist/cookie-access.min.css');
+console.log('  - dist/cookie-access.js');
+console.log('  - dist/cookie-access.min.js');
+console.log('  - dist/cookie-access.bundle.js (All-in-one script with auto-embedded styles)');
