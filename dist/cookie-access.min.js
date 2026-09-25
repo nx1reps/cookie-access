@@ -29,6 +29,12 @@
     theme: 'light',      // 'light' | 'dark' | 'auto'
     position: 'bottom-right', // 'bottom-right' | 'bottom-left' | 'none'
     
+    backdrop: {
+      show: true,
+      blur: '8px',
+      background: 'rgba(0, 0, 0, 0.3)'
+    },
+
     primaryColor: '',    // Custom brand hex e.g. '#2563eb' or '#7c3aed'
     cookieColor: '',     // Custom cookie accent hex e.g. '#d97706'
     fontFamily: '',      // Custom font family e.g. 'Inter, sans-serif'
@@ -50,6 +56,44 @@
   const A11Y_KEY = 'ca_a11y_preferences';
 
   let config = { ...defaults };
+
+  function normalizeConfig(options = {}) {
+    const res = { ...options };
+
+    // Support prompt.position or icon.position ("bottomRight" -> "bottom-right")
+    const pos = (res.prompt && res.prompt.position) || (res.icon && res.icon.position) || res.position;
+    if (pos) {
+      const p = String(pos).toLowerCase();
+      if (p.includes('left')) res.position = 'bottom-left';
+      else if (p.includes('right')) res.position = 'bottom-right';
+      else if (p === 'none') res.position = 'none';
+    }
+
+    // Support backdrop object or boolean
+    if (typeof res.backdrop === 'boolean') {
+      res.backdrop = { show: res.backdrop, blur: '8px', background: 'rgba(0, 0, 0, 0.3)' };
+    } else if (res.backdrop && typeof res.backdrop === 'object') {
+      res.backdrop = {
+        show: res.backdrop.show !== false,
+        blur: res.backdrop.blur || '8px',
+        background: res.backdrop.background || 'rgba(0, 0, 0, 0.3)'
+      };
+    }
+
+    // Support consentTypes array format (Silktide / Standard format)
+    if (Array.isArray(res.consentTypes)) {
+      res.categories = { ...defaults.categories };
+      res.consentTypes.forEach(ct => {
+        const id = String(ct.id || '').toLowerCase();
+        if (id === 'essential' || id === 'necessary') res.categories.necessary = true;
+        else if (id === 'analytics') res.categories.analytics = Boolean(ct.defaultValue);
+        else if (id === 'marketing' || id === 'advertisement') res.categories.advertisement = Boolean(ct.defaultValue);
+        else if (id === 'functional') res.categories.functional = Boolean(ct.defaultValue);
+      });
+    }
+
+    return res;
+  }
 
   function hexToRgba(hex, alpha = 1) {
     if (!hex || typeof hex !== 'string') return `rgba(37, 99, 235, ${alpha})`;
@@ -142,6 +186,19 @@
         root.style.setProperty('--ca-radius-sm', '6px');
       } else if (r.includes('px') || r.includes('rem')) {
         root.style.setProperty('--ca-radius-2xl', r);
+      }
+    }
+
+    // 5. Backdrop Blur & Background
+    if (cfg.backdrop) {
+      const show = typeof cfg.backdrop === 'boolean' ? cfg.backdrop : (cfg.backdrop.show !== false);
+      if (show) {
+        const blur = (typeof cfg.backdrop === 'object' && cfg.backdrop.blur) ? cfg.backdrop.blur : '8px';
+        const bg = (typeof cfg.backdrop === 'object' && cfg.backdrop.background) ? cfg.backdrop.background : 'rgba(0, 0, 0, 0.3)';
+        root.style.setProperty('--ca-backdrop-blur', blur);
+        root.style.setProperty('--backdropBackgroundBlur', blur);
+        root.style.setProperty('--ca-backdrop-bg', bg);
+        root.style.setProperty('--backdropBackgroundColor', bg);
       }
     }
   }
@@ -343,13 +400,22 @@
       close: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`,
       reset: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`,
       diamondLogo: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
-      brandLogo: `<svg viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>`,
+      brandLogo: `<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>`,
       arrowRight: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`
     };
     return svgs[name] || '';
   }
 
   function injectDOM() {
+    // 0. Ensure Google Lexend Font is loaded for Dyslexia accessibility
+    if (!document.getElementById('ca-lexend-font')) {
+      const link = document.createElement('link');
+      link.id = 'ca-lexend-font';
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap';
+      document.head.appendChild(link);
+    }
+
     // 1. Accessibility Overlays
     if (!document.getElementById('ca-reading-guide-line')) {
       const guideLine = document.createElement('div');
@@ -387,17 +453,25 @@
       launcher.className = config.position === 'bottom-left' ? 'ca-pos-bottom-left' : 'ca-pos-bottom-right';
 
       launcher.innerHTML = `
-        <div class="ca-split-circle" id="ca-split-circle" title="Cookie Preferences & Accessibility Assistant">
+        <div class="ca-split-circle" id="ca-split-circle" title="Cookie Preferences & AccessiAccess">
           <button class="ca-half-btn ca-half-cookie" id="ca-launcher-cookie" data-tooltip="Cookie & Privacy Preferences" aria-label="Privacy & Cookie Preferences">
             ${getSVG('cookie')}
           </button>
-          <button class="ca-half-btn ca-half-a11y" id="ca-launcher-a11y" data-tooltip="Accessibility Assistant" aria-label="Accessibility Assistant">
+          <button class="ca-half-btn ca-half-a11y" id="ca-launcher-a11y" data-tooltip="AccessiAccess" aria-label="AccessiAccess">
             ${getSVG('a11y')}
           </button>
           <span class="ca-split-badge" id="ca-split-badge" style="display:none;">0</span>
         </div>
       `;
       document.body.appendChild(launcher);
+    }
+
+    // 2. Blurred Backdrop for Banner Card (Frosted glass blur)
+    if (config.enableConsentBanner && !document.getElementById('ca-banner-backdrop')) {
+      const bannerBackdrop = document.createElement('div');
+      bannerBackdrop.id = 'ca-banner-backdrop';
+      bannerBackdrop.className = 'ca-banner-backdrop';
+      document.body.appendChild(bannerBackdrop);
     }
 
     // 2. Non-Invasive Bottom-Right Banner Card (Screenshot 1 & 3)
@@ -408,16 +482,23 @@
       bannerCard.setAttribute('role', 'region');
       bannerCard.setAttribute('aria-label', 'Cookie Consent Banner');
 
+      const bannerText = (config.text && config.text.prompt && config.text.prompt.description) 
+        ? config.text.prompt.description 
+        : 'We use cookies on our site to enhance your user experience, provide personalized content, and analyze our traffic.';
+      const acceptText = (config.text && config.text.prompt && config.text.prompt.acceptAllButtonText) || 'Accept all';
+      const rejectText = (config.text && config.text.prompt && config.text.prompt.rejectNonEssentialButtonText) || 'Reject non-essential';
+      const prefText = (config.text && config.text.prompt && config.text.prompt.preferencesButtonText) || 'Preferences';
+
       bannerCard.innerHTML = `
         <div class="ca-banner-text">
-          We use cookies on our site to enhance your user experience, provide personalized content, and analyze our traffic.
+          ${bannerText}
         </div>
         <div class="ca-banner-actions">
-          <button class="ca-banner-pill-btn ca-btn-accept" id="ca-banner-accept">Accept all</button>
-          <button class="ca-banner-pill-btn ca-btn-reject" id="ca-banner-reject">Reject non-essential</button>
-          <button class="ca-banner-text-btn" id="ca-banner-preferences">Preferences</button>
+          <button class="ca-banner-pill-btn ca-btn-accept" id="ca-banner-accept">${escapeHTML(acceptText)}</button>
+          <button class="ca-banner-pill-btn ca-btn-reject" id="ca-banner-reject">${escapeHTML(rejectText)}</button>
+          <button class="ca-banner-text-btn" id="ca-banner-preferences">${escapeHTML(prefText)}</button>
           <div class="ca-banner-logo" title="CookieAccess">
-            ${getSVG('diamondLogo')}
+            ${getSVG('brandLogo')}
           </div>
         </div>
       `;
@@ -433,17 +514,23 @@
       modalBackdrop.setAttribute('role', 'dialog');
       modalBackdrop.setAttribute('aria-modal', 'true');
 
+      const prefTitle = (config.text && config.text.preferences && config.text.preferences.title) || 'Customize your cookie preferences';
+      const prefDesc = (config.text && config.text.preferences && config.text.preferences.description) 
+        ? config.text.preferences.description 
+        : 'We respect your right to privacy. You can choose not to allow some types of cookies. Your cookie preferences will apply across our website.';
+      const saveText = (config.text && config.text.preferences && config.text.preferences.saveButtonText) || 'Save and close';
+
       modalBackdrop.innerHTML = `
         <div class="ca-dialog-window" id="ca-dialog-window">
           <div class="ca-pref-header">
-            <h2 class="ca-pref-title">Customize your cookie preferences</h2>
+            <h2 class="ca-pref-title">${escapeHTML(prefTitle)}</h2>
             <button class="ca-pref-close-btn" id="ca-modal-close-btn" aria-label="Close preferences">
               ${getSVG('close')}
             </button>
           </div>
 
           <div class="ca-pref-subtitle">
-            We respect your right to privacy. You can choose not to allow some types of cookies. Your cookie preferences will apply across our website.
+            ${prefDesc}
           </div>
 
           <div class="ca-pref-body">
@@ -504,7 +591,7 @@
 
           <div class="ca-pref-footer">
             <div class="ca-pref-footer-btns">
-              <button class="ca-banner-pill-btn ca-btn-accept" id="ca-modal-save">Save and close</button>
+              <button class="ca-banner-pill-btn ca-btn-accept" id="ca-modal-save">${escapeHTML(saveText)}</button>
               <button class="ca-banner-pill-btn ca-btn-reject" id="ca-modal-reject">Reject non-essential</button>
             </div>
             <a href="https://github.com/nx1reps/cookie-access" target="_blank" rel="noopener" class="ca-pref-free-link">
@@ -521,13 +608,13 @@
       const drawer = document.createElement('div');
       drawer.id = 'ca-a11y-drawer';
       drawer.setAttribute('role', 'region');
-      drawer.setAttribute('aria-label', 'Accessibility menu');
+      drawer.setAttribute('aria-label', 'AccessiAccess');
 
       drawer.innerHTML = `
         <div class="ca-a11y-topbar">
           <div class="ca-a11y-topbar-title">
             <span style="font-size:18px;">♿</span>
-            <span>Accessibility menu <span style="font-size:11.5px;font-weight:500;opacity:0.85;">(Option+A)</span></span>
+            <span>AccessiAccess <span style="font-size:11.5px;font-weight:500;opacity:0.85;">(Option+A)</span></span>
           </div>
           <div class="ca-a11y-topbar-actions">
             <button class="ca-a11y-icon-btn" id="ca-a11y-reset-btn" title="Reset all adjustments">${getSVG('reset')}</button>
@@ -686,7 +773,7 @@
 
         <div class="ca-a11y-footer" style="padding:14px 20px;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:#64748b;font-weight:600;background:#ffffff;">
           <span style="color:#2563eb;font-size:15px;">♿</span>
-          <span><strong style="color:#0f172a;">AccessiYes</strong> by CookieAccess</span>
+          <span><strong style="color:#0f172a;">AccessiAccess</strong> by CookieAccess</span>
         </div>
       `;
       document.body.appendChild(drawer);
@@ -761,6 +848,11 @@
       elements.bannerPreferences.addEventListener('click', () => {
         closeBannerCard();
         openPreferencesModal();
+      });
+    }
+    if (elements.bannerBackdrop) {
+      elements.bannerBackdrop.addEventListener('click', () => {
+        closeBannerCard();
       });
     }
 
@@ -987,6 +1079,7 @@
         if (clickToSpeakActive) {
           if (audioText) audioText.textContent = 'Speaking: On';
           document.body.style.cursor = 'help';
+          speakText('AccessiAccess voice enabled. Click any text to read aloud.');
         } else {
           if (audioText) audioText.textContent = 'Click to Read';
           document.body.style.cursor = '';
@@ -1092,6 +1185,9 @@
     // 8. Reading Guide
     if (elements.readingGuideLine) {
       elements.readingGuideLine.style.display = a11yState.readingGuide ? 'block' : 'none';
+      if (a11yState.readingGuide && !elements.readingGuideLine.style.top) {
+        elements.readingGuideLine.style.top = (window.innerHeight / 2) + 'px';
+      }
       toggleCardActive('ca-tool-reading-guide', a11yState.readingGuide);
     }
 
@@ -1100,6 +1196,15 @@
       const showMask = a11yState.readingMask;
       elements.readingMaskTop.style.display = showMask ? 'block' : 'none';
       elements.readingMaskBottom.style.display = showMask ? 'block' : 'none';
+      if (showMask && !elements.readingMaskTop.style.height) {
+        const slitHeight = 120;
+        const topH = Math.max(0, (window.innerHeight / 2) - (slitHeight / 2));
+        const botY = (window.innerHeight / 2) + (slitHeight / 2);
+        elements.readingMaskTop.style.top = '0';
+        elements.readingMaskTop.style.height = topH + 'px';
+        elements.readingMaskBottom.style.top = botY + 'px';
+        elements.readingMaskBottom.style.height = (window.innerHeight - botY) + 'px';
+      }
       toggleCardActive('ca-tool-reading-mask', showMask);
     }
 
@@ -1289,10 +1394,14 @@
 
   function openBannerCard() {
     if (elements.bannerCard) elements.bannerCard.classList.add('ca-active');
+    if (elements.bannerBackdrop && config.backdrop && (config.backdrop.show !== false && config.backdrop !== false)) {
+      elements.bannerBackdrop.classList.add('ca-open');
+    }
   }
 
   function closeBannerCard() {
     if (elements.bannerCard) elements.bannerCard.classList.remove('ca-active');
+    if (elements.bannerBackdrop) elements.bannerBackdrop.classList.remove('ca-open');
   }
 
   function openPreferencesModal() {
@@ -1325,7 +1434,7 @@
   // =========================================================================
 
   function configure(options = {}) {
-    config = { ...config, ...options };
+    config = normalizeConfig({ ...config, ...options });
     applyCustomStyles(config);
 
     if (config.theme === 'dark' || (config.theme === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -1346,7 +1455,7 @@
   }
 
   function init(options = {}) {
-    config = { ...defaults, ...options };
+    config = normalizeConfig({ ...defaults, ...options });
 
     applyCustomStyles(config);
 
@@ -1429,6 +1538,7 @@
     getConsent: () => getSavedConsent(),
     getConsentLog: () => JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]'),
     getA11ySettings: () => ({ ...a11yState }),
+    getA11yState: () => ({ ...a11yState }),
     resetA11y: resetA11ySettings,
     applyProfile,
     exportConsentLog: () => {

@@ -622,7 +622,7 @@
       <div class="header-actions">
         <button class="btn btn-outline" id="btn-header-banner">Cookie Banner</button>
         <button class="btn btn-outline" id="btn-header-preferences">Preferences</button>
-        <button class="btn btn-outline" id="btn-header-a11y">Accessibility</button>
+        <button class="btn btn-outline" id="btn-header-a11y">AccessiAccess</button>
         <a href="#embed" class="btn btn-primary">Get Embed Code</a>
       </div>
     </div>
@@ -632,7 +632,7 @@
   <section class="hero">
     <div class="container">
       <div class="hero-badge-pill">
-        <span>🛡️ Universal Privacy Shield &amp; Accessibility Toolbar</span>
+        <span>🛡️ Universal Privacy Shield &amp; AccessiAccess Toolbar</span>
       </div>
       <h1>
         Enterprise Cookie Consent &amp; Web Accessibility. 100% Free.
@@ -644,7 +644,7 @@
       <div class="hero-buttons">
         <button class="btn btn-primary" id="btn-hero-launch-banner">Preview Cookie Banner</button>
         <button class="btn btn-outline" id="btn-hero-launch-modal">Customize Preferences</button>
-        <button class="btn btn-outline" id="btn-hero-launch-a11y">Accessibility Menu (Option+A)</button>
+        <button class="btn btn-outline" id="btn-hero-launch-a11y">AccessiAccess (Option+A)</button>
         <button class="btn btn-outline" id="btn-hero-reset-session" style="color:#dc2626;">Reset Demo</button>
         <button class="btn btn-outline" id="btn-hero-export-audit">Export Audit JSON</button>
       </div>
@@ -700,7 +700,7 @@
 
       <div class="feature-card">
         <div class="feature-icon-badge">♿</div>
-        <div class="feature-title">WCAG 2.2 AA Accessibility</div>
+        <div class="feature-title">AccessiAccess (WCAG 2.2 AA)</div>
         <div class="feature-desc">
           Instant left-docked assistant with Lexend dyslexia font, font scaling stepper, contrast modes, laser reading guide, focus mask, and audio text-to-speech.
         </div>
@@ -710,7 +710,7 @@
 
   <!-- Interactive Accessibility Testing Playground -->
   <section class="container section-wrap">
-    <h2 class="section-title">Live Accessibility Playground</h2>
+    <h2 class="section-title">Live AccessiAccess Playground</h2>
     <p class="section-subtitle">Click the tools below (or click the floating circle in the corner) to test the live adjustments directly on this page.</p>
 
     <div class="sandbox-card">
@@ -801,10 +801,10 @@
       <!-- Mode Tabs -->
       <div class="embed-mode-tabs" role="tablist">
         <button class="embed-tab-btn active" id="tab-btn-standard" data-mode="standard">
-          <span>⚡</span> 1-Click Zero-Config Script
+          <span>⚡</span> Full Customizable Embed (CSS &amp; JS Init)
         </button>
         <button class="embed-tab-btn" id="tab-btn-custom" data-mode="custom">
-          <span>🎨</span> Custom Branded Theme
+          <span>📦</span> 1-Line Self-Contained Script
         </button>
         <button class="embed-tab-btn" id="tab-btn-window" data-mode="window">
           <span>⚙️</span> Window Config Object
@@ -1008,13 +1008,21 @@
     const colorHexLabel = document.getElementById('color-hex-label');
     const customOptionGroups = document.querySelectorAll('.extra-custom-opt');
 
-    function getScriptSrc() {
+    function getAssetUrls() {
       const cdnEl = document.getElementById('cfg-cdn-source');
       const cdn = cdnEl ? cdnEl.value : 'jsdelivr';
       if (cdn === 'netlify') {
-        return 'https://cookie-access.netlify.app/cookie-access.bundle.js';
+        return {
+          css: 'https://cookie-access.netlify.app/dist/cookie-access.min.css',
+          js: 'https://cookie-access.netlify.app/dist/cookie-access.min.js',
+          bundle: 'https://cookie-access.netlify.app/cookie-access.bundle.js'
+        };
       }
-      return 'https://cdn.jsdelivr.net/gh/nx1reps/cookie-access@main/dist/cookie-access.bundle.js';
+      return {
+        css: 'https://cdn.jsdelivr.net/gh/nx1reps/cookie-access@main/dist/cookie-access.min.css',
+        js: 'https://cdn.jsdelivr.net/gh/nx1reps/cookie-access@main/dist/cookie-access.min.js',
+        bundle: 'https://cdn.jsdelivr.net/gh/nx1reps/cookie-access@main/dist/cookie-access.bundle.js'
+      };
     }
 
     function updateSnippet() {
@@ -1033,24 +1041,90 @@
       const theme = (themeEl && themeEl.value) || 'light';
       const font = (fontEl && fontEl.value) || '';
       const radius = (radiusEl && radiusEl.value) || 'pill';
-      const srcUrl = getScriptSrc();
+      const urls = getAssetUrls();
+      const posCamel = pos === 'bottom-left' ? 'bottomLeft' : (pos === 'none' ? 'none' : 'bottomRight');
+      const radiusVal = radius === 'pill' ? '24px' : (radius === 'sharp' ? '4px' : '14px');
 
       let code = '';
 
       if (currentEmbedMode === 'standard') {
-        if (titleEl) titleEl.textContent = '1-Click Zero-Config Embed (Drop into <head>)';
-        code = '<!-- CookieAccess: 1-Click Privacy & Accessibility Suite -->\n' +
-          '<script \n' +
-          '  src="' + srcUrl + '"\n' +
-          '  data-ga="' + ga + '"\n' +
-          '  data-position="' + pos + '"\n' +
-          '  data-theme="' + theme + '"\n' +
-          '  data-a11y="true"\n' +
-          '  defer><' + '/script>';
+        if (titleEl) titleEl.textContent = 'Full Customizable Embed (CSS Overrides & JS Init)';
+        code = '<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>\n' +
+          '<link rel="stylesheet" id="cookie-access-css" href="' + urls.css + '">\n' +
+          '<style id="cookie-access-overrides">\n' +
+          '#ca-wrapper, :root {\n' +
+          '  --boxShadow: -5px 5px 10px 0px #00000012, 0px 0px 50px 0px #0000001a;\n' +
+          '  --fontFamily: ' + (font || 'Plus Jakarta Sans, sans-serif') + ';\n' +
+          '  --primaryColor: ' + currentPrimaryColor + ';\n' +
+          '  --backgroundColor: #FFFFFF;\n' +
+          '  --textColor: #0f172a;\n' +
+          '  --backdropBackgroundColor: #00000033;\n' +
+          '  --backdropBackgroundBlur: 8px;\n' +
+          '  --iconColor: ' + currentPrimaryColor + ';\n' +
+          '  --iconBackgroundColor: #FFFFFF;\n' +
+          '  --borderRadius: ' + radiusVal + ';\n' +
+          '}\n' +
+          '</style>\n' +
+          '<script src="' + urls.js + '"><' + '/script>\n' +
+          '<script>\n' +
+          'window.CookieAccess.init({\n' +
+          '  backdrop: {\n' +
+          '    show: true,\n' +
+          '    blur: "8px"\n' +
+          '  },\n' +
+          '  icon: {\n' +
+          '    position: "' + posCamel + '"\n' +
+          '  },\n' +
+          '  prompt: {\n' +
+          '    position: "' + posCamel + '"\n' +
+          '  },\n' +
+          '  gaMeasurementId: "' + ga + '",\n' +
+          '  consentModeV2: true,\n' +
+          '  consentTypes: [\n' +
+          '    {\n' +
+          '      id: "essential",\n' +
+          '      label: "Essential",\n' +
+          '      description: "<p>These cookies are necessary for the website to function properly and cannot be switched off. They help with things like logging in and setting your privacy preferences.</p>",\n' +
+          '      required: true\n' +
+          '    },\n' +
+          '    {\n' +
+          '      id: "analytics",\n' +
+          '      label: "Analytics",\n' +
+          '      description: "<p>These cookies help us improve the site by tracking which pages are most popular and how visitors move around the site.</p>",\n' +
+          '      defaultValue: false,\n' +
+          '      gtag: "analytics_storage"\n' +
+          '    },\n' +
+          '    {\n' +
+          '      id: "marketing",\n' +
+          '      label: "Marketing",\n' +
+          '      description: "<p>These cookies are used by us and our advertising partners to show you relevant ads on this site and elsewhere, and to measure how those campaigns perform.</p>",\n' +
+          '      defaultValue: false,\n' +
+          '      gtag: [\n' +
+          '        "ad_storage",\n' +
+          '        "ad_user_data",\n' +
+          '        "ad_personalization"\n' +
+          '      ]\n' +
+          '    }\n' +
+          '  ],\n' +
+          '  text: {\n' +
+          '    prompt: {\n' +
+          '      description: "<p>We use cookies on our site to enhance your user experience, provide personalized content, and analyze our traffic.</p>",\n' +
+          '      acceptAllButtonText: "Accept all",\n' +
+          '      rejectNonEssentialButtonText: "Reject non-essential",\n' +
+          '      preferencesButtonText: "Preferences"\n' +
+          '    },\n' +
+          '    preferences: {\n' +
+          '      title: "Customize your cookie preferences",\n' +
+          '      description: "<p>We respect your right to privacy. You can choose not to allow some types of cookies. Your cookie preferences will apply across our website.</p>",\n' +
+          '      saveButtonText: "Save and close"\n' +
+          '    }\n' +
+          '  }\n' +
+          '});\n' +
+          '<' + '/script>';
       } else if (currentEmbedMode === 'custom') {
-        if (titleEl) titleEl.textContent = 'Custom Branded Embed (Direct HTML Attributes)';
+        if (titleEl) titleEl.textContent = '1-Line Self-Contained Script (Drop into <head>)';
         let attrs = [
-          '  src="' + srcUrl + '"',
+          '  src="' + urls.bundle + '"',
           '  data-ga="' + ga + '"',
           '  data-primary-color="' + currentPrimaryColor + '"'
         ];
@@ -1061,7 +1135,7 @@
         attrs.push('  data-a11y="true"');
         attrs.push('  defer');
 
-        code = '<!-- CookieAccess: Custom Branded Suite (Colors, Font & Radius) -->\n' +
+        code = '<!-- CookieAccess: 1-Line Self-Contained Bundle (Auto Styles Included) -->\n' +
           '<script \n' + attrs.join('\n') + '><' + '/script>';
       } else if (currentEmbedMode === 'window') {
         if (titleEl) titleEl.textContent = 'Declarative Window Config (window.CookieAccessConfig)';
@@ -1074,6 +1148,10 @@
           position: pos,
           companyName: 'My Company',
           privacyPolicyUrl: '/privacy',
+          backdrop: {
+            show: true,
+            blur: '8px'
+          },
           consentModeV2: true,
           autoInjectGA: true
         };
@@ -1082,7 +1160,7 @@
           '<script>\n' +
           '  window.CookieAccessConfig = ' + JSON.stringify(configObj, null, 4).replace(/\n/g, '\n  ') + ';\n' +
           '<' + '/script>\n' +
-          '<script src="' + srcUrl + '" defer><' + '/script>';
+          '<script src="' + urls.bundle + '" defer><' + '/script>';
       } else if (currentEmbedMode === 'npm') {
         if (titleEl) titleEl.textContent = 'Modern Framework Setup (React, Next.js, Vue, Vite)';
         code = '// 1. Install or import CookieAccess\n' +
@@ -1095,6 +1173,7 @@
           '  borderRadius: \'' + radius + '\',\n' +
           '  theme: \'' + theme + '\',\n' +
           '  position: \'' + pos + '\',\n' +
+          '  backdrop: { show: true, blur: \'8px\' },\n' +
           '  companyName: \'My Company\',\n' +
           '  privacyPolicyUrl: \'/privacy\',\n' +
           '  consentModeV2: true\n' +
