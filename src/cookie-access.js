@@ -400,12 +400,8 @@
       document.body.appendChild(launcher);
     }
 
-    // 2. Non-Invasive Bottom-Right Banner Card & Backdrop (Screenshot 1 & 3)
+    // 2. Non-Invasive Bottom-Right Banner Card (Screenshot 1 & 3)
     if (config.enableConsentBanner && !document.getElementById('ca-banner-card')) {
-      const bannerBackdrop = document.createElement('div');
-      bannerBackdrop.id = 'ca-banner-backdrop';
-      bannerBackdrop.className = 'ca-banner-backdrop';
-
       const bannerCard = document.createElement('div');
       bannerCard.id = 'ca-banner-card';
       bannerCard.className = 'ca-banner-card';
@@ -426,8 +422,7 @@
         </div>
       `;
 
-      bannerBackdrop.appendChild(bannerCard);
-      document.body.appendChild(bannerBackdrop);
+      document.body.appendChild(bannerCard);
     }
 
     // 3. Customize Cookie Preferences Modal (Screenshot 2)
@@ -1294,12 +1289,10 @@
 
   function openBannerCard() {
     if (elements.bannerCard) elements.bannerCard.classList.add('ca-active');
-    if (elements.bannerBackdrop) elements.bannerBackdrop.classList.add('ca-active');
   }
 
   function closeBannerCard() {
     if (elements.bannerCard) elements.bannerCard.classList.remove('ca-active');
-    if (elements.bannerBackdrop) elements.bannerBackdrop.classList.remove('ca-active');
   }
 
   function openPreferencesModal() {
