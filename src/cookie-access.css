@@ -1009,160 +1009,129 @@
 
 /* ==========================================================================
    4. 100% WORKING ACCESSIBILITY TRANSFORMATIONS (APPLIED ON ROOT)
+   Uses universal * selectors to override ANY host site styles.
+   Widget elements are excluded via :not() to keep the UI clean.
    ========================================================================== */
 
-/* 1. Dyslexia Font: Switches text across entire page to Google Lexend */
-html.ca-dyslexic-font,
-html.ca-dyslexic-font body,
-html.ca-dyslexic-font p,
-html.ca-dyslexic-font h1,
-html.ca-dyslexic-font h2,
-html.ca-dyslexic-font h3,
-html.ca-dyslexic-font h4,
-html.ca-dyslexic-font h5,
-html.ca-dyslexic-font h6,
-html.ca-dyslexic-font a,
-html.ca-dyslexic-font span,
-html.ca-dyslexic-font li,
-html.ca-dyslexic-font button,
-html.ca-dyslexic-font input,
-html.ca-dyslexic-font textarea,
-html.ca-dyslexic-font label,
-html.ca-dyslexic-font blockquote,
-html.ca-dyslexic-font div {
-  font-family: 'Lexend', var(--ca-font-dyslexic), sans-serif !important;
+/* Helper: Widget exclusion selector fragment */
+/* We use this pattern: html.ca-xxx SELECTOR:not(#ca-a11y-drawer *):not(#ca-modal-dialog *):not(#ca-banner-card *):not(#ca-launcher *) */
+
+/* 1. Dyslexia Font: Switches ALL text across entire page to Google Lexend */
+html.ca-dyslexic-font *:not(#ca-a11y-drawer):not(#ca-a11y-drawer *):not(#ca-modal-dialog):not(#ca-modal-dialog *):not(#ca-banner-card):not(#ca-banner-card *):not(#ca-launcher):not(#ca-launcher *) {
+  font-family: 'Lexend', 'OpenDyslexic', sans-serif !important;
   letter-spacing: 0.04em !important;
   word-spacing: 0.08em !important;
 }
 
-/* 2. Text Scaling (Universal Zoom + Font-Size on Body) */
+/* 2. Text Scaling — zoom on body + font-size percentage for Firefox */
 html.ca-text-90 body {
   zoom: 0.9 !important;
+  -moz-transform: scale(0.9) !important;
+  -moz-transform-origin: top left !important;
 }
 html.ca-text-110 body {
   zoom: 1.1 !important;
+  -moz-transform: scale(1.1) !important;
+  -moz-transform-origin: top left !important;
 }
 html.ca-text-120 body {
   zoom: 1.2 !important;
+  -moz-transform: scale(1.2) !important;
+  -moz-transform-origin: top left !important;
 }
 html.ca-text-125 body {
   zoom: 1.25 !important;
+  -moz-transform: scale(1.25) !important;
+  -moz-transform-origin: top left !important;
 }
 html.ca-text-130 body {
   zoom: 1.3 !important;
+  -moz-transform: scale(1.3) !important;
+  -moz-transform-origin: top left !important;
 }
 html.ca-text-140 body {
   zoom: 1.4 !important;
+  -moz-transform: scale(1.4) !important;
+  -moz-transform-origin: top left !important;
 }
 
-/* 3. Spacing & Line Height */
-html.ca-letter-spacing,
-html.ca-letter-spacing body,
-html.ca-letter-spacing p,
-html.ca-letter-spacing h1,
-html.ca-letter-spacing h2,
-html.ca-letter-spacing h3,
-html.ca-letter-spacing h4,
-html.ca-letter-spacing h5,
-html.ca-letter-spacing h6,
-html.ca-letter-spacing a,
-html.ca-letter-spacing span,
-html.ca-letter-spacing li,
-html.ca-letter-spacing button,
-html.ca-letter-spacing input,
-html.ca-letter-spacing textarea,
-html.ca-letter-spacing label,
-html.ca-letter-spacing blockquote,
-html.ca-letter-spacing div {
+/* 3. Letter Spacing — universal * catches ALL elements on any site */
+html.ca-letter-spacing *:not(#ca-a11y-drawer):not(#ca-a11y-drawer *):not(#ca-modal-dialog):not(#ca-modal-dialog *):not(#ca-banner-card):not(#ca-banner-card *):not(#ca-launcher):not(#ca-launcher *) {
   letter-spacing: 0.18em !important;
   word-spacing: 0.28em !important;
 }
 
-html.ca-line-height,
-html.ca-line-height body,
-html.ca-line-height p,
-html.ca-line-height h1,
-html.ca-line-height h2,
-html.ca-line-height h3,
-html.ca-line-height h4,
-html.ca-line-height h5,
-html.ca-line-height h6,
-html.ca-line-height a,
-html.ca-line-height span,
-html.ca-line-height li,
-html.ca-line-height blockquote,
-html.ca-line-height div {
+/* 3b. Line Height — universal * catches ALL elements on any site */
+html.ca-line-height *:not(#ca-a11y-drawer):not(#ca-a11y-drawer *):not(#ca-modal-dialog):not(#ca-modal-dialog *):not(#ca-banner-card):not(#ca-banner-card *):not(#ca-launcher):not(#ca-launcher *) {
   line-height: 2.3 !important;
 }
 
-/* 4. High Contrast Dark */
-html.ca-contrast-dark,
-html.ca-contrast-dark body {
+/* 4. High Contrast Dark — universal * catches ALL elements */
+html.ca-contrast-dark {
   background-color: #0b0f19 !important;
   color: #f8fafc !important;
 }
-
-html.ca-contrast-dark header,
-html.ca-contrast-dark nav,
-html.ca-contrast-dark main,
-html.ca-contrast-dark section,
-html.ca-contrast-dark article,
-html.ca-contrast-dark aside,
-html.ca-contrast-dark footer,
-html.ca-contrast-dark div,
-html.ca-contrast-dark p,
-html.ca-contrast-dark span,
-html.ca-contrast-dark li,
-html.ca-contrast-dark ul,
-html.ca-contrast-dark ol,
-html.ca-contrast-dark table,
-html.ca-contrast-dark tr,
-html.ca-contrast-dark td,
-html.ca-contrast-dark th {
+html.ca-contrast-dark *:not(#ca-a11y-drawer):not(#ca-a11y-drawer *):not(#ca-modal-dialog):not(#ca-modal-dialog *):not(#ca-banner-card):not(#ca-banner-card *):not(#ca-launcher):not(#ca-launcher *):not(#ca-reading-guide-line):not(#ca-reading-mask-top):not(#ca-reading-mask-bottom) {
   background-color: #0f172a !important;
   color: #f1f5f9 !important;
   border-color: #334155 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  -webkit-text-fill-color: #f1f5f9 !important;
+  background-image: none !important;
 }
-
-html.ca-contrast-dark a {
+html.ca-contrast-dark a:not(#ca-a11y-drawer a):not(#ca-modal-dialog a):not(#ca-banner-card a):not(#ca-launcher a) {
   color: #60a5fa !important;
+  -webkit-text-fill-color: #60a5fa !important;
 }
-
-html.ca-contrast-dark h1,
-html.ca-contrast-dark h2,
-html.ca-contrast-dark h3,
-html.ca-contrast-dark h4,
-html.ca-contrast-dark h5,
-html.ca-contrast-dark h6 {
+html.ca-contrast-dark h1:not(#ca-a11y-drawer h1):not(#ca-modal-dialog h1):not(#ca-banner-card h1),
+html.ca-contrast-dark h2:not(#ca-a11y-drawer h2):not(#ca-modal-dialog h2):not(#ca-banner-card h2),
+html.ca-contrast-dark h3:not(#ca-a11y-drawer h3):not(#ca-modal-dialog h3):not(#ca-banner-card h3),
+html.ca-contrast-dark h4:not(#ca-a11y-drawer h4):not(#ca-modal-dialog h4):not(#ca-banner-card h4),
+html.ca-contrast-dark h5, html.ca-contrast-dark h6 {
   color: #38bdf8 !important;
+  -webkit-text-fill-color: #38bdf8 !important;
 }
-
-html.ca-contrast-dark button,
-html.ca-contrast-dark input,
-html.ca-contrast-dark select,
-html.ca-contrast-dark textarea {
+html.ca-contrast-dark button:not(#ca-a11y-drawer button):not(#ca-modal-dialog button):not(#ca-banner-card button):not(#ca-launcher button),
+html.ca-contrast-dark input:not(#ca-a11y-drawer input):not(#ca-modal-dialog input):not(#ca-banner-card input),
+html.ca-contrast-dark select:not(#ca-a11y-drawer select):not(#ca-modal-dialog select),
+html.ca-contrast-dark textarea:not(#ca-a11y-drawer textarea):not(#ca-modal-dialog textarea) {
   background-color: #1e293b !important;
   color: #f8fafc !important;
   border-color: #475569 !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
+/* Hide ambient glows, gradient blobs, and decorative elements in dark contrast */
+html.ca-contrast-dark [class*="glow"],
+html.ca-contrast-dark [class*="blob"],
+html.ca-contrast-dark [class*="gradient-bg"],
+html.ca-contrast-dark [class*="bg-decoration"] {
+  opacity: 0 !important;
+}
+html.ca-contrast-dark img:not(#ca-a11y-drawer img):not(#ca-modal-dialog img):not(#ca-banner-card img):not(#ca-launcher img) {
+  filter: brightness(0.8) contrast(1.1) !important;
 }
 
 /* 5. Invert Colors */
 html.ca-contrast-invert {
   filter: invert(100%) hue-rotate(180deg) !important;
 }
-
+/* Double-invert media and widget to keep them normal */
 html.ca-contrast-invert img,
 html.ca-contrast-invert video,
 html.ca-contrast-invert picture,
 html.ca-contrast-invert canvas,
 html.ca-contrast-invert iframe,
+html.ca-contrast-invert svg,
+html.ca-contrast-invert [style*="background-image"],
 html.ca-contrast-invert #ca-reading-guide-line,
 html.ca-contrast-invert #ca-reading-mask-top,
 html.ca-contrast-invert #ca-reading-mask-bottom,
 html.ca-contrast-invert #ca-modal-dialog,
 html.ca-contrast-invert #ca-a11y-drawer,
 html.ca-contrast-invert #ca-launcher,
-html.ca-contrast-invert #ca-banner-card {
+html.ca-contrast-invert #ca-banner-card,
+html.ca-contrast-invert #ca-banner-backdrop {
   filter: invert(100%) hue-rotate(180deg) !important;
 }
 
@@ -1170,77 +1139,108 @@ html.ca-contrast-invert #ca-banner-card {
 html.ca-contrast-monochrome {
   filter: grayscale(100%) !important;
 }
+/* Keep widget colorful */
+html.ca-contrast-monochrome #ca-a11y-drawer,
+html.ca-contrast-monochrome #ca-modal-dialog,
+html.ca-contrast-monochrome #ca-banner-card,
+html.ca-contrast-monochrome #ca-launcher {
+  filter: grayscale(0%) !important;
+}
 
 /* 7. High Saturation */
 html.ca-high-saturation {
-  filter: saturate(220%) !important;
+  filter: saturate(250%) !important;
+}
+/* Keep widget normal */
+html.ca-high-saturation #ca-a11y-drawer,
+html.ca-high-saturation #ca-modal-dialog,
+html.ca-high-saturation #ca-banner-card,
+html.ca-high-saturation #ca-launcher {
+  filter: saturate(100%) !important;
 }
 
-/* 8. Highlight Links */
-html.ca-highlight-links a {
+/* 8. Highlight Links — catches ALL links and link-like elements */
+html.ca-highlight-links a:not(#ca-a11y-drawer a):not(#ca-modal-dialog a):not(#ca-banner-card a):not(#ca-launcher a),
+html.ca-highlight-links [role="link"]:not(#ca-a11y-drawer [role="link"]):not(#ca-modal-dialog [role="link"]) {
   text-decoration: underline !important;
   text-decoration-thickness: 3px !important;
   text-underline-offset: 3px !important;
   background-color: #fef08a !important;
-  color: #0f172a !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
   font-weight: 700 !important;
-  outline: 2px solid #ca8a04 !important;
-  outline-offset: 1px !important;
-  border-radius: 2px !important;
-  padding: 1px 3px !important;
+  outline: 3px solid #ca8a04 !important;
+  outline-offset: 2px !important;
+  border-radius: 3px !important;
+  padding: 2px 4px !important;
+  background-image: none !important;
 }
 
-/* 9. Highlight Headings / Titles */
-html.ca-highlight-headings h1,
-html.ca-highlight-headings h2,
-html.ca-highlight-headings h3,
-html.ca-highlight-headings h4,
-html.ca-highlight-headings h5,
-html.ca-highlight-headings h6 {
+/* 9. Highlight Headings / Titles — catches ALL headings and heading-like elements */
+html.ca-highlight-headings h1:not(#ca-a11y-drawer h1):not(#ca-modal-dialog h1):not(#ca-banner-card h1),
+html.ca-highlight-headings h2:not(#ca-a11y-drawer h2):not(#ca-modal-dialog h2):not(#ca-banner-card h2),
+html.ca-highlight-headings h3:not(#ca-a11y-drawer h3):not(#ca-modal-dialog h3):not(#ca-banner-card h3),
+html.ca-highlight-headings h4:not(#ca-a11y-drawer h4):not(#ca-modal-dialog h4):not(#ca-banner-card h4),
+html.ca-highlight-headings h5:not(#ca-a11y-drawer h5):not(#ca-modal-dialog h5),
+html.ca-highlight-headings h6:not(#ca-a11y-drawer h6):not(#ca-modal-dialog h6),
+html.ca-highlight-headings [role="heading"]:not(#ca-a11y-drawer [role="heading"]):not(#ca-modal-dialog [role="heading"]) {
   outline: 3px solid #2563eb !important;
-  outline-offset: 4px !important;
-  background-color: rgba(37, 99, 235, 0.16) !important;
+  outline-offset: 6px !important;
+  background-color: rgba(37, 99, 235, 0.18) !important;
   border-radius: 4px !important;
+  padding: 4px !important;
 }
 
-/* 10. Stop Motion / Reduce Animations */
+/* 10. Stop Motion / Reduce Animations — kills everything */
 html.ca-stop-animations,
 html.ca-stop-animations *,
 html.ca-stop-animations *::before,
 html.ca-stop-animations *::after {
   animation: none !important;
-  animation-duration: 0.0001ms !important;
+  animation-duration: 0.001ms !important;
+  animation-delay: 0ms !important;
   animation-iteration-count: 1 !important;
+  animation-play-state: paused !important;
   transition: none !important;
-  transition-duration: 0.0001ms !important;
+  transition-duration: 0.001ms !important;
+  transition-delay: 0ms !important;
   scroll-behavior: auto !important;
 }
+html.ca-stop-animations video,
+html.ca-stop-animations [class*="animation"],
+html.ca-stop-animations [class*="animate"],
+html.ca-stop-animations [class*="motion"],
+html.ca-stop-animations marquee {
+  animation-play-state: paused !important;
+}
 
-/* 11. Big Cursors */
+/* 11. Big Cursors — universal * means it works on EVERY element */
 html.ca-big-cursor,
-html.ca-big-cursor body,
-html.ca-big-cursor * {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cpolygon points='0,0 0,36 10,26 18,44 24,41 16,24 28,24' fill='%23ffffff' stroke='%23000000' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") 0 0, auto !important;
+html.ca-big-cursor *,
+html.ca-big-cursor *::before,
+html.ca-big-cursor *::after {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpolygon points='4,4 4,40 14,30 22,48 28,45 20,28 32,28' fill='%23ffffff' stroke='%23000000' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") 4 4, auto !important;
 }
 
 html.ca-big-cursor-black,
-html.ca-big-cursor-black body,
-html.ca-big-cursor-black * {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cpolygon points='0,0 0,36 10,26 18,44 24,41 16,24 28,24' fill='%23000000' stroke='%23ffffff' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") 0 0, auto !important;
+html.ca-big-cursor-black *,
+html.ca-big-cursor-black *::before,
+html.ca-big-cursor-black *::after {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpolygon points='4,4 4,40 14,30 22,48 28,45 20,28 32,28' fill='%23000000' stroke='%23ffffff' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") 4 4, auto !important;
 }
 
 /* 12. Reading Guide Line */
 #ca-reading-guide-line {
-  position: fixed;
-  left: 0;
-  width: 100vw;
-  height: 8px;
-  background: #2563eb;
-  box-shadow: 0 0 20px rgba(37, 99, 235, 1), 0 0 8px rgba(37, 99, 235, 0.85);
-  border-top: 2px solid #93c5fd;
-  border-bottom: 2px solid #1d4ed8;
-  pointer-events: none;
-  z-index: 2147483646;
+  position: fixed !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 8px !important;
+  background: #2563eb !important;
+  box-shadow: 0 0 20px rgba(37, 99, 235, 1), 0 0 8px rgba(37, 99, 235, 0.85) !important;
+  border-top: 2px solid #93c5fd !important;
+  border-bottom: 2px solid #1d4ed8 !important;
+  pointer-events: none !important;
+  z-index: 2147483647 !important;
   display: none;
   top: 50%;
 }
@@ -1248,12 +1248,12 @@ html.ca-big-cursor-black * {
 /* 13. Reading Mask */
 #ca-reading-mask-top,
 #ca-reading-mask-bottom {
-  position: fixed;
-  left: 0;
-  width: 100vw;
-  background: rgba(15, 23, 42, 0.85);
-  pointer-events: none;
-  z-index: 2147483645;
+  position: fixed !important;
+  left: 0 !important;
+  width: 100vw !important;
+  background: rgba(0, 0, 0, 0.82) !important;
+  pointer-events: none !important;
+  z-index: 2147483646 !important;
   display: none;
 }
 
@@ -1262,19 +1262,25 @@ html.ca-big-cursor-black * {
   background: #fde047 !important;
   color: #0f172a !important;
   border-radius: 4px;
-  box-shadow: 0 0 0 2px #eab308;
+  box-shadow: 0 0 0 3px #eab308 !important;
+  -webkit-text-fill-color: #0f172a !important;
 }
 
 /* ==========================================================================
-   WIDGET ISOLATION - KEEP ACCESSIACCESS & COOKIEACCESS UI CLEAN & CRISP
+   WIDGET ISOLATION — Keep AccessiAccess & CookieAccess UI pristine
+   Uses high-specificity selectors to undo any accessibility overrides
    ========================================================================== */
+
+/* Base font reset */
 #ca-a11y-drawer,
 #ca-modal-dialog,
 #ca-banner-card,
 #ca-launcher {
   font-family: var(--ca-font) !important;
+  filter: none !important;
 }
 
+/* Reset all text properties inside widget */
 #ca-a11y-drawer *,
 #ca-modal-dialog *,
 #ca-banner-card *,
@@ -1282,6 +1288,10 @@ html.ca-big-cursor-black * {
   letter-spacing: normal !important;
   word-spacing: normal !important;
   line-height: normal !important;
+  font-family: var(--ca-font) !important;
+  -webkit-text-fill-color: unset !important;
+  background-image: unset;
+  text-shadow: unset !important;
 }
 
 /* Reset Links inside widget */
@@ -1296,9 +1306,6 @@ html.ca-big-cursor-black * {
   outline: none !important;
   padding: 0 !important;
 }
-#ca-modal-dialog .ca-pref-free-link {
-  color: var(--ca-primary) !important;
-}
 
 /* Reset Headings inside widget */
 #ca-a11y-drawer h1, #ca-a11y-drawer h2, #ca-a11y-drawer h3, #ca-a11y-drawer h4,
@@ -1309,7 +1316,7 @@ html.ca-big-cursor-black * {
   color: var(--ca-text-title) !important;
 }
 
-/* Reset Dark Contrast inside widget */
+/* Dark Contrast: Keep widget white/light */
 html.ca-contrast-dark #ca-a11y-drawer,
 html.ca-contrast-dark #ca-modal-dialog .ca-dialog-window,
 html.ca-contrast-dark #ca-banner-card {
@@ -1320,16 +1327,50 @@ html.ca-contrast-dark #ca-banner-card {
 html.ca-contrast-dark #ca-a11y-drawer *,
 html.ca-contrast-dark #ca-modal-dialog *,
 html.ca-contrast-dark #ca-banner-card * {
-  background-color: revert;
-  color: revert;
-  border-color: revert;
+  background-color: inherit !important;
+  color: inherit !important;
+  border-color: inherit !important;
+  box-shadow: unset;
+  -webkit-text-fill-color: inherit !important;
+  background-image: unset !important;
 }
+/* Re-apply specific widget colors that got wiped */
 html.ca-contrast-dark .ca-a11y-topbar {
   background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
   color: #ffffff !important;
 }
 html.ca-contrast-dark .ca-a11y-topbar * {
   color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+html.ca-contrast-dark .ca-square-tool-btn,
+html.ca-contrast-dark .ca-tool-square-card {
+  background-color: #f8fafc !important;
+  color: #334155 !important;
+  border-color: #e2e8f0 !important;
+}
+html.ca-contrast-dark .ca-square-tool-btn.ca-active,
+html.ca-contrast-dark .ca-tool-square-card.ca-active {
+  background-color: #eff6ff !important;
+  border-color: #2563eb !important;
+}
+html.ca-contrast-dark .ca-section-title,
+html.ca-contrast-dark .ca-a11y-section-title {
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155 !important;
+}
+html.ca-contrast-dark .ca-btn {
+  background-color: var(--ca-primary) !important;
+  color: #ffffff !important;
+}
+html.ca-contrast-dark .ca-clean-header,
+html.ca-contrast-dark .ca-clean-body,
+html.ca-contrast-dark .ca-clean-footer,
+html.ca-contrast-dark .ca-a11y-footer {
+  background-color: #ffffff !important;
+}
+html.ca-contrast-dark #ca-banner-backdrop {
+  background-color: rgba(0,0,0,0.2) !important;
 }
 
 /* ==========================================================================

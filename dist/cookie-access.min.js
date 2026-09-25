@@ -962,10 +962,12 @@
       });
     }
 
-    // 2. Bigger Text (Cycle 100% -> 110% -> 125% -> 140% -> 100%)
-    const btnSize = document.getElementById('ca-tool-size');
-    if (btnSize) {
-      btnSize.addEventListener('click', () => {
+    // 2. Bigger Text — the font card itself is clickable too (cycles sizes)
+    const fontCard = document.querySelector('.ca-adjust-font-card');
+    if (fontCard) {
+      fontCard.addEventListener('click', (e) => {
+        // Don't cycle if they clicked the +/- stepper buttons (those have their own handlers)
+        if (e.target.closest('#ca-font-dec') || e.target.closest('#ca-font-inc')) return;
         if (a11yState.textSize === 100) a11yState.textSize = 110;
         else if (a11yState.textSize === 110) a11yState.textSize = 125;
         else if (a11yState.textSize === 125) a11yState.textSize = 140;
@@ -1178,9 +1180,14 @@
     else if (a11yState.contrast === 'monochrome') docEl.classList.add('ca-contrast-monochrome');
     else if (a11yState.contrast === 'saturate') docEl.classList.add('ca-high-saturation');
 
-    // 6. Stop Motion
+    // 6. Stop Motion — also pause/resume all <video> elements
     docEl.classList.toggle('ca-stop-animations', a11yState.stopAnimations);
     toggleCardActive('ca-tool-stop-animations', a11yState.stopAnimations);
+    try {
+      document.querySelectorAll('video').forEach(function(v) {
+        if (a11yState.stopAnimations) { v.pause(); } else { /* leave as-is */ }
+      });
+    } catch (e) {}
 
     // 7. Big Cursor
     docEl.classList.remove('ca-big-cursor', 'ca-big-cursor-black');
@@ -1198,32 +1205,32 @@
       toggleCardActive('ca-tool-cursor', false);
     }
 
-    // 8. Reading Guide
+    // 8. Reading Guide — force inline styles so no host CSS can override
     const guideEl = document.getElementById('ca-reading-guide-line');
     if (guideEl) {
-      guideEl.style.display = a11yState.readingGuide ? 'block' : 'none';
       if (a11yState.readingGuide) {
-        guideEl.style.top = (window.innerHeight / 2) + 'px';
+        guideEl.style.cssText = 'display:block !important; position:fixed !important; left:0 !important; width:100vw !important; height:8px !important; background:#2563eb !important; box-shadow:0 0 20px rgba(37,99,235,1),0 0 8px rgba(37,99,235,0.85) !important; border-top:2px solid #93c5fd !important; border-bottom:2px solid #1d4ed8 !important; pointer-events:none !important; z-index:2147483647 !important; top:' + (window.innerHeight / 2) + 'px;';
+      } else {
+        guideEl.style.display = 'none';
       }
       toggleCardActive('ca-tool-reading-guide', a11yState.readingGuide);
     }
 
-    // 9. Reading Mask
+    // 9. Reading Mask — force inline styles so no host CSS can override
     const maskTopEl = document.getElementById('ca-reading-mask-top');
     const maskBotEl = document.getElementById('ca-reading-mask-bottom');
     if (maskTopEl && maskBotEl) {
       const showMask = a11yState.readingMask;
-      maskTopEl.style.display = showMask ? 'block' : 'none';
-      maskBotEl.style.display = showMask ? 'block' : 'none';
       if (showMask) {
         const slitHeight = 120;
         const mid = window.innerHeight / 2;
         const topH = Math.max(0, mid - (slitHeight / 2));
         const botY = mid + (slitHeight / 2);
-        maskTopEl.style.top = '0';
-        maskTopEl.style.height = topH + 'px';
-        maskBotEl.style.top = botY + 'px';
-        maskBotEl.style.height = Math.max(0, window.innerHeight - botY) + 'px';
+        maskTopEl.style.cssText = 'display:block !important; position:fixed !important; left:0 !important; width:100vw !important; background:rgba(0,0,0,0.82) !important; pointer-events:none !important; z-index:2147483646 !important; top:0; height:' + topH + 'px;';
+        maskBotEl.style.cssText = 'display:block !important; position:fixed !important; left:0 !important; width:100vw !important; background:rgba(0,0,0,0.82) !important; pointer-events:none !important; z-index:2147483646 !important; top:' + botY + 'px; height:' + Math.max(0, window.innerHeight - botY) + 'px;';
+      } else {
+        maskTopEl.style.display = 'none';
+        maskBotEl.style.display = 'none';
       }
       toggleCardActive('ca-tool-reading-mask', showMask);
     }
