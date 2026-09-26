@@ -23,26 +23,25 @@ const minCss = cssCode
 fs.writeFileSync(path.join(distDir, 'cookie-access.css'), cssCode);
 fs.writeFileSync(path.join(distDir, 'cookie-access.min.css'), minCss);
 
-// Write raw and minified JS
-fs.writeFileSync(path.join(distDir, 'cookie-access.js'), jsCode);
-fs.writeFileSync(path.join(distDir, 'cookie-access.min.js'), jsCode);
-
-// Create the ultimate ALL-IN-ONE Standalone Bundle (with auto-embedded CSS)
-// Anyone can just embed this ONE script file from a CDN and it works everywhere!
+// Create the self-contained JS bundle with auto-embedded CSS
 const autoCssInjection = `
 (function() {
   if (typeof document !== 'undefined' && !document.getElementById('ca-embedded-styles')) {
     var style = document.createElement('style');
     style.id = 'ca-embedded-styles';
     style.textContent = ${JSON.stringify(minCss)};
-    document.head.appendChild(style);
+    (document.head || document.documentElement).appendChild(style);
   }
 })();
 `;
 
-const bundleJs = autoCssInjection + '\n' + jsCode;
-fs.writeFileSync(path.join(distDir, 'cookie-access.bundle.js'), bundleJs);
-fs.writeFileSync(path.join(__dirname, '..', 'cookie-access.bundle.js'), bundleJs);
+const standaloneJs = autoCssInjection + '\n' + jsCode;
+
+// Write raw and minified JS (both now self-contained for 100% reliability on Next.js, Vite, etc.)
+fs.writeFileSync(path.join(distDir, 'cookie-access.js'), standaloneJs);
+fs.writeFileSync(path.join(distDir, 'cookie-access.min.js'), standaloneJs);
+fs.writeFileSync(path.join(distDir, 'cookie-access.bundle.js'), standaloneJs);
+fs.writeFileSync(path.join(__dirname, '..', 'cookie-access.bundle.js'), standaloneJs);
 
 // Fix dist/index.html script reference so it uses the bundle directly
 const distIndexHtml = path.join(distDir, 'index.html');
@@ -57,10 +56,10 @@ if (fs.existsSync(distIndexHtml)) {
 console.log('✓ Successfully created:');
 console.log('  - dist/cookie-access.css');
 console.log('  - dist/cookie-access.min.css');
-console.log('  - dist/cookie-access.js');
-console.log('  - dist/cookie-access.min.js');
-console.log('  - dist/cookie-access.bundle.js (All-in-one script with auto-embedded styles)');
-console.log('  - cookie-access.bundle.js (Root copy for Netlify / root CDN)');
+console.log('  - dist/cookie-access.js (Self-contained with auto-embedded styles)');
+console.log('  - dist/cookie-access.min.js (Self-contained with auto-embedded styles)');
+console.log('  - dist/cookie-access.bundle.js (All-in-one standalone bundle)');
+console.log('  - cookie-access.bundle.js (Root CDN bundle)');
 
 // Auto-purge jsDelivr global cache for @main so embeds get instant updates
 const https = require('https');
@@ -68,7 +67,9 @@ const purgeFiles = [
   'dist/cookie-access.bundle.js',
   'cookie-access.bundle.js',
   'dist/cookie-access.min.js',
-  'dist/cookie-access.min.css'
+  'dist/cookie-access.js',
+  'dist/cookie-access.min.css',
+  'dist/cookie-access.css'
 ];
 
 let pending = purgeFiles.length;

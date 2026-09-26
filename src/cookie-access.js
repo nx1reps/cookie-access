@@ -407,12 +407,12 @@
   }
 
   function injectDOM() {
-    // 0. Ensure Google Lexend Font is loaded for Dyslexia accessibility
-    if (!document.getElementById('ca-lexend-font')) {
+    // 0. Ensure Web Fonts are loaded for Dyslexia accessibility
+    if (!document.getElementById('ca-dyslexic-webfont')) {
       const link = document.createElement('link');
-      link.id = 'ca-lexend-font';
+      link.id = 'ca-dyslexic-webfont';
       link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap';
+      link.href = 'https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Lexend:wght@400;500;600;700&display=swap';
       document.head.appendChild(link);
     }
 
@@ -433,7 +433,7 @@
       window.addEventListener('mousemove', function (e) {
         if (a11yState.readingGuide) {
           const g = document.getElementById('ca-reading-guide-line');
-          if (g) g.style.top = (e.clientY - 4) + 'px';
+          if (g) g.style.setProperty('top', (e.clientY - 4) + 'px', 'important');
         }
         if (a11yState.readingMask) {
           const mTop = document.getElementById('ca-reading-mask-top');
@@ -442,13 +442,13 @@
             const slitHeight = 120;
             const topH = Math.max(0, e.clientY - (slitHeight / 2));
             const botY = e.clientY + (slitHeight / 2);
-            mTop.style.top = '0';
-            mTop.style.height = topH + 'px';
-            mBot.style.top = botY + 'px';
-            mBot.style.height = Math.max(0, window.innerHeight - botY) + 'px';
+            mTop.style.setProperty('top', '0', 'important');
+            mTop.style.setProperty('height', topH + 'px', 'important');
+            mBot.style.setProperty('top', botY + 'px', 'important');
+            mBot.style.setProperty('height', Math.max(0, window.innerHeight - botY) + 'px', 'important');
           }
         }
-      });
+      }, { passive: true });
     }
 
     // 2. The Unified Split Circle (Half Cookie / Half Accessibility)
@@ -1132,6 +1132,196 @@
     applyA11yState();
   }
 
+  function updateA11yRuntimeStyles() {
+    let styleEl = document.getElementById('ca-a11y-runtime-sheet');
+    if (!styleEl) {
+      styleEl = document.createElement('style');
+      styleEl.id = 'ca-a11y-runtime-sheet';
+      (document.head || document.documentElement).appendChild(styleEl);
+    } else {
+      if (document.head && document.head.lastElementChild !== styleEl) {
+        document.head.appendChild(styleEl);
+      }
+    }
+
+    let css = '';
+
+    if (a11yState.dyslexicFont) {
+      css += `
+        body *:not([id^="ca-"]):not([class*="ca-"]) {
+          font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', 'Lexend', 'OpenDyslexic', cursive, sans-serif !important;
+          letter-spacing: 0.05em !important;
+          word-spacing: 0.1em !important;
+        }
+      `;
+    }
+
+    if (a11yState.letterSpacing) {
+      css += `
+        body *:not([id^="ca-"]):not([class*="ca-"]) {
+          letter-spacing: 0.18em !important;
+          word-spacing: 0.28em !important;
+        }
+      `;
+    }
+
+    if (a11yState.lineHeight) {
+      css += `
+        body *:not([id^="ca-"]):not([class*="ca-"]) {
+          line-height: 2.3 !important;
+        }
+      `;
+    }
+
+    if (a11yState.highlightLinks) {
+      css += `
+        body a:not([id^="ca-"]):not([class*="ca-"]),
+        body [role="link"]:not([id^="ca-"]):not([class*="ca-"]) {
+          text-decoration: underline 3px solid #000000 !important;
+          text-underline-offset: 3px !important;
+          background-color: #fef08a !important;
+          color: #000000 !important;
+          -webkit-text-fill-color: #000000 !important;
+          font-weight: 700 !important;
+          outline: 3px solid #ca8a04 !important;
+          outline-offset: 2px !important;
+          border-radius: 4px !important;
+          padding: 1px 5px !important;
+          display: inline-block !important;
+          background-image: none !important;
+        }
+      `;
+    }
+
+    if (a11yState.highlightHeadings) {
+      css += `
+        body h1:not([class*="ca-"]),
+        body h2:not([class*="ca-"]),
+        body h3:not([class*="ca-"]),
+        body h4:not([class*="ca-"]),
+        body h5:not([class*="ca-"]),
+        body h6:not([class*="ca-"]),
+        body [role="heading"]:not([class*="ca-"]) {
+          outline: 3px solid #2563eb !important;
+          outline-offset: 5px !important;
+          background-color: rgba(37, 99, 235, 0.16) !important;
+          border-radius: 4px !important;
+          padding: 2px 6px !important;
+        }
+      `;
+    }
+
+    if (a11yState.contrast === 'dark') {
+      css += `
+        html, body {
+          background-color: #0b0f19 !important;
+          color: #f8fafc !important;
+        }
+        body > *:not([id^="ca-"]) {
+          background-color: #0f172a !important;
+          color: #f8fafc !important;
+        }
+        body *:not([id^="ca-"]):not([class*="ca-"]) {
+          border-color: #334155 !important;
+          text-shadow: none !important;
+          box-shadow: none !important;
+        }
+        body p:not([class*="ca-"]),
+        body span:not([class*="ca-"]),
+        body li:not([class*="ca-"]),
+        body div:not([id^="ca-"]):not([class*="ca-"]) {
+          color: #f1f5f9 !important;
+          -webkit-text-fill-color: #f1f5f9 !important;
+        }
+        body h1:not([class*="ca-"]),
+        body h2:not([class*="ca-"]),
+        body h3:not([class*="ca-"]),
+        body h4:not([class*="ca-"]),
+        body h5:not([class*="ca-"]),
+        body h6:not([class*="ca-"]) {
+          color: #38bdf8 !important;
+          -webkit-text-fill-color: #38bdf8 !important;
+        }
+        body a:not([id^="ca-"]):not([class*="ca-"]) {
+          color: #60a5fa !important;
+          -webkit-text-fill-color: #60a5fa !important;
+        }
+        body button:not([id^="ca-"]):not([class*="ca-"]),
+        body input:not([id^="ca-"]):not([class*="ca-"]),
+        body select:not([id^="ca-"]):not([class*="ca-"]),
+        body textarea:not([id^="ca-"]):not([class*="ca-"]) {
+          background-color: #1e293b !important;
+          color: #f8fafc !important;
+          border-color: #475569 !important;
+          -webkit-text-fill-color: #f8fafc !important;
+        }
+        body img:not([id^="ca-"]):not([class*="ca-"]) {
+          filter: brightness(0.85) contrast(1.1) !important;
+        }
+        [class*="glow"], [class*="blob"], [class*="gradient-bg"], [class*="bg-decoration"] {
+          opacity: 0.05 !important;
+        }
+      `;
+    } else if (a11yState.contrast === 'invert') {
+      css += `
+        body > *:not([id^="ca-"]) {
+          filter: invert(100%) hue-rotate(180deg) !important;
+        }
+        body > *:not([id^="ca-"]) img,
+        body > *:not([id^="ca-"]) video,
+        body > *:not([id^="ca-"]) canvas {
+          filter: invert(100%) hue-rotate(180deg) !important;
+        }
+      `;
+    } else if (a11yState.contrast === 'monochrome') {
+      css += `
+        body > *:not([id^="ca-"]) {
+          filter: grayscale(100%) !important;
+        }
+      `;
+    } else if (a11yState.contrast === 'saturate') {
+      css += `
+        body > *:not([id^="ca-"]) {
+          filter: saturate(250%) contrast(108%) !important;
+        }
+      `;
+    }
+
+    if (a11yState.stopAnimations) {
+      css += `
+        body *:not([id^="ca-"]):not([class*="ca-"]),
+        body *:not([id^="ca-"]):not([class*="ca-"])::before,
+        body *:not([id^="ca-"]):not([class*="ca-"])::after {
+          animation: none !important;
+          animation-duration: 0.001ms !important;
+          animation-delay: 0ms !important;
+          animation-iteration-count: 1 !important;
+          animation-play-state: paused !important;
+          transition: none !important;
+          transition-duration: 0.001ms !important;
+          transition-delay: 0ms !important;
+          scroll-behavior: auto !important;
+        }
+      `;
+    }
+
+    if (a11yState.bigCursor === 'white') {
+      css += `
+        html, body, body *:not([id^="ca-"]):not([class*="ca-"]) {
+          cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpolygon points='4,4 4,40 14,30 22,48 28,45 20,28 32,28' fill='%23ffffff' stroke='%23000000' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") 4 4, auto !important;
+        }
+      `;
+    } else if (a11yState.bigCursor === 'black') {
+      css += `
+        html, body, body *:not([id^="ca-"]):not([class*="ca-"]) {
+          cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpolygon points='4,4 4,40 14,30 22,48 28,45 20,28 32,28' fill='%23000000' stroke='%23ffffff' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") 4 4, auto !important;
+        }
+      `;
+    }
+
+    styleEl.textContent = css;
+  }
+
   function applyA11yState() {
     const docEl = document.documentElement;
 
@@ -1146,10 +1336,12 @@
       if (document.body) {
         document.body.style.zoom = (a11yState.textSize / 100);
       }
+      docEl.style.fontSize = `${a11yState.textSize}%`;
     } else {
       if (document.body) {
         document.body.style.zoom = '';
       }
+      docEl.style.fontSize = '';
     }
     const fontValEl = document.getElementById('ca-font-val');
     if (fontValEl) fontValEl.textContent = `${a11yState.textSize}%`;
@@ -1180,14 +1372,31 @@
     else if (a11yState.contrast === 'monochrome') docEl.classList.add('ca-contrast-monochrome');
     else if (a11yState.contrast === 'saturate') docEl.classList.add('ca-high-saturation');
 
-    // 6. Stop Motion — also pause/resume all <video> elements
+    // 6. Stop Motion — pause animations & videos
     docEl.classList.toggle('ca-stop-animations', a11yState.stopAnimations);
     toggleCardActive('ca-tool-stop-animations', a11yState.stopAnimations);
-    try {
-      document.querySelectorAll('video').forEach(function(v) {
-        if (a11yState.stopAnimations) { v.pause(); } else { /* leave as-is */ }
+    if (a11yState.stopAnimations) {
+      if (document.getAnimations) {
+        try {
+          document.getAnimations().forEach(a => {
+            if (!a.effect || !a.effect.target || !a.effect.target.closest || !a.effect.target.closest('[id^="ca-"]')) {
+              a.pause();
+            }
+          });
+        } catch (e) {}
+      }
+      document.querySelectorAll('video, audio').forEach(v => {
+        if (!v.closest('[id^="ca-"]')) {
+          try { v.pause(); } catch (e) {}
+        }
       });
-    } catch (e) {}
+    } else {
+      if (document.getAnimations) {
+        try {
+          document.getAnimations().forEach(a => a.play());
+        } catch (e) {}
+      }
+    }
 
     // 7. Big Cursor
     docEl.classList.remove('ca-big-cursor', 'ca-big-cursor-black');
@@ -1201,22 +1410,33 @@
       if (cursorStatus) cursorStatus.textContent = 'Big Black';
       toggleCardActive('ca-tool-cursor', true);
     } else {
-      if (cursorStatus) cursorStatus.textContent = 'Default';
+      if (cursorStatus) cursorStatus.textContent = 'Big Cursor';
       toggleCardActive('ca-tool-cursor', false);
     }
 
-    // 8. Reading Guide — force inline styles so no host CSS can override
+    // 8. Reading Guide
     const guideEl = document.getElementById('ca-reading-guide-line');
     if (guideEl) {
       if (a11yState.readingGuide) {
-        guideEl.style.cssText = 'display:block !important; position:fixed !important; left:0 !important; width:100vw !important; height:8px !important; background:#2563eb !important; box-shadow:0 0 20px rgba(37,99,235,1),0 0 8px rgba(37,99,235,0.85) !important; border-top:2px solid #93c5fd !important; border-bottom:2px solid #1d4ed8 !important; pointer-events:none !important; z-index:2147483647 !important; top:' + (window.innerHeight / 2) + 'px;';
+        guideEl.style.display = 'block';
+        guideEl.style.setProperty('position', 'fixed', 'important');
+        guideEl.style.setProperty('left', '0', 'important');
+        guideEl.style.setProperty('width', '100vw', 'important');
+        guideEl.style.setProperty('height', '8px', 'important');
+        guideEl.style.setProperty('background', '#2563eb', 'important');
+        guideEl.style.setProperty('box-shadow', '0 0 20px rgba(37,99,235,1), 0 0 8px rgba(37,99,235,0.85)', 'important');
+        guideEl.style.setProperty('border-top', '2px solid #93c5fd', 'important');
+        guideEl.style.setProperty('border-bottom', '2px solid #1d4ed8', 'important');
+        guideEl.style.setProperty('pointer-events', 'none', 'important');
+        guideEl.style.setProperty('z-index', '2147483647', 'important');
+        guideEl.style.setProperty('top', (window.innerHeight / 2) + 'px', 'important');
       } else {
         guideEl.style.display = 'none';
       }
       toggleCardActive('ca-tool-reading-guide', a11yState.readingGuide);
     }
 
-    // 9. Reading Mask — force inline styles so no host CSS can override
+    // 9. Reading Mask
     const maskTopEl = document.getElementById('ca-reading-mask-top');
     const maskBotEl = document.getElementById('ca-reading-mask-bottom');
     if (maskTopEl && maskBotEl) {
@@ -1226,14 +1446,34 @@
         const mid = window.innerHeight / 2;
         const topH = Math.max(0, mid - (slitHeight / 2));
         const botY = mid + (slitHeight / 2);
-        maskTopEl.style.cssText = 'display:block !important; position:fixed !important; left:0 !important; width:100vw !important; background:rgba(0,0,0,0.82) !important; pointer-events:none !important; z-index:2147483646 !important; top:0; height:' + topH + 'px;';
-        maskBotEl.style.cssText = 'display:block !important; position:fixed !important; left:0 !important; width:100vw !important; background:rgba(0,0,0,0.82) !important; pointer-events:none !important; z-index:2147483646 !important; top:' + botY + 'px; height:' + Math.max(0, window.innerHeight - botY) + 'px;';
+        maskTopEl.style.display = 'block';
+        maskTopEl.style.setProperty('position', 'fixed', 'important');
+        maskTopEl.style.setProperty('left', '0', 'important');
+        maskTopEl.style.setProperty('width', '100vw', 'important');
+        maskTopEl.style.setProperty('background', 'rgba(0,0,0,0.82)', 'important');
+        maskTopEl.style.setProperty('pointer-events', 'none', 'important');
+        maskTopEl.style.setProperty('z-index', '2147483646', 'important');
+        maskTopEl.style.setProperty('top', '0', 'important');
+        maskTopEl.style.setProperty('height', topH + 'px', 'important');
+
+        maskBotEl.style.display = 'block';
+        maskBotEl.style.setProperty('position', 'fixed', 'important');
+        maskBotEl.style.setProperty('left', '0', 'important');
+        maskBotEl.style.setProperty('width', '100vw', 'important');
+        maskBotEl.style.setProperty('background', 'rgba(0,0,0,0.82)', 'important');
+        maskBotEl.style.setProperty('pointer-events', 'none', 'important');
+        maskBotEl.style.setProperty('z-index', '2147483646', 'important');
+        maskBotEl.style.setProperty('top', botY + 'px', 'important');
+        maskBotEl.style.setProperty('height', Math.max(0, window.innerHeight - botY) + 'px', 'important');
       } else {
         maskTopEl.style.display = 'none';
         maskBotEl.style.display = 'none';
       }
       toggleCardActive('ca-tool-reading-mask', showMask);
     }
+
+    // Update dynamic runtime styles
+    updateA11yRuntimeStyles();
 
     // Count Active
     let count = 0;
@@ -1283,6 +1523,20 @@
     stopSpeech();
     clickToSpeakActive = false;
     document.body.style.cursor = '';
+    if (document.body) document.body.style.zoom = '';
+    document.documentElement.style.fontSize = '';
+
+    if (document.getAnimations) {
+      try {
+        document.getAnimations().forEach(a => a.play());
+      } catch (e) {}
+    }
+
+    const audioText = document.getElementById('ca-audio-tool-text');
+    if (audioText) audioText.textContent = 'Click to Read';
+    const btnAudio = document.getElementById('ca-tool-audio');
+    if (btnAudio) btnAudio.classList.remove('ca-active');
+
     document.querySelectorAll('[data-profile-switch]').forEach(sw => sw.checked = false);
 
     if (applyImmediately) applyA11yState();
